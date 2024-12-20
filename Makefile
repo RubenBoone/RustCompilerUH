@@ -1,3 +1,5 @@
+FILE := $(word 2, $(MAKECMDGOALS))
+
 all: flex-routine bison-routine
 
 flex:
@@ -10,7 +12,7 @@ flex-run:
 	lexer.exe < $(FILE)
 
 bison:
-	win_bison -o y.tab.c  yaccfile.yacc
+	win_bison -o y.tab.c  yaccfile.yacc -v
 
 bison-compile:
 	gcc y.tab.c lex.yy.c main.c -o parser

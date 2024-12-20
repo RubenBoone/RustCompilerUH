@@ -19,33 +19,77 @@ void yyerror(const char* str);
 
 %%
 
-// vul aan met producties
-program : FN IDENTIFIER LPAREN RPAREN LBRACE statements RBRACE
+program : // Empty file
+        | function
+        | functions function
         ;
 
-statements : // body can be empty
+functions : function function
+          ;
+
+function : FN IDENTIFIER LPAREN params RPAREN blockStatement
+         | FN IDENTIFIER LPAREN params RPAREN ARROW type blockStatement
+         ;
+
+functionCall : IDENTIFIER LPAREN params RPAREN
+             ;
+
+blockStatement : LBRACE statements RBRACE
+               ;
+
+statements : // Empty body
            | statements statement SEMICOLON
+           | statements declaration SEMICOLON
+           | statements assignment SEMICOLON
+           | statements functionCall SEMICOLON
+           | statements expression
+           | statements declaration
+           | IF conditional blockStatement
+           | IF conditional blockStatement ELSE blockStatement
            ;
 
 statement : LET IDENTIFIER EQ expression
-          | LET IDENTIFIER EQ FALSE
-          | LET IDENTIFIER EQ TRUE
-          | IDENTIFIER EQ expression
-          | expression
-          | PRINTVAR
+          | IDENTIFIER PLUSEQ expression
           | PRINTSTRING
-          | LET IDENTIFIER COLON type
+          | PRINTVAR
+          | IDENTIFIER LBRACE params RBRACE
           ;
 
 expression : DEC_LITERAL
            | IDENTIFIER
+           | functionCall
            | expression PLUS expression
            | expression MINUS expression
            | expression STAR expression
            | expression SLASH expression
-           | IDENTIFIER PLUSEQ expression
-           | IDENTIFIER MINUSEQ expression
+           | TRUE
+           | FALSE
+           | AMPERSAND MUT IDENTIFIER
            ;
+
+conditional : expression LT expression
+            | expression LE expression
+            | expression GT expression
+            | expression GE expression
+            | expression
+            ;
+
+declaration : LET IDENTIFIER COLON type
+            | LET IDENTIFIER EQ blockStatement
+            | LET MUT IDENTIFIER EQ expression
+            ;
+
+assignment : IDENTIFIER EQ expression
+           | IDENTIFIER EQ IF conditional blockStatement
+           | IDENTIFIER EQ IF conditional blockStatement ELSE blockStatement
+           ;
+
+params : // Empty params
+       | IDENTIFIER COLON type
+       | IDENTIFIER COLON AMPERSAND MUT type
+       | expression
+       | expression COMMA params
+       ;
 
 type : INT
      | BOOL
