@@ -44,12 +44,13 @@ statements : // Empty body
            | statements functionCall SEMICOLON
            | statements expression
            | statements declaration
-           | IF conditional blockStatement
-           | IF conditional blockStatement ELSE blockStatement
+           | IF conditionals blockStatement
+           | IF conditionals blockStatement ELSE blockStatement
            ;
 
 statement : LET IDENTIFIER EQ expression
           | IDENTIFIER PLUSEQ expression
+          | IDENTIFIER MINUSEQ expression
           | PRINTSTRING
           | PRINTVAR
           | IDENTIFIER LBRACE params RBRACE
@@ -67,10 +68,18 @@ expression : DEC_LITERAL
            | AMPERSAND MUT IDENTIFIER
            ;
 
+conditionals : conditional
+             | conditionals ANDAND conditional
+             | conditionals OROR conditional
+             ;
+
 conditional : expression LT expression
             | expression LE expression
             | expression GT expression
             | expression GE expression
+            | expression NE expression
+            | expression EQEQ expression
+            | NOT expression
             | expression
             ;
 
