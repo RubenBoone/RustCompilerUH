@@ -25,9 +25,13 @@ program : // Empty file
         | program function
         ;
 
-function : FN IDENTIFIER LPAREN parameter_list RPAREN LBRACE statement_list RBRACE
-         | FN IDENTIFIER LPAREN parameter_list RPAREN ARROW type LBRACE statement_list RBRACE
+function : FN IDENTIFIER LPAREN parameter_list RPAREN return_type block_statement
+         | FN IDENTIFIER LPAREN parameter_list RPAREN return_type block_expression
          ;
+
+return_type : // No return type
+            | ARROW type
+            ;
 
 parameter_list : // no parameter
                | parameter_list COMMA parameter
@@ -44,13 +48,11 @@ type : INT
 
 statement_list : // No statements
                | statement_list statement
-               | statement_list expression 
                ; 
 
-
-statement : let_statement
-          | assign_statement
-          | expression SEMICOLON
+statement : let_statement SEMICOLON
+          | assign_statement SEMICOLON
+          | expression_statement SEMICOLON
           | if_statement
           | print_statement SEMICOLON
           | declaration_statement SEMICOLON
@@ -63,13 +65,11 @@ print_statement : PRINTSTRING
                 | PRINTVAR
                 ;
 
-let_statement : LET mutability IDENTIFIER COLON type EQ expression SEMICOLON
-              | LET mutability IDENTIFIER EQ expression SEMICOLON
+let_statement : LET mutability IDENTIFIER COLON type EQ expression
               | LET mutability IDENTIFIER EQ expression
               ;
 
-assign_statement : IDENTIFIER assignment_operator expression SEMICOLON
-                 | IDENTIFIER assignment_operator if_expression SEMICOLON
+assign_statement : IDENTIFIER assignment_operator expression_statement
                  ;
 
 assignment_operator : EQ
@@ -77,23 +77,18 @@ assignment_operator : EQ
                     | MINUSEQ
                     ;
 
+expression_statement : expression
+                     ;
+
 expression : value
            | function_call
            | IDENTIFIER
-           | block_expression
+           | if_expression
            | expression PLUS expression
            | expression MINUS expression
            | expression STAR expression
            | expression SLASH expression
            ;
-
-if_expression : IF conditional LBRACE statement_list RBRACE
-              | IF conditional LBRACE statement_list RBRACE ELSE LBRACE statement_list RBRACE
-              ;
-
-
-block_expression : LBRACE statement_list expression RBRACE SEMICOLON
-                 ;
 
 function_call : IDENTIFIER LPAREN parameter_list RPAREN
               ;
@@ -101,6 +96,10 @@ function_call : IDENTIFIER LPAREN parameter_list RPAREN
 if_statement : IF conditional block_statement
              | IF conditional block_statement ELSE block_statement
              ;
+
+if_expression : IF conditional block_expression
+              | IF conditional block_expression ELSE block_expression
+              ;
 
 conditional : expression LT expression
             | expression LE expression
@@ -115,6 +114,9 @@ conditional : expression LT expression
 
 block_statement : LBRACE statement_list RBRACE
                 ;
+
+block_expression : LBRACE statement_list expression RBRACE
+                 ;
 
 value : DEC_LITERAL
       | TRUE
