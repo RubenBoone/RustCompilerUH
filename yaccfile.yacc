@@ -92,7 +92,7 @@ if_expression : IF conditional LBRACE statement_list RBRACE
               ;
 
 
-block_expression : LBRACE statement_list expression RBRACE
+block_expression : LBRACE statement_list expression RBRACE SEMICOLON
                  ;
 
 function_call : IDENTIFIER LPAREN parameter_list RPAREN
