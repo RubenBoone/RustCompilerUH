@@ -439,7 +439,7 @@ static const flex_int16_t yy_accept[95] =
        25,   23,   39,   24,   26,   14,   21,   20,   34,   22,
        32,   13,   13,   13,   13,   13,   13,   13,   13,   13,
        13,   18,   43,   19,   41,   37,   29,   27,   28,   17,
-       40,   14,    0,   35,   36,   33,   13,   13,   13,   13,
+       40,   14,   14,   35,   36,   33,   13,   13,   13,   13,
         8,   13,    1,   13,   13,   13,   13,   13,   30,   40,
        14,   13,   13,   13,    9,    5,    4,   13,   13,   13,
        10,    2,   13,   13,    6,   13,    7,   13,    3,   13,
@@ -590,7 +590,7 @@ char *yytext;
 #line 1 "lexfile.lex"
 #line 2 "lexfile.lex"
 #include "y.tab.h"
-//#include "tokens.h"
+// #include "tokens.h"
 #include <stdio.h>
 
 /* Keep track of current position of lex for error messages, i.e. 

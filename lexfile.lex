@@ -1,6 +1,6 @@
 %{
 #include "y.tab.h"
-//#include "tokens.h"
+// #include "tokens.h"
 #include <stdio.h>
 
 /* Keep track of current position of lex for error messages, i.e. 
@@ -12,7 +12,7 @@ int col_nr = 1;
 PRINTVAR println!\(\"\{[a-zA-Z_][a-zA-Z0-9_]*\}\"\)
 PRINTSTRING println!\(\"[^\"]*\"\)
 IDENTIFIER [a-zA-Z_][a-zA-Z0-9_]*
-DIGIT [0-9]
+DIGIT [0-9]+
 
 %%
 

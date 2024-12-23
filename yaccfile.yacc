@@ -13,64 +13,88 @@ void yyerror(const char* str);
 // voorrangdeclaraties
 %left PLUS MINUS
 %left STAR SLASH
-%left PLUSEQ MINUSEQ
+%left PLUSEQ MINUSEQ EQ
+
+%start program
 
 %defines
 
 %%
 
 program : // Empty file
-        | function
-        | functions function
+        | program function
         ;
 
-functions : function function
-          ;
-
-function : FN IDENTIFIER LPAREN params RPAREN blockStatement
-         | FN IDENTIFIER LPAREN params RPAREN ARROW type blockStatement
+function : FN IDENTIFIER LPAREN parameter_list RPAREN LBRACE statement_list RBRACE
+         | FN IDENTIFIER LPAREN parameter_list RPAREN ARROW type LBRACE statement_list RBRACE
          ;
 
-functionCall : IDENTIFIER LPAREN params RPAREN
-             ;
+parameter_list : // no parameter
+               | parameter_list COMMA parameter
+               | parameter
+               ; 
 
-blockStatement : LBRACE statements RBRACE
-               ;
-
-statements : // Empty body
-           | statements statement SEMICOLON
-           | statements declaration SEMICOLON
-           | statements assignment SEMICOLON
-           | statements functionCall SEMICOLON
-           | statements expression
-           | statements declaration
-           | IF conditionals blockStatement
-           | IF conditionals blockStatement ELSE blockStatement
-           ;
-
-statement : LET IDENTIFIER EQ expression
-          | IDENTIFIER PLUSEQ expression
-          | IDENTIFIER MINUSEQ expression
-          | PRINTSTRING
-          | PRINTVAR
-          | IDENTIFIER LBRACE params RBRACE
+parameter : IDENTIFIER COLON type
+          | expression
           ;
 
-expression : DEC_LITERAL
+type : INT
+     | BOOL
+     ;
+
+statement_list : // No statements
+               | statement_list statement
+               | block_expression
+               ; 
+
+block_expression : statement_list expression
+                 ;
+
+statement : let_statement SEMICOLON
+          | assign_statement SEMICOLON
+          | expression_statement SEMICOLON
+          | if_statement
+          | print_statement SEMICOLON
+          | declaration_statement SEMICOLON
+          ;
+
+declaration_statement : LET mutability IDENTIFIER COLON type
+                      ;
+
+print_statement : PRINTSTRING
+                | PRINTVAR
+                ;
+
+let_statement : LET mutability IDENTIFIER COLON type EQ expression
+              | LET mutability IDENTIFIER EQ expression
+              ;
+
+assign_statement : IDENTIFIER assignment_operator expression
+                 | IDENTIFIER assignment_operator if_statement
+                 ;
+
+assignment_operator : EQ
+                    | PLUSEQ
+                    | MINUSEQ
+                    ;
+
+expression_statement : expression
+                     ;
+
+expression : value
+           | function_call
            | IDENTIFIER
-           | functionCall
            | expression PLUS expression
            | expression MINUS expression
            | expression STAR expression
            | expression SLASH expression
-           | TRUE
-           | FALSE
-           | AMPERSAND MUT IDENTIFIER
            ;
 
-conditionals : conditional
-             | conditionals ANDAND conditional
-             | conditionals OROR conditional
+function_call : IDENTIFIER LPAREN parameter_list RPAREN
+              ;
+
+if_statement : IF conditional block_statement
+             | IF conditional block_statement ELSE block_statement
              ;
 
 conditional : expression LT expression
@@ -80,29 +104,21 @@ conditional : expression LT expression
             | expression NE expression
             | expression EQEQ expression
             | NOT expression
-            | expression
+            | TRUE
+            | FALSE
             ;
 
-declaration : LET IDENTIFIER COLON type
-            | LET IDENTIFIER EQ blockStatement
-            | LET MUT IDENTIFIER EQ expression
-            ;
+block_statement : LBRACE statement_list RBRACE
+                ;
 
-assignment : IDENTIFIER EQ expression
-           | IDENTIFIER EQ IF conditional blockStatement
-           | IDENTIFIER EQ IF conditional blockStatement ELSE blockStatement
+value : DEC_LITERAL
+      | TRUE
+      | FALSE
+      ;
+
+mutability : // Not mutable
+           | MUT
            ;
-
-params : // Empty params
-       | IDENTIFIER COLON type
-       | IDENTIFIER COLON AMPERSAND MUT type
-       | expression
-       | expression COMMA params
-       ;
-
-type : INT
-     | BOOL
-     ;
 
 %%
 
