@@ -44,13 +44,10 @@ type : INT
 
 statement_list : // No statements
                | statement_list statement
-               | block_expression
                ; 
 
-block_expression : statement_list expression
-                 ;
 
-statement : let_statement SEMICOLON
+statement : let_statement
           | assign_statement SEMICOLON
           | expression_statement SEMICOLON
           | if_statement
@@ -65,7 +62,8 @@ print_statement : PRINTSTRING
                 | PRINTVAR
                 ;
 
-let_statement : LET mutability IDENTIFIER COLON type EQ expression
+let_statement : LET mutability IDENTIFIER COLON type EQ expression SEMICOLON
+              | LET mutability IDENTIFIER EQ expression SEMICOLON
               | LET mutability IDENTIFIER EQ expression
               ;
 
@@ -84,11 +82,15 @@ expression_statement : expression
 expression : value
            | function_call
            | IDENTIFIER
+           | block_expression
            | expression PLUS expression
            | expression MINUS expression
            | expression STAR expression
            | expression SLASH expression
            ;
+
+block_expression : LBRACE statement_list expression RBRACE
+                 ;
 
 function_call : IDENTIFIER LPAREN parameter_list RPAREN
               ;
