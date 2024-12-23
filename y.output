@@ -2,7 +2,6 @@ Terminals unused in grammar
 
    ANDAND
    OROR
-   AMPERSAND
    WHILE
 
 
@@ -23,7 +22,7 @@ Grammar
     8               | parameter_list COMMA parameter
     9               | parameter
 
-   10 parameter: IDENTIFIER COLON type
+   10 parameter: IDENTIFIER COLON mutability type
    11          | expression
 
    12 type: INT
@@ -45,95 +44,99 @@ Grammar
    24                | PRINTVAR
 
    25 let_statement: LET mutability IDENTIFIER COLON type EQ expression
-   26              | LET mutability IDENTIFIER EQ expression
+   26              | LET mutability IDENTIFIER EQ mutability expression
 
    27 assign_statement: IDENTIFIER assignment_operator expression_statement
+   28                 | STAR IDENTIFIER assignment_operator expression_statement
 
-   28 assignment_operator: EQ
-   29                    | PLUSEQ
-   30                    | MINUSEQ
+   29 assignment_operator: EQ
+   30                    | PLUSEQ
+   31                    | MINUSEQ
 
-   31 expression_statement: expression
+   32 expression_statement: expression
 
-   32 expression: value
-   33           | function_call
-   34           | IDENTIFIER
-   35           | if_expression
-   36           | expression PLUS expression
-   37           | expression MINUS expression
-   38           | expression STAR expression
-   39           | expression SLASH expression
+   33 expression: value
+   34           | function_call
+   35           | IDENTIFIER
+   36           | if_expression
+   37           | STAR expression
+   38           | block_expression
+   39           | expression PLUS expression
+   40           | expression MINUS expression
+   41           | expression STAR expression
+   42           | expression SLASH expression
 
-   40 function_call: IDENTIFIER LPAREN parameter_list RPAREN
+   43 function_call: IDENTIFIER LPAREN parameter_list RPAREN
 
-   41 if_statement: IF conditional block_statement
-   42             | IF conditional block_statement ELSE block_statement
+   44 if_statement: IF conditional block_statement
+   45             | IF conditional block_statement ELSE block_statement
 
-   43 if_expression: IF conditional block_expression
-   44              | IF conditional block_expression ELSE block_expression
+   46 if_expression: IF conditional block_expression
+   47              | IF conditional block_expression ELSE block_expression
 
-   45 conditional: expression LT expression
-   46            | expression LE expression
-   47            | expression GT expression
-   48            | expression GE expression
-   49            | expression NE expression
-   50            | expression EQEQ expression
-   51            | NOT expression
-   52            | TRUE
-   53            | FALSE
+   48 conditional: expression LT expression
+   49            | expression LE expression
+   50            | expression GT expression
+   51            | expression GE expression
+   52            | expression NE expression
+   53            | expression EQEQ expression
+   54            | NOT expression
+   55            | TRUE
+   56            | FALSE
 
-   54 block_statement: LBRACE statement_list RBRACE
+   57 block_statement: LBRACE statement_list RBRACE
 
-   55 block_expression: LBRACE statement_list expression RBRACE
+   58 block_expression: LBRACE statement_list expression RBRACE
 
-   56 value: DEC_LITERAL
-   57      | TRUE
-   58      | FALSE
+   59 value: DEC_LITERAL
+   60      | TRUE
+   61      | FALSE
 
-   59 mutability: /* empty */
-   60           | MUT
+   62 mutability: /* empty */
+   63           | MUT
+   64           | AMPERSAND MUT
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
 error (256)
-IDENTIFIER (258) 3 4 10 22 25 26 27 34 40
+IDENTIFIER (258) 3 4 10 22 25 26 27 28 35 43
 PRINTVAR (259) 24
 PRINTSTRING (260) 23
-DEC_LITERAL (261) 56
-TRUE (262) 52 57
-FALSE (263) 53 58
+DEC_LITERAL (261) 59
+TRUE (262) 55 60
+FALSE (263) 56 61
 FN (264) 3 4
-LPAREN (265) 3 4 40
-RPAREN (266) 3 4 40
+LPAREN (265) 3 4 43
+RPAREN (266) 3 4 43
 ARROW (267) 6
-LBRACE (268) 54 55
-RBRACE (269) 54 55
+LBRACE (268) 57 58
+RBRACE (269) 57 58
 SEMICOLON (270) 16 17 18 20 21
 COLON (271) 10 22 25
 LET (272) 22 25 26
-EQ (273) 25 26 28
-PLUS (274) 36
-MINUS (275) 37
-STAR (276) 38
-SLASH (277) 39
-PLUSEQ (278) 29
-MINUSEQ (279) 30
+EQ (273) 25 26 29
+PLUS (274) 39
+MINUS (275) 40
+STAR (276) 28 37 41
+SLASH (277) 42
+PLUSEQ (278) 30
+MINUSEQ (279) 31
 ANDAND (280)
 OROR (281)
-NOT (282) 51
-GT (283) 47
-GE (284) 48
-LT (285) 45
-LE (286) 46
-EQEQ (287) 50
-NE (288) 49
-AMPERSAND (289)
-IF (290) 41 42 43 44
-ELSE (291) 42 44
+NOT (282) 54
+GT (283) 50
+GE (284) 51
+LT (285) 48
+LE (286) 49
+EQEQ (287) 53
+NE (288) 52
+AMPERSAND (289) 64
+IF (290) 44 45 46 47
+ELSE (291) 45 47
 WHILE (292)
-MUT (293) 60
+MUT (293) 63 64
 COMMA (294) 8
 INT (295) 12
 BOOL (296) 13
@@ -150,13 +153,13 @@ function (44)
 return_type (45)
     on left: 5 6, on right: 3 4
 parameter_list (46)
-    on left: 7 8 9, on right: 3 4 8 40
+    on left: 7 8 9, on right: 3 4 8 43
 parameter (47)
     on left: 10 11, on right: 8 9
 type (48)
     on left: 12 13, on right: 6 10 22 25
 statement_list (49)
-    on left: 14 15, on right: 15 54 55
+    on left: 14 15, on right: 15 57 58
 statement (50)
     on left: 16 17 18 19 20 21, on right: 15
 declaration_statement (51)
@@ -166,30 +169,30 @@ print_statement (52)
 let_statement (53)
     on left: 25 26, on right: 16
 assign_statement (54)
-    on left: 27, on right: 17
+    on left: 27 28, on right: 17
 assignment_operator (55)
-    on left: 28 29 30, on right: 27
+    on left: 29 30 31, on right: 27 28
 expression_statement (56)
-    on left: 31, on right: 18 27
+    on left: 32, on right: 18 27 28
 expression (57)
-    on left: 32 33 34 35 36 37 38 39, on right: 11 25 26 31 36 37 38
-    39 45 46 47 48 49 50 51 55
+    on left: 33 34 35 36 37 38 39 40 41 42, on right: 11 25 26 32 37
+    39 40 41 42 48 49 50 51 52 53 54 58
 function_call (58)
-    on left: 40, on right: 33
+    on left: 43, on right: 34
 if_statement (59)
-    on left: 41 42, on right: 19
+    on left: 44 45, on right: 19
 if_expression (60)
-    on left: 43 44, on right: 35
+    on left: 46 47, on right: 36
 conditional (61)
-    on left: 45 46 47 48 49 50 51 52 53, on right: 41 42 43 44
+    on left: 48 49 50 51 52 53 54 55 56, on right: 44 45 46 47
 block_statement (62)
-    on left: 54, on right: 3 41 42
+    on left: 57, on right: 3 44 45
 block_expression (63)
-    on left: 55, on right: 4 43 44
+    on left: 58, on right: 4 38 46 47
 value (64)
-    on left: 56 57 58, on right: 32
+    on left: 59 60 61, on right: 33
 mutability (65)
-    on left: 59 60, on right: 22 25 26
+    on left: 62 63 64, on right: 10 22 25 26
 
 
 State 0
@@ -251,246 +254,336 @@ State 6
     DEC_LITERAL  shift, and go to state 8
     TRUE         shift, and go to state 9
     FALSE        shift, and go to state 10
-    IF           shift, and go to state 11
+    LBRACE       shift, and go to state 11
+    STAR         shift, and go to state 12
+    IF           shift, and go to state 13
 
     $default  reduce using rule 7 (parameter_list)
 
-    parameter_list  go to state 12
-    parameter       go to state 13
-    expression      go to state 14
-    function_call   go to state 15
-    if_expression   go to state 16
-    value           go to state 17
+    parameter_list    go to state 14
+    parameter         go to state 15
+    expression        go to state 16
+    function_call     go to state 17
+    if_expression     go to state 18
+    block_expression  go to state 19
+    value             go to state 20
 
 
 State 7
 
-   10 parameter: IDENTIFIER . COLON type
-   34 expression: IDENTIFIER .
-   40 function_call: IDENTIFIER . LPAREN parameter_list RPAREN
+   10 parameter: IDENTIFIER . COLON mutability type
+   35 expression: IDENTIFIER .
+   43 function_call: IDENTIFIER . LPAREN parameter_list RPAREN
 
-    LPAREN  shift, and go to state 18
-    COLON   shift, and go to state 19
+    LPAREN  shift, and go to state 21
+    COLON   shift, and go to state 22
 
-    $default  reduce using rule 34 (expression)
+    $default  reduce using rule 35 (expression)
 
 
 State 8
 
-   56 value: DEC_LITERAL .
+   59 value: DEC_LITERAL .
 
-    $default  reduce using rule 56 (value)
+    $default  reduce using rule 59 (value)
 
 
 State 9
 
-   57 value: TRUE .
+   60 value: TRUE .
 
-    $default  reduce using rule 57 (value)
+    $default  reduce using rule 60 (value)
 
 
 State 10
 
-   58 value: FALSE .
+   61 value: FALSE .
 
-    $default  reduce using rule 58 (value)
+    $default  reduce using rule 61 (value)
 
 
 State 11
 
-   43 if_expression: IF . conditional block_expression
-   44              | IF . conditional block_expression ELSE block_expression
+   58 block_expression: LBRACE . statement_list expression RBRACE
 
-    IDENTIFIER   shift, and go to state 20
-    DEC_LITERAL  shift, and go to state 8
-    TRUE         shift, and go to state 21
-    FALSE        shift, and go to state 22
-    NOT          shift, and go to state 23
-    IF           shift, and go to state 11
+    $default  reduce using rule 14 (statement_list)
 
-    expression     go to state 24
-    function_call  go to state 15
-    if_expression  go to state 16
-    conditional    go to state 25
-    value          go to state 17
+    statement_list  go to state 23
 
 
 State 12
+
+   37 expression: STAR . expression
+
+    IDENTIFIER   shift, and go to state 24
+    DEC_LITERAL  shift, and go to state 8
+    TRUE         shift, and go to state 9
+    FALSE        shift, and go to state 10
+    LBRACE       shift, and go to state 11
+    STAR         shift, and go to state 12
+    IF           shift, and go to state 13
+
+    expression        go to state 25
+    function_call     go to state 17
+    if_expression     go to state 18
+    block_expression  go to state 19
+    value             go to state 20
+
+
+State 13
+
+   46 if_expression: IF . conditional block_expression
+   47              | IF . conditional block_expression ELSE block_expression
+
+    IDENTIFIER   shift, and go to state 24
+    DEC_LITERAL  shift, and go to state 8
+    TRUE         shift, and go to state 26
+    FALSE        shift, and go to state 27
+    LBRACE       shift, and go to state 11
+    STAR         shift, and go to state 12
+    NOT          shift, and go to state 28
+    IF           shift, and go to state 13
+
+    expression        go to state 29
+    function_call     go to state 17
+    if_expression     go to state 18
+    conditional       go to state 30
+    block_expression  go to state 19
+    value             go to state 20
+
+
+State 14
 
     3 function: FN IDENTIFIER LPAREN parameter_list . RPAREN return_type block_statement
     4         | FN IDENTIFIER LPAREN parameter_list . RPAREN return_type block_expression
     8 parameter_list: parameter_list . COMMA parameter
 
-    RPAREN  shift, and go to state 26
-    COMMA   shift, and go to state 27
+    RPAREN  shift, and go to state 31
+    COMMA   shift, and go to state 32
 
 
-State 13
+State 15
 
     9 parameter_list: parameter .
 
     $default  reduce using rule 9 (parameter_list)
 
 
-State 14
+State 16
 
    11 parameter: expression .
-   36 expression: expression . PLUS expression
-   37           | expression . MINUS expression
-   38           | expression . STAR expression
-   39           | expression . SLASH expression
+   39 expression: expression . PLUS expression
+   40           | expression . MINUS expression
+   41           | expression . STAR expression
+   42           | expression . SLASH expression
 
-    PLUS   shift, and go to state 28
-    MINUS  shift, and go to state 29
-    STAR   shift, and go to state 30
-    SLASH  shift, and go to state 31
+    PLUS   shift, and go to state 33
+    MINUS  shift, and go to state 34
+    STAR   shift, and go to state 35
+    SLASH  shift, and go to state 36
 
     $default  reduce using rule 11 (parameter)
 
 
-State 15
-
-   33 expression: function_call .
-
-    $default  reduce using rule 33 (expression)
-
-
-State 16
-
-   35 expression: if_expression .
-
-    $default  reduce using rule 35 (expression)
-
-
 State 17
 
-   32 expression: value .
+   34 expression: function_call .
 
-    $default  reduce using rule 32 (expression)
+    $default  reduce using rule 34 (expression)
 
 
 State 18
 
-   40 function_call: IDENTIFIER LPAREN . parameter_list RPAREN
+   36 expression: if_expression .
+
+    $default  reduce using rule 36 (expression)
+
+
+State 19
+
+   38 expression: block_expression .
+
+    $default  reduce using rule 38 (expression)
+
+
+State 20
+
+   33 expression: value .
+
+    $default  reduce using rule 33 (expression)
+
+
+State 21
+
+   43 function_call: IDENTIFIER LPAREN . parameter_list RPAREN
 
     IDENTIFIER   shift, and go to state 7
     DEC_LITERAL  shift, and go to state 8
     TRUE         shift, and go to state 9
     FALSE        shift, and go to state 10
-    IF           shift, and go to state 11
+    LBRACE       shift, and go to state 11
+    STAR         shift, and go to state 12
+    IF           shift, and go to state 13
 
     $default  reduce using rule 7 (parameter_list)
 
-    parameter_list  go to state 32
-    parameter       go to state 13
-    expression      go to state 14
-    function_call   go to state 15
-    if_expression   go to state 16
-    value           go to state 17
-
-
-State 19
-
-   10 parameter: IDENTIFIER COLON . type
-
-    INT   shift, and go to state 33
-    BOOL  shift, and go to state 34
-
-    type  go to state 35
-
-
-State 20
-
-   34 expression: IDENTIFIER .
-   40 function_call: IDENTIFIER . LPAREN parameter_list RPAREN
-
-    LPAREN  shift, and go to state 18
-
-    $default  reduce using rule 34 (expression)
-
-
-State 21
-
-   52 conditional: TRUE .
-   57 value: TRUE .
-
-    LBRACE    reduce using rule 52 (conditional)
-    $default  reduce using rule 57 (value)
+    parameter_list    go to state 37
+    parameter         go to state 15
+    expression        go to state 16
+    function_call     go to state 17
+    if_expression     go to state 18
+    block_expression  go to state 19
+    value             go to state 20
 
 
 State 22
 
-   53 conditional: FALSE .
-   58 value: FALSE .
+   10 parameter: IDENTIFIER COLON . mutability type
 
-    LBRACE    reduce using rule 53 (conditional)
-    $default  reduce using rule 58 (value)
+    AMPERSAND  shift, and go to state 38
+    MUT        shift, and go to state 39
+
+    $default  reduce using rule 62 (mutability)
+
+    mutability  go to state 40
 
 
 State 23
 
-   51 conditional: NOT . expression
+   15 statement_list: statement_list . statement
+   58 block_expression: LBRACE statement_list . expression RBRACE
 
-    IDENTIFIER   shift, and go to state 20
+    IDENTIFIER   shift, and go to state 41
+    PRINTVAR     shift, and go to state 42
+    PRINTSTRING  shift, and go to state 43
     DEC_LITERAL  shift, and go to state 8
     TRUE         shift, and go to state 9
     FALSE        shift, and go to state 10
-    IF           shift, and go to state 11
+    LBRACE       shift, and go to state 11
+    LET          shift, and go to state 44
+    STAR         shift, and go to state 45
+    IF           shift, and go to state 46
 
-    expression     go to state 36
-    function_call  go to state 15
-    if_expression  go to state 16
-    value          go to state 17
+    statement              go to state 47
+    declaration_statement  go to state 48
+    print_statement        go to state 49
+    let_statement          go to state 50
+    assign_statement       go to state 51
+    expression_statement   go to state 52
+    expression             go to state 53
+    function_call          go to state 17
+    if_statement           go to state 54
+    if_expression          go to state 18
+    block_expression       go to state 19
+    value                  go to state 20
 
 
 State 24
 
-   36 expression: expression . PLUS expression
-   37           | expression . MINUS expression
-   38           | expression . STAR expression
-   39           | expression . SLASH expression
-   45 conditional: expression . LT expression
-   46            | expression . LE expression
-   47            | expression . GT expression
-   48            | expression . GE expression
-   49            | expression . NE expression
-   50            | expression . EQEQ expression
+   35 expression: IDENTIFIER .
+   43 function_call: IDENTIFIER . LPAREN parameter_list RPAREN
 
-    PLUS   shift, and go to state 28
-    MINUS  shift, and go to state 29
-    STAR   shift, and go to state 30
-    SLASH  shift, and go to state 31
-    GT     shift, and go to state 37
-    GE     shift, and go to state 38
-    LT     shift, and go to state 39
-    LE     shift, and go to state 40
-    EQEQ   shift, and go to state 41
-    NE     shift, and go to state 42
+    LPAREN  shift, and go to state 21
+
+    $default  reduce using rule 35 (expression)
 
 
 State 25
 
-   43 if_expression: IF conditional . block_expression
-   44              | IF conditional . block_expression ELSE block_expression
+   37 expression: STAR expression .
+   39           | expression . PLUS expression
+   40           | expression . MINUS expression
+   41           | expression . STAR expression
+   42           | expression . SLASH expression
 
-    LBRACE  shift, and go to state 43
-
-    block_expression  go to state 44
+    $default  reduce using rule 37 (expression)
 
 
 State 26
 
-    3 function: FN IDENTIFIER LPAREN parameter_list RPAREN . return_type block_statement
-    4         | FN IDENTIFIER LPAREN parameter_list RPAREN . return_type block_expression
+   55 conditional: TRUE .
+   60 value: TRUE .
 
-    ARROW  shift, and go to state 45
-
-    $default  reduce using rule 5 (return_type)
-
-    return_type  go to state 46
+    LBRACE    reduce using rule 55 (conditional)
+    $default  reduce using rule 60 (value)
 
 
 State 27
+
+   56 conditional: FALSE .
+   61 value: FALSE .
+
+    LBRACE    reduce using rule 56 (conditional)
+    $default  reduce using rule 61 (value)
+
+
+State 28
+
+   54 conditional: NOT . expression
+
+    IDENTIFIER   shift, and go to state 24
+    DEC_LITERAL  shift, and go to state 8
+    TRUE         shift, and go to state 9
+    FALSE        shift, and go to state 10
+    LBRACE       shift, and go to state 11
+    STAR         shift, and go to state 12
+    IF           shift, and go to state 13
+
+    expression        go to state 55
+    function_call     go to state 17
+    if_expression     go to state 18
+    block_expression  go to state 19
+    value             go to state 20
+
+
+State 29
+
+   39 expression: expression . PLUS expression
+   40           | expression . MINUS expression
+   41           | expression . STAR expression
+   42           | expression . SLASH expression
+   48 conditional: expression . LT expression
+   49            | expression . LE expression
+   50            | expression . GT expression
+   51            | expression . GE expression
+   52            | expression . NE expression
+   53            | expression . EQEQ expression
+
+    PLUS   shift, and go to state 33
+    MINUS  shift, and go to state 34
+    STAR   shift, and go to state 35
+    SLASH  shift, and go to state 36
+    GT     shift, and go to state 56
+    GE     shift, and go to state 57
+    LT     shift, and go to state 58
+    LE     shift, and go to state 59
+    EQEQ   shift, and go to state 60
+    NE     shift, and go to state 61
+
+
+State 30
+
+   46 if_expression: IF conditional . block_expression
+   47              | IF conditional . block_expression ELSE block_expression
+
+    LBRACE  shift, and go to state 11
+
+    block_expression  go to state 62
+
+
+State 31
+
+    3 function: FN IDENTIFIER LPAREN parameter_list RPAREN . return_type block_statement
+    4         | FN IDENTIFIER LPAREN parameter_list RPAREN . return_type block_expression
+
+    ARROW  shift, and go to state 63
+
+    $default  reduce using rule 5 (return_type)
+
+    return_type  go to state 64
+
+
+State 32
 
     8 parameter_list: parameter_list COMMA . parameter
 
@@ -498,947 +591,1062 @@ State 27
     DEC_LITERAL  shift, and go to state 8
     TRUE         shift, and go to state 9
     FALSE        shift, and go to state 10
-    IF           shift, and go to state 11
+    LBRACE       shift, and go to state 11
+    STAR         shift, and go to state 12
+    IF           shift, and go to state 13
 
-    parameter      go to state 47
-    expression     go to state 14
-    function_call  go to state 15
-    if_expression  go to state 16
-    value          go to state 17
-
-
-State 28
-
-   36 expression: expression PLUS . expression
-
-    IDENTIFIER   shift, and go to state 20
-    DEC_LITERAL  shift, and go to state 8
-    TRUE         shift, and go to state 9
-    FALSE        shift, and go to state 10
-    IF           shift, and go to state 11
-
-    expression     go to state 48
-    function_call  go to state 15
-    if_expression  go to state 16
-    value          go to state 17
-
-
-State 29
-
-   37 expression: expression MINUS . expression
-
-    IDENTIFIER   shift, and go to state 20
-    DEC_LITERAL  shift, and go to state 8
-    TRUE         shift, and go to state 9
-    FALSE        shift, and go to state 10
-    IF           shift, and go to state 11
-
-    expression     go to state 49
-    function_call  go to state 15
-    if_expression  go to state 16
-    value          go to state 17
-
-
-State 30
-
-   38 expression: expression STAR . expression
-
-    IDENTIFIER   shift, and go to state 20
-    DEC_LITERAL  shift, and go to state 8
-    TRUE         shift, and go to state 9
-    FALSE        shift, and go to state 10
-    IF           shift, and go to state 11
-
-    expression     go to state 50
-    function_call  go to state 15
-    if_expression  go to state 16
-    value          go to state 17
-
-
-State 31
-
-   39 expression: expression SLASH . expression
-
-    IDENTIFIER   shift, and go to state 20
-    DEC_LITERAL  shift, and go to state 8
-    TRUE         shift, and go to state 9
-    FALSE        shift, and go to state 10
-    IF           shift, and go to state 11
-
-    expression     go to state 51
-    function_call  go to state 15
-    if_expression  go to state 16
-    value          go to state 17
-
-
-State 32
-
-    8 parameter_list: parameter_list . COMMA parameter
-   40 function_call: IDENTIFIER LPAREN parameter_list . RPAREN
-
-    RPAREN  shift, and go to state 52
-    COMMA   shift, and go to state 27
+    parameter         go to state 65
+    expression        go to state 16
+    function_call     go to state 17
+    if_expression     go to state 18
+    block_expression  go to state 19
+    value             go to state 20
 
 
 State 33
 
-   12 type: INT .
+   39 expression: expression PLUS . expression
 
-    $default  reduce using rule 12 (type)
+    IDENTIFIER   shift, and go to state 24
+    DEC_LITERAL  shift, and go to state 8
+    TRUE         shift, and go to state 9
+    FALSE        shift, and go to state 10
+    LBRACE       shift, and go to state 11
+    STAR         shift, and go to state 12
+    IF           shift, and go to state 13
+
+    expression        go to state 66
+    function_call     go to state 17
+    if_expression     go to state 18
+    block_expression  go to state 19
+    value             go to state 20
 
 
 State 34
 
-   13 type: BOOL .
+   40 expression: expression MINUS . expression
 
-    $default  reduce using rule 13 (type)
+    IDENTIFIER   shift, and go to state 24
+    DEC_LITERAL  shift, and go to state 8
+    TRUE         shift, and go to state 9
+    FALSE        shift, and go to state 10
+    LBRACE       shift, and go to state 11
+    STAR         shift, and go to state 12
+    IF           shift, and go to state 13
+
+    expression        go to state 67
+    function_call     go to state 17
+    if_expression     go to state 18
+    block_expression  go to state 19
+    value             go to state 20
 
 
 State 35
 
-   10 parameter: IDENTIFIER COLON type .
+   41 expression: expression STAR . expression
 
-    $default  reduce using rule 10 (parameter)
+    IDENTIFIER   shift, and go to state 24
+    DEC_LITERAL  shift, and go to state 8
+    TRUE         shift, and go to state 9
+    FALSE        shift, and go to state 10
+    LBRACE       shift, and go to state 11
+    STAR         shift, and go to state 12
+    IF           shift, and go to state 13
+
+    expression        go to state 68
+    function_call     go to state 17
+    if_expression     go to state 18
+    block_expression  go to state 19
+    value             go to state 20
 
 
 State 36
 
-   36 expression: expression . PLUS expression
-   37           | expression . MINUS expression
-   38           | expression . STAR expression
-   39           | expression . SLASH expression
-   51 conditional: NOT expression .
+   42 expression: expression SLASH . expression
 
-    PLUS   shift, and go to state 28
-    MINUS  shift, and go to state 29
-    STAR   shift, and go to state 30
-    SLASH  shift, and go to state 31
+    IDENTIFIER   shift, and go to state 24
+    DEC_LITERAL  shift, and go to state 8
+    TRUE         shift, and go to state 9
+    FALSE        shift, and go to state 10
+    LBRACE       shift, and go to state 11
+    STAR         shift, and go to state 12
+    IF           shift, and go to state 13
 
-    $default  reduce using rule 51 (conditional)
+    expression        go to state 69
+    function_call     go to state 17
+    if_expression     go to state 18
+    block_expression  go to state 19
+    value             go to state 20
 
 
 State 37
 
-   47 conditional: expression GT . expression
+    8 parameter_list: parameter_list . COMMA parameter
+   43 function_call: IDENTIFIER LPAREN parameter_list . RPAREN
 
-    IDENTIFIER   shift, and go to state 20
-    DEC_LITERAL  shift, and go to state 8
-    TRUE         shift, and go to state 9
-    FALSE        shift, and go to state 10
-    IF           shift, and go to state 11
-
-    expression     go to state 53
-    function_call  go to state 15
-    if_expression  go to state 16
-    value          go to state 17
+    RPAREN  shift, and go to state 70
+    COMMA   shift, and go to state 32
 
 
 State 38
 
-   48 conditional: expression GE . expression
+   64 mutability: AMPERSAND . MUT
 
-    IDENTIFIER   shift, and go to state 20
-    DEC_LITERAL  shift, and go to state 8
-    TRUE         shift, and go to state 9
-    FALSE        shift, and go to state 10
-    IF           shift, and go to state 11
-
-    expression     go to state 54
-    function_call  go to state 15
-    if_expression  go to state 16
-    value          go to state 17
+    MUT  shift, and go to state 71
 
 
 State 39
 
-   45 conditional: expression LT . expression
+   63 mutability: MUT .
 
-    IDENTIFIER   shift, and go to state 20
-    DEC_LITERAL  shift, and go to state 8
-    TRUE         shift, and go to state 9
-    FALSE        shift, and go to state 10
-    IF           shift, and go to state 11
-
-    expression     go to state 55
-    function_call  go to state 15
-    if_expression  go to state 16
-    value          go to state 17
+    $default  reduce using rule 63 (mutability)
 
 
 State 40
 
-   46 conditional: expression LE . expression
+   10 parameter: IDENTIFIER COLON mutability . type
 
-    IDENTIFIER   shift, and go to state 20
-    DEC_LITERAL  shift, and go to state 8
-    TRUE         shift, and go to state 9
-    FALSE        shift, and go to state 10
-    IF           shift, and go to state 11
+    INT   shift, and go to state 72
+    BOOL  shift, and go to state 73
 
-    expression     go to state 56
-    function_call  go to state 15
-    if_expression  go to state 16
-    value          go to state 17
+    type  go to state 74
 
 
 State 41
 
-   50 conditional: expression EQEQ . expression
+   27 assign_statement: IDENTIFIER . assignment_operator expression_statement
+   35 expression: IDENTIFIER .
+   43 function_call: IDENTIFIER . LPAREN parameter_list RPAREN
 
-    IDENTIFIER   shift, and go to state 20
-    DEC_LITERAL  shift, and go to state 8
-    TRUE         shift, and go to state 9
-    FALSE        shift, and go to state 10
-    IF           shift, and go to state 11
+    LPAREN   shift, and go to state 21
+    EQ       shift, and go to state 75
+    PLUSEQ   shift, and go to state 76
+    MINUSEQ  shift, and go to state 77
 
-    expression     go to state 57
-    function_call  go to state 15
-    if_expression  go to state 16
-    value          go to state 17
+    $default  reduce using rule 35 (expression)
+
+    assignment_operator  go to state 78
 
 
 State 42
-
-   49 conditional: expression NE . expression
-
-    IDENTIFIER   shift, and go to state 20
-    DEC_LITERAL  shift, and go to state 8
-    TRUE         shift, and go to state 9
-    FALSE        shift, and go to state 10
-    IF           shift, and go to state 11
-
-    expression     go to state 58
-    function_call  go to state 15
-    if_expression  go to state 16
-    value          go to state 17
-
-
-State 43
-
-   55 block_expression: LBRACE . statement_list expression RBRACE
-
-    $default  reduce using rule 14 (statement_list)
-
-    statement_list  go to state 59
-
-
-State 44
-
-   43 if_expression: IF conditional block_expression .
-   44              | IF conditional block_expression . ELSE block_expression
-
-    ELSE  shift, and go to state 60
-
-    $default  reduce using rule 43 (if_expression)
-
-
-State 45
-
-    6 return_type: ARROW . type
-
-    INT   shift, and go to state 33
-    BOOL  shift, and go to state 34
-
-    type  go to state 61
-
-
-State 46
-
-    3 function: FN IDENTIFIER LPAREN parameter_list RPAREN return_type . block_statement
-    4         | FN IDENTIFIER LPAREN parameter_list RPAREN return_type . block_expression
-
-    LBRACE  shift, and go to state 62
-
-    block_statement   go to state 63
-    block_expression  go to state 64
-
-
-State 47
-
-    8 parameter_list: parameter_list COMMA parameter .
-
-    $default  reduce using rule 8 (parameter_list)
-
-
-State 48
-
-   36 expression: expression . PLUS expression
-   36           | expression PLUS expression .
-   37           | expression . MINUS expression
-   38           | expression . STAR expression
-   39           | expression . SLASH expression
-
-    STAR   shift, and go to state 30
-    SLASH  shift, and go to state 31
-
-    $default  reduce using rule 36 (expression)
-
-
-State 49
-
-   36 expression: expression . PLUS expression
-   37           | expression . MINUS expression
-   37           | expression MINUS expression .
-   38           | expression . STAR expression
-   39           | expression . SLASH expression
-
-    STAR   shift, and go to state 30
-    SLASH  shift, and go to state 31
-
-    $default  reduce using rule 37 (expression)
-
-
-State 50
-
-   36 expression: expression . PLUS expression
-   37           | expression . MINUS expression
-   38           | expression . STAR expression
-   38           | expression STAR expression .
-   39           | expression . SLASH expression
-
-    $default  reduce using rule 38 (expression)
-
-
-State 51
-
-   36 expression: expression . PLUS expression
-   37           | expression . MINUS expression
-   38           | expression . STAR expression
-   39           | expression . SLASH expression
-   39           | expression SLASH expression .
-
-    $default  reduce using rule 39 (expression)
-
-
-State 52
-
-   40 function_call: IDENTIFIER LPAREN parameter_list RPAREN .
-
-    $default  reduce using rule 40 (function_call)
-
-
-State 53
-
-   36 expression: expression . PLUS expression
-   37           | expression . MINUS expression
-   38           | expression . STAR expression
-   39           | expression . SLASH expression
-   47 conditional: expression GT expression .
-
-    PLUS   shift, and go to state 28
-    MINUS  shift, and go to state 29
-    STAR   shift, and go to state 30
-    SLASH  shift, and go to state 31
-
-    $default  reduce using rule 47 (conditional)
-
-
-State 54
-
-   36 expression: expression . PLUS expression
-   37           | expression . MINUS expression
-   38           | expression . STAR expression
-   39           | expression . SLASH expression
-   48 conditional: expression GE expression .
-
-    PLUS   shift, and go to state 28
-    MINUS  shift, and go to state 29
-    STAR   shift, and go to state 30
-    SLASH  shift, and go to state 31
-
-    $default  reduce using rule 48 (conditional)
-
-
-State 55
-
-   36 expression: expression . PLUS expression
-   37           | expression . MINUS expression
-   38           | expression . STAR expression
-   39           | expression . SLASH expression
-   45 conditional: expression LT expression .
-
-    PLUS   shift, and go to state 28
-    MINUS  shift, and go to state 29
-    STAR   shift, and go to state 30
-    SLASH  shift, and go to state 31
-
-    $default  reduce using rule 45 (conditional)
-
-
-State 56
-
-   36 expression: expression . PLUS expression
-   37           | expression . MINUS expression
-   38           | expression . STAR expression
-   39           | expression . SLASH expression
-   46 conditional: expression LE expression .
-
-    PLUS   shift, and go to state 28
-    MINUS  shift, and go to state 29
-    STAR   shift, and go to state 30
-    SLASH  shift, and go to state 31
-
-    $default  reduce using rule 46 (conditional)
-
-
-State 57
-
-   36 expression: expression . PLUS expression
-   37           | expression . MINUS expression
-   38           | expression . STAR expression
-   39           | expression . SLASH expression
-   50 conditional: expression EQEQ expression .
-
-    PLUS   shift, and go to state 28
-    MINUS  shift, and go to state 29
-    STAR   shift, and go to state 30
-    SLASH  shift, and go to state 31
-
-    $default  reduce using rule 50 (conditional)
-
-
-State 58
-
-   36 expression: expression . PLUS expression
-   37           | expression . MINUS expression
-   38           | expression . STAR expression
-   39           | expression . SLASH expression
-   49 conditional: expression NE expression .
-
-    PLUS   shift, and go to state 28
-    MINUS  shift, and go to state 29
-    STAR   shift, and go to state 30
-    SLASH  shift, and go to state 31
-
-    $default  reduce using rule 49 (conditional)
-
-
-State 59
-
-   15 statement_list: statement_list . statement
-   55 block_expression: LBRACE statement_list . expression RBRACE
-
-    IDENTIFIER   shift, and go to state 65
-    PRINTVAR     shift, and go to state 66
-    PRINTSTRING  shift, and go to state 67
-    DEC_LITERAL  shift, and go to state 8
-    TRUE         shift, and go to state 9
-    FALSE        shift, and go to state 10
-    LET          shift, and go to state 68
-    IF           shift, and go to state 69
-
-    statement              go to state 70
-    declaration_statement  go to state 71
-    print_statement        go to state 72
-    let_statement          go to state 73
-    assign_statement       go to state 74
-    expression_statement   go to state 75
-    expression             go to state 76
-    function_call          go to state 15
-    if_statement           go to state 77
-    if_expression          go to state 16
-    value                  go to state 17
-
-
-State 60
-
-   44 if_expression: IF conditional block_expression ELSE . block_expression
-
-    LBRACE  shift, and go to state 43
-
-    block_expression  go to state 78
-
-
-State 61
-
-    6 return_type: ARROW type .
-
-    $default  reduce using rule 6 (return_type)
-
-
-State 62
-
-   54 block_statement: LBRACE . statement_list RBRACE
-   55 block_expression: LBRACE . statement_list expression RBRACE
-
-    $default  reduce using rule 14 (statement_list)
-
-    statement_list  go to state 79
-
-
-State 63
-
-    3 function: FN IDENTIFIER LPAREN parameter_list RPAREN return_type block_statement .
-
-    $default  reduce using rule 3 (function)
-
-
-State 64
-
-    4 function: FN IDENTIFIER LPAREN parameter_list RPAREN return_type block_expression .
-
-    $default  reduce using rule 4 (function)
-
-
-State 65
-
-   27 assign_statement: IDENTIFIER . assignment_operator expression_statement
-   34 expression: IDENTIFIER .
-   40 function_call: IDENTIFIER . LPAREN parameter_list RPAREN
-
-    LPAREN   shift, and go to state 18
-    EQ       shift, and go to state 80
-    PLUSEQ   shift, and go to state 81
-    MINUSEQ  shift, and go to state 82
-
-    $default  reduce using rule 34 (expression)
-
-    assignment_operator  go to state 83
-
-
-State 66
 
    24 print_statement: PRINTVAR .
 
     $default  reduce using rule 24 (print_statement)
 
 
-State 67
+State 43
 
    23 print_statement: PRINTSTRING .
 
     $default  reduce using rule 23 (print_statement)
 
 
-State 68
+State 44
 
    22 declaration_statement: LET . mutability IDENTIFIER COLON type
    25 let_statement: LET . mutability IDENTIFIER COLON type EQ expression
-   26              | LET . mutability IDENTIFIER EQ expression
+   26              | LET . mutability IDENTIFIER EQ mutability expression
 
-    MUT  shift, and go to state 84
+    AMPERSAND  shift, and go to state 38
+    MUT        shift, and go to state 39
 
-    $default  reduce using rule 59 (mutability)
+    $default  reduce using rule 62 (mutability)
 
-    mutability  go to state 85
+    mutability  go to state 79
 
 
-State 69
+State 45
 
-   41 if_statement: IF . conditional block_statement
-   42             | IF . conditional block_statement ELSE block_statement
-   43 if_expression: IF . conditional block_expression
-   44              | IF . conditional block_expression ELSE block_expression
+   28 assign_statement: STAR . IDENTIFIER assignment_operator expression_statement
+   37 expression: STAR . expression
 
-    IDENTIFIER   shift, and go to state 20
+    IDENTIFIER   shift, and go to state 80
     DEC_LITERAL  shift, and go to state 8
-    TRUE         shift, and go to state 21
-    FALSE        shift, and go to state 22
-    NOT          shift, and go to state 23
-    IF           shift, and go to state 11
+    TRUE         shift, and go to state 9
+    FALSE        shift, and go to state 10
+    LBRACE       shift, and go to state 11
+    STAR         shift, and go to state 12
+    IF           shift, and go to state 13
 
-    expression     go to state 24
-    function_call  go to state 15
-    if_expression  go to state 16
-    conditional    go to state 86
-    value          go to state 17
+    expression        go to state 25
+    function_call     go to state 17
+    if_expression     go to state 18
+    block_expression  go to state 19
+    value             go to state 20
 
 
-State 70
+State 46
+
+   44 if_statement: IF . conditional block_statement
+   45             | IF . conditional block_statement ELSE block_statement
+   46 if_expression: IF . conditional block_expression
+   47              | IF . conditional block_expression ELSE block_expression
+
+    IDENTIFIER   shift, and go to state 24
+    DEC_LITERAL  shift, and go to state 8
+    TRUE         shift, and go to state 26
+    FALSE        shift, and go to state 27
+    LBRACE       shift, and go to state 11
+    STAR         shift, and go to state 12
+    NOT          shift, and go to state 28
+    IF           shift, and go to state 13
+
+    expression        go to state 29
+    function_call     go to state 17
+    if_expression     go to state 18
+    conditional       go to state 81
+    block_expression  go to state 19
+    value             go to state 20
+
+
+State 47
 
    15 statement_list: statement_list statement .
 
     $default  reduce using rule 15 (statement_list)
 
 
-State 71
+State 48
 
    21 statement: declaration_statement . SEMICOLON
 
-    SEMICOLON  shift, and go to state 87
+    SEMICOLON  shift, and go to state 82
 
 
-State 72
+State 49
 
    20 statement: print_statement . SEMICOLON
 
-    SEMICOLON  shift, and go to state 88
+    SEMICOLON  shift, and go to state 83
 
 
-State 73
+State 50
 
    16 statement: let_statement . SEMICOLON
 
-    SEMICOLON  shift, and go to state 89
+    SEMICOLON  shift, and go to state 84
 
 
-State 74
+State 51
 
    17 statement: assign_statement . SEMICOLON
 
-    SEMICOLON  shift, and go to state 90
+    SEMICOLON  shift, and go to state 85
 
 
-State 75
+State 52
 
    18 statement: expression_statement . SEMICOLON
 
-    SEMICOLON  shift, and go to state 91
+    SEMICOLON  shift, and go to state 86
 
 
-State 76
+State 53
 
-   31 expression_statement: expression .
-   36 expression: expression . PLUS expression
-   37           | expression . MINUS expression
-   38           | expression . STAR expression
-   39           | expression . SLASH expression
-   55 block_expression: LBRACE statement_list expression . RBRACE
+   32 expression_statement: expression .
+   39 expression: expression . PLUS expression
+   40           | expression . MINUS expression
+   41           | expression . STAR expression
+   42           | expression . SLASH expression
+   58 block_expression: LBRACE statement_list expression . RBRACE
 
-    RBRACE  shift, and go to state 92
-    PLUS    shift, and go to state 28
-    MINUS   shift, and go to state 29
-    STAR    shift, and go to state 30
-    SLASH   shift, and go to state 31
+    RBRACE  shift, and go to state 87
+    PLUS    shift, and go to state 33
+    MINUS   shift, and go to state 34
+    STAR    shift, and go to state 35
+    SLASH   shift, and go to state 36
 
-    $default  reduce using rule 31 (expression_statement)
+    $default  reduce using rule 32 (expression_statement)
 
 
-State 77
+State 54
 
    19 statement: if_statement .
 
     $default  reduce using rule 19 (statement)
 
 
-State 78
+State 55
 
-   44 if_expression: IF conditional block_expression ELSE block_expression .
+   39 expression: expression . PLUS expression
+   40           | expression . MINUS expression
+   41           | expression . STAR expression
+   42           | expression . SLASH expression
+   54 conditional: NOT expression .
 
-    $default  reduce using rule 44 (if_expression)
+    PLUS   shift, and go to state 33
+    MINUS  shift, and go to state 34
+    STAR   shift, and go to state 35
+    SLASH  shift, and go to state 36
+
+    $default  reduce using rule 54 (conditional)
 
 
-State 79
+State 56
 
-   15 statement_list: statement_list . statement
-   54 block_statement: LBRACE statement_list . RBRACE
-   55 block_expression: LBRACE statement_list . expression RBRACE
+   50 conditional: expression GT . expression
 
-    IDENTIFIER   shift, and go to state 65
-    PRINTVAR     shift, and go to state 66
-    PRINTSTRING  shift, and go to state 67
+    IDENTIFIER   shift, and go to state 24
     DEC_LITERAL  shift, and go to state 8
     TRUE         shift, and go to state 9
     FALSE        shift, and go to state 10
-    RBRACE       shift, and go to state 93
-    LET          shift, and go to state 68
-    IF           shift, and go to state 69
+    LBRACE       shift, and go to state 11
+    STAR         shift, and go to state 12
+    IF           shift, and go to state 13
 
-    statement              go to state 70
-    declaration_statement  go to state 71
-    print_statement        go to state 72
-    let_statement          go to state 73
-    assign_statement       go to state 74
-    expression_statement   go to state 75
-    expression             go to state 76
-    function_call          go to state 15
-    if_statement           go to state 77
-    if_expression          go to state 16
-    value                  go to state 17
+    expression        go to state 88
+    function_call     go to state 17
+    if_expression     go to state 18
+    block_expression  go to state 19
+    value             go to state 20
 
 
-State 80
+State 57
 
-   28 assignment_operator: EQ .
+   51 conditional: expression GE . expression
 
-    $default  reduce using rule 28 (assignment_operator)
+    IDENTIFIER   shift, and go to state 24
+    DEC_LITERAL  shift, and go to state 8
+    TRUE         shift, and go to state 9
+    FALSE        shift, and go to state 10
+    LBRACE       shift, and go to state 11
+    STAR         shift, and go to state 12
+    IF           shift, and go to state 13
+
+    expression        go to state 89
+    function_call     go to state 17
+    if_expression     go to state 18
+    block_expression  go to state 19
+    value             go to state 20
 
 
-State 81
+State 58
 
-   29 assignment_operator: PLUSEQ .
+   48 conditional: expression LT . expression
+
+    IDENTIFIER   shift, and go to state 24
+    DEC_LITERAL  shift, and go to state 8
+    TRUE         shift, and go to state 9
+    FALSE        shift, and go to state 10
+    LBRACE       shift, and go to state 11
+    STAR         shift, and go to state 12
+    IF           shift, and go to state 13
+
+    expression        go to state 90
+    function_call     go to state 17
+    if_expression     go to state 18
+    block_expression  go to state 19
+    value             go to state 20
+
+
+State 59
+
+   49 conditional: expression LE . expression
+
+    IDENTIFIER   shift, and go to state 24
+    DEC_LITERAL  shift, and go to state 8
+    TRUE         shift, and go to state 9
+    FALSE        shift, and go to state 10
+    LBRACE       shift, and go to state 11
+    STAR         shift, and go to state 12
+    IF           shift, and go to state 13
+
+    expression        go to state 91
+    function_call     go to state 17
+    if_expression     go to state 18
+    block_expression  go to state 19
+    value             go to state 20
+
+
+State 60
+
+   53 conditional: expression EQEQ . expression
+
+    IDENTIFIER   shift, and go to state 24
+    DEC_LITERAL  shift, and go to state 8
+    TRUE         shift, and go to state 9
+    FALSE        shift, and go to state 10
+    LBRACE       shift, and go to state 11
+    STAR         shift, and go to state 12
+    IF           shift, and go to state 13
+
+    expression        go to state 92
+    function_call     go to state 17
+    if_expression     go to state 18
+    block_expression  go to state 19
+    value             go to state 20
+
+
+State 61
+
+   52 conditional: expression NE . expression
+
+    IDENTIFIER   shift, and go to state 24
+    DEC_LITERAL  shift, and go to state 8
+    TRUE         shift, and go to state 9
+    FALSE        shift, and go to state 10
+    LBRACE       shift, and go to state 11
+    STAR         shift, and go to state 12
+    IF           shift, and go to state 13
+
+    expression        go to state 93
+    function_call     go to state 17
+    if_expression     go to state 18
+    block_expression  go to state 19
+    value             go to state 20
+
+
+State 62
+
+   46 if_expression: IF conditional block_expression .
+   47              | IF conditional block_expression . ELSE block_expression
+
+    ELSE  shift, and go to state 94
+
+    $default  reduce using rule 46 (if_expression)
+
+
+State 63
+
+    6 return_type: ARROW . type
+
+    INT   shift, and go to state 72
+    BOOL  shift, and go to state 73
+
+    type  go to state 95
+
+
+State 64
+
+    3 function: FN IDENTIFIER LPAREN parameter_list RPAREN return_type . block_statement
+    4         | FN IDENTIFIER LPAREN parameter_list RPAREN return_type . block_expression
+
+    LBRACE  shift, and go to state 96
+
+    block_statement   go to state 97
+    block_expression  go to state 98
+
+
+State 65
+
+    8 parameter_list: parameter_list COMMA parameter .
+
+    $default  reduce using rule 8 (parameter_list)
+
+
+State 66
+
+   39 expression: expression . PLUS expression
+   39           | expression PLUS expression .
+   40           | expression . MINUS expression
+   41           | expression . STAR expression
+   42           | expression . SLASH expression
+
+    STAR   shift, and go to state 35
+    SLASH  shift, and go to state 36
+
+    $default  reduce using rule 39 (expression)
+
+
+State 67
+
+   39 expression: expression . PLUS expression
+   40           | expression . MINUS expression
+   40           | expression MINUS expression .
+   41           | expression . STAR expression
+   42           | expression . SLASH expression
+
+    STAR   shift, and go to state 35
+    SLASH  shift, and go to state 36
+
+    $default  reduce using rule 40 (expression)
+
+
+State 68
+
+   39 expression: expression . PLUS expression
+   40           | expression . MINUS expression
+   41           | expression . STAR expression
+   41           | expression STAR expression .
+   42           | expression . SLASH expression
+
+    $default  reduce using rule 41 (expression)
+
+
+State 69
+
+   39 expression: expression . PLUS expression
+   40           | expression . MINUS expression
+   41           | expression . STAR expression
+   42           | expression . SLASH expression
+   42           | expression SLASH expression .
+
+    $default  reduce using rule 42 (expression)
+
+
+State 70
+
+   43 function_call: IDENTIFIER LPAREN parameter_list RPAREN .
+
+    $default  reduce using rule 43 (function_call)
+
+
+State 71
+
+   64 mutability: AMPERSAND MUT .
+
+    $default  reduce using rule 64 (mutability)
+
+
+State 72
+
+   12 type: INT .
+
+    $default  reduce using rule 12 (type)
+
+
+State 73
+
+   13 type: BOOL .
+
+    $default  reduce using rule 13 (type)
+
+
+State 74
+
+   10 parameter: IDENTIFIER COLON mutability type .
+
+    $default  reduce using rule 10 (parameter)
+
+
+State 75
+
+   29 assignment_operator: EQ .
 
     $default  reduce using rule 29 (assignment_operator)
 
 
-State 82
+State 76
 
-   30 assignment_operator: MINUSEQ .
+   30 assignment_operator: PLUSEQ .
 
     $default  reduce using rule 30 (assignment_operator)
 
 
-State 83
+State 77
+
+   31 assignment_operator: MINUSEQ .
+
+    $default  reduce using rule 31 (assignment_operator)
+
+
+State 78
 
    27 assign_statement: IDENTIFIER assignment_operator . expression_statement
 
-    IDENTIFIER   shift, and go to state 20
+    IDENTIFIER   shift, and go to state 24
     DEC_LITERAL  shift, and go to state 8
     TRUE         shift, and go to state 9
     FALSE        shift, and go to state 10
-    IF           shift, and go to state 11
+    LBRACE       shift, and go to state 11
+    STAR         shift, and go to state 12
+    IF           shift, and go to state 13
 
-    expression_statement  go to state 94
-    expression            go to state 95
-    function_call         go to state 15
-    if_expression         go to state 16
-    value                 go to state 17
-
-
-State 84
-
-   60 mutability: MUT .
-
-    $default  reduce using rule 60 (mutability)
+    expression_statement  go to state 99
+    expression            go to state 100
+    function_call         go to state 17
+    if_expression         go to state 18
+    block_expression      go to state 19
+    value                 go to state 20
 
 
-State 85
+State 79
 
    22 declaration_statement: LET mutability . IDENTIFIER COLON type
    25 let_statement: LET mutability . IDENTIFIER COLON type EQ expression
-   26              | LET mutability . IDENTIFIER EQ expression
+   26              | LET mutability . IDENTIFIER EQ mutability expression
 
-    IDENTIFIER  shift, and go to state 96
-
-
-State 86
-
-   41 if_statement: IF conditional . block_statement
-   42             | IF conditional . block_statement ELSE block_statement
-   43 if_expression: IF conditional . block_expression
-   44              | IF conditional . block_expression ELSE block_expression
-
-    LBRACE  shift, and go to state 62
-
-    block_statement   go to state 97
-    block_expression  go to state 44
+    IDENTIFIER  shift, and go to state 101
 
 
-State 87
+State 80
+
+   28 assign_statement: STAR IDENTIFIER . assignment_operator expression_statement
+   35 expression: IDENTIFIER .
+   43 function_call: IDENTIFIER . LPAREN parameter_list RPAREN
+
+    LPAREN   shift, and go to state 21
+    EQ       shift, and go to state 75
+    PLUSEQ   shift, and go to state 76
+    MINUSEQ  shift, and go to state 77
+
+    $default  reduce using rule 35 (expression)
+
+    assignment_operator  go to state 102
+
+
+State 81
+
+   44 if_statement: IF conditional . block_statement
+   45             | IF conditional . block_statement ELSE block_statement
+   46 if_expression: IF conditional . block_expression
+   47              | IF conditional . block_expression ELSE block_expression
+
+    LBRACE  shift, and go to state 96
+
+    block_statement   go to state 103
+    block_expression  go to state 62
+
+
+State 82
 
    21 statement: declaration_statement SEMICOLON .
 
     $default  reduce using rule 21 (statement)
 
 
-State 88
+State 83
 
    20 statement: print_statement SEMICOLON .
 
     $default  reduce using rule 20 (statement)
 
 
-State 89
+State 84
 
    16 statement: let_statement SEMICOLON .
 
     $default  reduce using rule 16 (statement)
 
 
-State 90
+State 85
 
    17 statement: assign_statement SEMICOLON .
 
     $default  reduce using rule 17 (statement)
 
 
-State 91
+State 86
 
    18 statement: expression_statement SEMICOLON .
 
     $default  reduce using rule 18 (statement)
 
 
+State 87
+
+   58 block_expression: LBRACE statement_list expression RBRACE .
+
+    $default  reduce using rule 58 (block_expression)
+
+
+State 88
+
+   39 expression: expression . PLUS expression
+   40           | expression . MINUS expression
+   41           | expression . STAR expression
+   42           | expression . SLASH expression
+   50 conditional: expression GT expression .
+
+    PLUS   shift, and go to state 33
+    MINUS  shift, and go to state 34
+    STAR   shift, and go to state 35
+    SLASH  shift, and go to state 36
+
+    $default  reduce using rule 50 (conditional)
+
+
+State 89
+
+   39 expression: expression . PLUS expression
+   40           | expression . MINUS expression
+   41           | expression . STAR expression
+   42           | expression . SLASH expression
+   51 conditional: expression GE expression .
+
+    PLUS   shift, and go to state 33
+    MINUS  shift, and go to state 34
+    STAR   shift, and go to state 35
+    SLASH  shift, and go to state 36
+
+    $default  reduce using rule 51 (conditional)
+
+
+State 90
+
+   39 expression: expression . PLUS expression
+   40           | expression . MINUS expression
+   41           | expression . STAR expression
+   42           | expression . SLASH expression
+   48 conditional: expression LT expression .
+
+    PLUS   shift, and go to state 33
+    MINUS  shift, and go to state 34
+    STAR   shift, and go to state 35
+    SLASH  shift, and go to state 36
+
+    $default  reduce using rule 48 (conditional)
+
+
+State 91
+
+   39 expression: expression . PLUS expression
+   40           | expression . MINUS expression
+   41           | expression . STAR expression
+   42           | expression . SLASH expression
+   49 conditional: expression LE expression .
+
+    PLUS   shift, and go to state 33
+    MINUS  shift, and go to state 34
+    STAR   shift, and go to state 35
+    SLASH  shift, and go to state 36
+
+    $default  reduce using rule 49 (conditional)
+
+
 State 92
 
-   55 block_expression: LBRACE statement_list expression RBRACE .
+   39 expression: expression . PLUS expression
+   40           | expression . MINUS expression
+   41           | expression . STAR expression
+   42           | expression . SLASH expression
+   53 conditional: expression EQEQ expression .
 
-    $default  reduce using rule 55 (block_expression)
+    PLUS   shift, and go to state 33
+    MINUS  shift, and go to state 34
+    STAR   shift, and go to state 35
+    SLASH  shift, and go to state 36
+
+    $default  reduce using rule 53 (conditional)
 
 
 State 93
 
-   54 block_statement: LBRACE statement_list RBRACE .
+   39 expression: expression . PLUS expression
+   40           | expression . MINUS expression
+   41           | expression . STAR expression
+   42           | expression . SLASH expression
+   52 conditional: expression NE expression .
 
-    $default  reduce using rule 54 (block_statement)
+    PLUS   shift, and go to state 33
+    MINUS  shift, and go to state 34
+    STAR   shift, and go to state 35
+    SLASH  shift, and go to state 36
+
+    $default  reduce using rule 52 (conditional)
 
 
 State 94
+
+   47 if_expression: IF conditional block_expression ELSE . block_expression
+
+    LBRACE  shift, and go to state 11
+
+    block_expression  go to state 104
+
+
+State 95
+
+    6 return_type: ARROW type .
+
+    $default  reduce using rule 6 (return_type)
+
+
+State 96
+
+   57 block_statement: LBRACE . statement_list RBRACE
+   58 block_expression: LBRACE . statement_list expression RBRACE
+
+    $default  reduce using rule 14 (statement_list)
+
+    statement_list  go to state 105
+
+
+State 97
+
+    3 function: FN IDENTIFIER LPAREN parameter_list RPAREN return_type block_statement .
+
+    $default  reduce using rule 3 (function)
+
+
+State 98
+
+    4 function: FN IDENTIFIER LPAREN parameter_list RPAREN return_type block_expression .
+
+    $default  reduce using rule 4 (function)
+
+
+State 99
 
    27 assign_statement: IDENTIFIER assignment_operator expression_statement .
 
     $default  reduce using rule 27 (assign_statement)
 
 
-State 95
-
-   31 expression_statement: expression .
-   36 expression: expression . PLUS expression
-   37           | expression . MINUS expression
-   38           | expression . STAR expression
-   39           | expression . SLASH expression
-
-    PLUS   shift, and go to state 28
-    MINUS  shift, and go to state 29
-    STAR   shift, and go to state 30
-    SLASH  shift, and go to state 31
-
-    $default  reduce using rule 31 (expression_statement)
-
-
-State 96
-
-   22 declaration_statement: LET mutability IDENTIFIER . COLON type
-   25 let_statement: LET mutability IDENTIFIER . COLON type EQ expression
-   26              | LET mutability IDENTIFIER . EQ expression
-
-    COLON  shift, and go to state 98
-    EQ     shift, and go to state 99
-
-
-State 97
-
-   41 if_statement: IF conditional block_statement .
-   42             | IF conditional block_statement . ELSE block_statement
-
-    ELSE  shift, and go to state 100
-
-    $default  reduce using rule 41 (if_statement)
-
-
-State 98
-
-   22 declaration_statement: LET mutability IDENTIFIER COLON . type
-   25 let_statement: LET mutability IDENTIFIER COLON . type EQ expression
-
-    INT   shift, and go to state 33
-    BOOL  shift, and go to state 34
-
-    type  go to state 101
-
-
-State 99
-
-   26 let_statement: LET mutability IDENTIFIER EQ . expression
-
-    IDENTIFIER   shift, and go to state 20
-    DEC_LITERAL  shift, and go to state 8
-    TRUE         shift, and go to state 9
-    FALSE        shift, and go to state 10
-    IF           shift, and go to state 11
-
-    expression     go to state 102
-    function_call  go to state 15
-    if_expression  go to state 16
-    value          go to state 17
-
-
 State 100
 
-   42 if_statement: IF conditional block_statement ELSE . block_statement
+   32 expression_statement: expression .
+   39 expression: expression . PLUS expression
+   40           | expression . MINUS expression
+   41           | expression . STAR expression
+   42           | expression . SLASH expression
 
-    LBRACE  shift, and go to state 103
+    PLUS   shift, and go to state 33
+    MINUS  shift, and go to state 34
+    STAR   shift, and go to state 35
+    SLASH  shift, and go to state 36
 
-    block_statement  go to state 104
+    $default  reduce using rule 32 (expression_statement)
 
 
 State 101
 
-   22 declaration_statement: LET mutability IDENTIFIER COLON type .
-   25 let_statement: LET mutability IDENTIFIER COLON type . EQ expression
+   22 declaration_statement: LET mutability IDENTIFIER . COLON type
+   25 let_statement: LET mutability IDENTIFIER . COLON type EQ expression
+   26              | LET mutability IDENTIFIER . EQ mutability expression
 
-    EQ  shift, and go to state 105
-
-    $default  reduce using rule 22 (declaration_statement)
+    COLON  shift, and go to state 106
+    EQ     shift, and go to state 107
 
 
 State 102
 
-   26 let_statement: LET mutability IDENTIFIER EQ expression .
-   36 expression: expression . PLUS expression
-   37           | expression . MINUS expression
-   38           | expression . STAR expression
-   39           | expression . SLASH expression
+   28 assign_statement: STAR IDENTIFIER assignment_operator . expression_statement
 
-    PLUS   shift, and go to state 28
-    MINUS  shift, and go to state 29
-    STAR   shift, and go to state 30
-    SLASH  shift, and go to state 31
+    IDENTIFIER   shift, and go to state 24
+    DEC_LITERAL  shift, and go to state 8
+    TRUE         shift, and go to state 9
+    FALSE        shift, and go to state 10
+    LBRACE       shift, and go to state 11
+    STAR         shift, and go to state 12
+    IF           shift, and go to state 13
 
-    $default  reduce using rule 26 (let_statement)
+    expression_statement  go to state 108
+    expression            go to state 100
+    function_call         go to state 17
+    if_expression         go to state 18
+    block_expression      go to state 19
+    value                 go to state 20
 
 
 State 103
 
-   54 block_statement: LBRACE . statement_list RBRACE
+   44 if_statement: IF conditional block_statement .
+   45             | IF conditional block_statement . ELSE block_statement
 
-    $default  reduce using rule 14 (statement_list)
+    ELSE  shift, and go to state 109
 
-    statement_list  go to state 106
+    $default  reduce using rule 44 (if_statement)
 
 
 State 104
 
-   42 if_statement: IF conditional block_statement ELSE block_statement .
+   47 if_expression: IF conditional block_expression ELSE block_expression .
 
-    $default  reduce using rule 42 (if_statement)
+    $default  reduce using rule 47 (if_expression)
 
 
 State 105
 
-   25 let_statement: LET mutability IDENTIFIER COLON type EQ . expression
+   15 statement_list: statement_list . statement
+   57 block_statement: LBRACE statement_list . RBRACE
+   58 block_expression: LBRACE statement_list . expression RBRACE
 
-    IDENTIFIER   shift, and go to state 20
+    IDENTIFIER   shift, and go to state 41
+    PRINTVAR     shift, and go to state 42
+    PRINTSTRING  shift, and go to state 43
     DEC_LITERAL  shift, and go to state 8
     TRUE         shift, and go to state 9
     FALSE        shift, and go to state 10
-    IF           shift, and go to state 11
+    LBRACE       shift, and go to state 11
+    RBRACE       shift, and go to state 110
+    LET          shift, and go to state 44
+    STAR         shift, and go to state 45
+    IF           shift, and go to state 46
 
-    expression     go to state 107
-    function_call  go to state 15
-    if_expression  go to state 16
-    value          go to state 17
+    statement              go to state 47
+    declaration_statement  go to state 48
+    print_statement        go to state 49
+    let_statement          go to state 50
+    assign_statement       go to state 51
+    expression_statement   go to state 52
+    expression             go to state 53
+    function_call          go to state 17
+    if_statement           go to state 54
+    if_expression          go to state 18
+    block_expression       go to state 19
+    value                  go to state 20
 
 
 State 106
 
-   15 statement_list: statement_list . statement
-   54 block_statement: LBRACE statement_list . RBRACE
+   22 declaration_statement: LET mutability IDENTIFIER COLON . type
+   25 let_statement: LET mutability IDENTIFIER COLON . type EQ expression
 
-    IDENTIFIER   shift, and go to state 65
-    PRINTVAR     shift, and go to state 66
-    PRINTSTRING  shift, and go to state 67
-    DEC_LITERAL  shift, and go to state 8
-    TRUE         shift, and go to state 9
-    FALSE        shift, and go to state 10
-    RBRACE       shift, and go to state 93
-    LET          shift, and go to state 68
-    IF           shift, and go to state 69
+    INT   shift, and go to state 72
+    BOOL  shift, and go to state 73
 
-    statement              go to state 70
-    declaration_statement  go to state 71
-    print_statement        go to state 72
-    let_statement          go to state 73
-    assign_statement       go to state 74
-    expression_statement   go to state 75
-    expression             go to state 95
-    function_call          go to state 15
-    if_statement           go to state 77
-    if_expression          go to state 16
-    value                  go to state 17
+    type  go to state 111
 
 
 State 107
 
-   25 let_statement: LET mutability IDENTIFIER COLON type EQ expression .
-   36 expression: expression . PLUS expression
-   37           | expression . MINUS expression
-   38           | expression . STAR expression
-   39           | expression . SLASH expression
+   26 let_statement: LET mutability IDENTIFIER EQ . mutability expression
 
-    PLUS   shift, and go to state 28
-    MINUS  shift, and go to state 29
-    STAR   shift, and go to state 30
-    SLASH  shift, and go to state 31
+    AMPERSAND  shift, and go to state 38
+    MUT        shift, and go to state 39
+
+    $default  reduce using rule 62 (mutability)
+
+    mutability  go to state 112
+
+
+State 108
+
+   28 assign_statement: STAR IDENTIFIER assignment_operator expression_statement .
+
+    $default  reduce using rule 28 (assign_statement)
+
+
+State 109
+
+   45 if_statement: IF conditional block_statement ELSE . block_statement
+
+    LBRACE  shift, and go to state 113
+
+    block_statement  go to state 114
+
+
+State 110
+
+   57 block_statement: LBRACE statement_list RBRACE .
+
+    $default  reduce using rule 57 (block_statement)
+
+
+State 111
+
+   22 declaration_statement: LET mutability IDENTIFIER COLON type .
+   25 let_statement: LET mutability IDENTIFIER COLON type . EQ expression
+
+    EQ  shift, and go to state 115
+
+    $default  reduce using rule 22 (declaration_statement)
+
+
+State 112
+
+   26 let_statement: LET mutability IDENTIFIER EQ mutability . expression
+
+    IDENTIFIER   shift, and go to state 24
+    DEC_LITERAL  shift, and go to state 8
+    TRUE         shift, and go to state 9
+    FALSE        shift, and go to state 10
+    LBRACE       shift, and go to state 11
+    STAR         shift, and go to state 12
+    IF           shift, and go to state 13
+
+    expression        go to state 116
+    function_call     go to state 17
+    if_expression     go to state 18
+    block_expression  go to state 19
+    value             go to state 20
+
+
+State 113
+
+   57 block_statement: LBRACE . statement_list RBRACE
+
+    $default  reduce using rule 14 (statement_list)
+
+    statement_list  go to state 117
+
+
+State 114
+
+   45 if_statement: IF conditional block_statement ELSE block_statement .
+
+    $default  reduce using rule 45 (if_statement)
+
+
+State 115
+
+   25 let_statement: LET mutability IDENTIFIER COLON type EQ . expression
+
+    IDENTIFIER   shift, and go to state 24
+    DEC_LITERAL  shift, and go to state 8
+    TRUE         shift, and go to state 9
+    FALSE        shift, and go to state 10
+    LBRACE       shift, and go to state 11
+    STAR         shift, and go to state 12
+    IF           shift, and go to state 13
+
+    expression        go to state 118
+    function_call     go to state 17
+    if_expression     go to state 18
+    block_expression  go to state 19
+    value             go to state 20
+
+
+State 116
+
+   26 let_statement: LET mutability IDENTIFIER EQ mutability expression .
+   39 expression: expression . PLUS expression
+   40           | expression . MINUS expression
+   41           | expression . STAR expression
+   42           | expression . SLASH expression
+
+    PLUS   shift, and go to state 33
+    MINUS  shift, and go to state 34
+    STAR   shift, and go to state 35
+    SLASH  shift, and go to state 36
+
+    $default  reduce using rule 26 (let_statement)
+
+
+State 117
+
+   15 statement_list: statement_list . statement
+   57 block_statement: LBRACE statement_list . RBRACE
+
+    IDENTIFIER   shift, and go to state 41
+    PRINTVAR     shift, and go to state 42
+    PRINTSTRING  shift, and go to state 43
+    DEC_LITERAL  shift, and go to state 8
+    TRUE         shift, and go to state 9
+    FALSE        shift, and go to state 10
+    LBRACE       shift, and go to state 11
+    RBRACE       shift, and go to state 110
+    LET          shift, and go to state 44
+    STAR         shift, and go to state 45
+    IF           shift, and go to state 46
+
+    statement              go to state 47
+    declaration_statement  go to state 48
+    print_statement        go to state 49
+    let_statement          go to state 50
+    assign_statement       go to state 51
+    expression_statement   go to state 52
+    expression             go to state 100
+    function_call          go to state 17
+    if_statement           go to state 54
+    if_expression          go to state 18
+    block_expression       go to state 19
+    value                  go to state 20
+
+
+State 118
+
+   25 let_statement: LET mutability IDENTIFIER COLON type EQ expression .
+   39 expression: expression . PLUS expression
+   40           | expression . MINUS expression
+   41           | expression . STAR expression
+   42           | expression . SLASH expression
+
+    PLUS   shift, and go to state 33
+    MINUS  shift, and go to state 34
+    STAR   shift, and go to state 35
+    SLASH  shift, and go to state 36
 
     $default  reduce using rule 25 (let_statement)

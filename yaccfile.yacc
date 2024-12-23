@@ -38,7 +38,7 @@ parameter_list : // no parameter
                | parameter
                ; 
 
-parameter : IDENTIFIER COLON type
+parameter : IDENTIFIER COLON mutability type
           | expression
           ;
 
@@ -66,10 +66,11 @@ print_statement : PRINTSTRING
                 ;
 
 let_statement : LET mutability IDENTIFIER COLON type EQ expression
-              | LET mutability IDENTIFIER EQ expression
+              | LET mutability IDENTIFIER EQ mutability expression
               ;
 
 assign_statement : IDENTIFIER assignment_operator expression_statement
+                 | STAR IDENTIFIER assignment_operator expression_statement
                  ;
 
 assignment_operator : EQ
@@ -84,6 +85,8 @@ expression : value
            | function_call
            | IDENTIFIER
            | if_expression
+           | STAR expression
+           | block_expression
            | expression PLUS expression
            | expression MINUS expression
            | expression STAR expression
@@ -125,6 +128,7 @@ value : DEC_LITERAL
 
 mutability : // Not mutable
            | MUT
+           | AMPERSAND MUT
            ;
 
 %%
