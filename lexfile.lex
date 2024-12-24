@@ -41,7 +41,12 @@ bool {col_nr += yyleng; return BOOL;}
     col_nr += yyleng; 
     return PRINTSTRING;
 }
-{IDENTIFIER} {col_nr += yyleng; return IDENTIFIER;}
+{IDENTIFIER} {
+  col_nr += yyleng;
+  char* s = (char*) malloc(yyleng+1);
+  strcpy(s, yytext);
+  yylval.name = s;
+  return IDENTIFIER;}
 
 {DIGIT}|{DIGIT}+"."{DIGIT}* {col_nr += yyleng; return DEC_LITERAL;}
 \( {col_nr += yyleng; return LPAREN;}

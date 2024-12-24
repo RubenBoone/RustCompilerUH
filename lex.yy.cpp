@@ -951,157 +951,162 @@ YY_RULE_SETUP
 case 13:
 YY_RULE_SETUP
 #line 44 "lexfile.lex"
-{col_nr += yyleng; return IDENTIFIER;}
+{
+  col_nr += yyleng;
+  char* s = (char*) malloc(yyleng+1);
+  strcpy(s, yytext);
+  yylval.name = s;
+  return IDENTIFIER;}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 46 "lexfile.lex"
+#line 51 "lexfile.lex"
 {col_nr += yyleng; return DEC_LITERAL;}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 47 "lexfile.lex"
+#line 52 "lexfile.lex"
 {col_nr += yyleng; return LPAREN;}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 48 "lexfile.lex"
+#line 53 "lexfile.lex"
 {col_nr += yyleng; return RPAREN;}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 49 "lexfile.lex"
+#line 54 "lexfile.lex"
 {col_nr += yyleng; return ARROW;}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 50 "lexfile.lex"
+#line 55 "lexfile.lex"
 {col_nr += yyleng; return LBRACE;}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 51 "lexfile.lex"
+#line 56 "lexfile.lex"
 {col_nr += yyleng; return RBRACE;}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 52 "lexfile.lex"
+#line 57 "lexfile.lex"
 {col_nr += yyleng; return SEMICOLON;}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 53 "lexfile.lex"
+#line 58 "lexfile.lex"
 {col_nr += yyleng; return COLON;}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 54 "lexfile.lex"
+#line 59 "lexfile.lex"
 {col_nr += yyleng; return EQ;}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 55 "lexfile.lex"
+#line 60 "lexfile.lex"
 {col_nr += yyleng; return PLUS;}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 56 "lexfile.lex"
+#line 61 "lexfile.lex"
 {col_nr += yyleng; return MINUS;}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 57 "lexfile.lex"
+#line 62 "lexfile.lex"
 {col_nr += yyleng; return STAR;}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 58 "lexfile.lex"
+#line 63 "lexfile.lex"
 {col_nr += yyleng; return SLASH;}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 59 "lexfile.lex"
+#line 64 "lexfile.lex"
 {col_nr += yyleng; return PLUSEQ;}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 60 "lexfile.lex"
+#line 65 "lexfile.lex"
 {col_nr += yyleng; return MINUSEQ;}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 61 "lexfile.lex"
+#line 66 "lexfile.lex"
 {col_nr += yyleng; return ANDAND;}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 62 "lexfile.lex"
+#line 67 "lexfile.lex"
 {col_nr += yyleng; return OROR;}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 63 "lexfile.lex"
+#line 68 "lexfile.lex"
 {col_nr += yyleng; return NOT;}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 64 "lexfile.lex"
+#line 69 "lexfile.lex"
 {col_nr += yyleng; return GT;}
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 65 "lexfile.lex"
+#line 70 "lexfile.lex"
 {col_nr += yyleng; return GE;}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 66 "lexfile.lex"
+#line 71 "lexfile.lex"
 {col_nr += yyleng; return LT;}
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 67 "lexfile.lex"
+#line 72 "lexfile.lex"
 {col_nr += yyleng; return LE;}
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 68 "lexfile.lex"
+#line 73 "lexfile.lex"
 {col_nr += yyleng; return EQEQ;}
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 69 "lexfile.lex"
+#line 74 "lexfile.lex"
 {col_nr += yyleng; return NE;}
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 70 "lexfile.lex"
+#line 75 "lexfile.lex"
 {col_nr += yyleng; return AMPERSAND;}
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 71 "lexfile.lex"
+#line 76 "lexfile.lex"
 {col_nr += yyleng; return COMMA;}
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 72 "lexfile.lex"
+#line 77 "lexfile.lex"
 {col_nr += yyleng;}
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 73 "lexfile.lex"
+#line 78 "lexfile.lex"
 {col_nr += yyleng;}
 	YY_BREAK
 case 42:
 /* rule 42 can match eol */
 YY_RULE_SETUP
-#line 74 "lexfile.lex"
+#line 79 "lexfile.lex"
 {line_nr++; col_nr = 1;}
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 76 "lexfile.lex"
+#line 81 "lexfile.lex"
 {
   if (yytext[0] < ' ') { /* non-printable char */
     fprintf(stderr, "illegal character: ^%c", yytext[0] + '@');
@@ -1117,10 +1122,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 89 "lexfile.lex"
+#line 94 "lexfile.lex"
 ECHO;
 	YY_BREAK
-#line 1123 "lex.yy.c"
+#line 1128 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2121,7 +2126,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 89 "lexfile.lex"
+#line 94 "lexfile.lex"
 
 
 int yywrap() {
