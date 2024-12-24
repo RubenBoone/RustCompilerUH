@@ -42,8 +42,15 @@ parameter_list : // no parameter
                ; 
 
 parameter : IDENTIFIER COLON mutability type
-          | expression
           ;
+
+argument_list : // No argument_list
+              | argument_list COMMA argument
+              | argument
+              ;
+
+argument : expression
+         ;
 
 type : INT
      | BOOL
@@ -55,7 +62,7 @@ statement_list : // No statements
 
 statement : let_statement SEMICOLON
           | assign_statement SEMICOLON
-          | expression_statement SEMICOLON
+          | expression SEMICOLON
           | if_statement
           | print_statement SEMICOLON
           | declaration_statement SEMICOLON
@@ -76,17 +83,14 @@ let_statement : LET mutability IDENTIFIER COLON type EQ expression { printf("Let
               | LET mutability IDENTIFIER EQ mutability expression
               ;
 
-assign_statement : IDENTIFIER assignment_operator expression_statement {  printf("Value assigned\n");}
-                 | STAR IDENTIFIER assignment_operator expression_statement
+assign_statement : IDENTIFIER assignment_operator expression {  printf("Value assigned\n");}
+                 | STAR IDENTIFIER assignment_operator expression
                  ;
 
 assignment_operator : EQ
                     | PLUSEQ
                     | MINUSEQ
                     ;
-
-expression_statement : expression
-                     ;
 
 expression : value
            | function_call
@@ -109,7 +113,7 @@ grouped_expression : LPAREN binary_operation RPAREN
                    ;
 
 
-function_call : IDENTIFIER LPAREN parameter_list RPAREN
+function_call : IDENTIFIER LPAREN argument_list RPAREN
               ;
 
 if_statement : IF conditional block_statement
