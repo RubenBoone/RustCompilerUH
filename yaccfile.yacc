@@ -1,15 +1,18 @@
 %{
 #include "lexer.h"
+#include <iostream>
+#include "absyn.hpp"
 
 extern int line_nr;
 extern int col_nr;
 void yyerror(const char* str);
 
+Stm tree;
+
 %}
 
 // tokendeclaraties
-%token
-    IDENTIFIER PRINTVAR PRINTSTRING DEC_LITERAL TRUE FALSE FN LPAREN RPAREN ARROW LBRACE RBRACE SEMICOLON COLON LET EQ PLUS MINUS STAR SLASH PLUSEQ MINUSEQ ANDAND OROR NOT GT GE LT LE EQEQ NE AMPERSAND IF ELSE WHILE MUT COMMA INT BOOL
+%token     IDENTIFIER PRINTVAR PRINTSTRING DEC_LITERAL TRUE FALSE FN LPAREN RPAREN ARROW LBRACE RBRACE SEMICOLON COLON LET EQ PLUS MINUS STAR SLASH PLUSEQ MINUSEQ ANDAND OROR NOT GT GE LT LE EQEQ NE AMPERSAND IF ELSE WHILE MUT COMMA INT BOOL
   
 // voorrangdeclaraties
 %left PLUS MINUS
@@ -18,33 +21,34 @@ void yyerror(const char* str);
 
 %start program
 
+
 %%
 
-program : // Empty file 
+program : /* Empty */
         | function_list
         ;
 
 function_list : function_list function
-              | function 
+              | function
               ;
 
 function : FN IDENTIFIER LPAREN parameter_list RPAREN return_type block_statement
          | FN IDENTIFIER LPAREN parameter_list RPAREN return_type block_expression
          ;
 
-return_type : // No return type
+return_type : /* Empty */
             | ARROW type
             ;
 
-parameter_list : // no parameter
+parameter_list : /* Empty */
                | parameter_list COMMA parameter
-               | parameter
+               | parameter 
                ; 
 
 parameter : IDENTIFIER COLON mutability type
           ;
 
-argument_list : // No argument_list
+argument_list : /* Empty */
               | argument_list COMMA argument
               | argument
               ;
@@ -79,12 +83,11 @@ print_statement : PRINTSTRING
                 | PRINTVAR
                 ;
 
-let_statement : LET mutability IDENTIFIER COLON type EQ expression { printf("Letstatement created\n");}
+let_statement : LET mutability IDENTIFIER COLON type EQ expression
               | LET mutability IDENTIFIER EQ mutability expression
               ;
 
-assign_statement : IDENTIFIER assignment_operator expression {  printf("Value assigned\n");}
-                 | STAR IDENTIFIER assignment_operator expression
+assign_statement : IDENTIFIER assignment_operator expression
                  ;
 
 assignment_operator : EQ
@@ -96,7 +99,6 @@ expression : value
            | function_call
            | IDENTIFIER
            | if_expression
-           | STAR expression
            | block_expression
            | binary_operation
            | grouped_expression
@@ -146,9 +148,9 @@ value : DEC_LITERAL
       | FALSE
       ;
 
-mutability : // Not mutable
+
+mutability : /* Empty */
            | MUT
-           | AMPERSAND MUT
            ;
 
 %%

@@ -23,9 +23,11 @@ mut {col_nr += yyleng; return MUT;}
 let {col_nr += yyleng; return LET;}
 true {
   col_nr += yyleng;
+  yylval.boolean = true;
   return TRUE;}
 false {
   col_nr += yyleng;
+  yylval.boolean = false;
   return FALSE;}
 fn {col_nr += yyleng; return FN;}
 "i32" {col_nr += yyleng; return INT;}
@@ -47,12 +49,17 @@ bool {col_nr += yyleng; return BOOL;}
 }
 {IDENTIFIER} {
   col_nr += yyleng;
+  char* s = (char*) malloc(yyleng+1);
+  strcpy(s, yytext);
+  yylval.id = s;
   return IDENTIFIER;}
 
 {DIGIT} {
   col_nr += yyleng;
+  char* s = (char*) malloc(yyleng + 1);
+  strcpy(s, yytext);
+  yylval.num = atoi(s);
   return DEC_LITERAL;}
-
 \( {col_nr += yyleng; return LPAREN;}
 \) {col_nr += yyleng; return RPAREN;}
 \-\> {col_nr += yyleng; return ARROW;}

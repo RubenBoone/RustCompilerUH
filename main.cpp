@@ -1,11 +1,15 @@
 #include <stdio.h>
 
-#include "y.tab.h"
+#include "y.tab.hpp"
 
-int main() {
-  if (yyparse()) {
+int main()
+{
+  if (yyparse())
+  {
     printf("Syntax error\n");
-  } else {
+  }
+  else
+  {
     printf("Syntax OK\n");
   }
   return 0;

@@ -68,7 +68,7 @@ Grammar
    41           | function_call
    42           | IDENTIFIER
    43           | if_expression
-   44           | STAR expression
+   44           | STAR IDENTIFIER
    45           | block_expression
    46           | binary_operation
    47           | grouped_expression
@@ -115,7 +115,7 @@ Terminals, with rules where they appear
 
 $end (0) 0
 error (256)
-IDENTIFIER (258) 5 6 12 30 33 34 35 36 42 53
+IDENTIFIER (258) 5 6 12 30 33 34 35 36 42 44 53
 PRINTVAR (259) 32
 PRINTSTRING (260) 31
 DEC_LITERAL (261) 69
@@ -195,8 +195,8 @@ assign_statement (58)
 assignment_operator (59)
     on left: 37 38 39, on right: 35 36
 expression (60)
-    on left: 40 41 42 43 44 45 46 47, on right: 16 23 33 34 35 36 44
-    48 49 50 51 58 59 60 61 62 63 64 68
+    on left: 40 41 42 43 44 45 46 47, on right: 16 23 33 34 35 36 48
+    49 50 51 58 59 60 61 62 63 64 68
 binary_operation (61)
     on left: 48 49 50 51, on right: 46 52
 grouped_expression (62)
@@ -603,24 +603,9 @@ State 38
 State 39
 
    36 assign_statement: STAR . IDENTIFIER assignment_operator expression
-   44 expression: STAR . expression
+   44 expression: STAR . IDENTIFIER
 
-    IDENTIFIER   shift, and go to state 69
-    DEC_LITERAL  shift, and go to state 33
-    TRUE         shift, and go to state 34
-    FALSE        shift, and go to state 35
-    LPAREN       shift, and go to state 36
-    LBRACE       shift, and go to state 63
-    STAR         shift, and go to state 64
-    IF           shift, and go to state 65
-
-    expression          go to state 70
-    binary_operation    go to state 49
-    grouped_expression  go to state 50
-    function_call       go to state 51
-    if_expression       go to state 53
-    block_expression    go to state 55
-    value               go to state 56
+    IDENTIFIER  shift, and go to state 69
 
 
 State 40
@@ -632,20 +617,20 @@ State 40
 
     IDENTIFIER   shift, and go to state 62
     DEC_LITERAL  shift, and go to state 33
-    TRUE         shift, and go to state 71
-    FALSE        shift, and go to state 72
+    TRUE         shift, and go to state 70
+    FALSE        shift, and go to state 71
     LPAREN       shift, and go to state 36
     LBRACE       shift, and go to state 63
     STAR         shift, and go to state 64
-    NOT          shift, and go to state 73
+    NOT          shift, and go to state 72
     IF           shift, and go to state 65
 
-    expression          go to state 74
+    expression          go to state 73
     binary_operation    go to state 49
     grouped_expression  go to state 50
     function_call       go to state 51
     if_expression       go to state 53
-    conditional         go to state 75
+    conditional         go to state 74
     block_expression    go to state 55
     value               go to state 56
 
@@ -656,20 +641,20 @@ State 41
 
     IDENTIFIER   shift, and go to state 62
     DEC_LITERAL  shift, and go to state 33
-    TRUE         shift, and go to state 71
-    FALSE        shift, and go to state 72
+    TRUE         shift, and go to state 70
+    FALSE        shift, and go to state 71
     LPAREN       shift, and go to state 36
     LBRACE       shift, and go to state 63
     STAR         shift, and go to state 64
-    NOT          shift, and go to state 73
+    NOT          shift, and go to state 72
     IF           shift, and go to state 65
 
-    expression          go to state 74
+    expression          go to state 73
     binary_operation    go to state 49
     grouped_expression  go to state 50
     function_call       go to state 51
     if_expression       go to state 53
-    conditional         go to state 76
+    conditional         go to state 75
     block_expression    go to state 55
     value               go to state 56
 
@@ -692,28 +677,28 @@ State 44
 
    26 statement: declaration_statement . SEMICOLON
 
-    SEMICOLON  shift, and go to state 77
+    SEMICOLON  shift, and go to state 76
 
 
 State 45
 
    25 statement: print_statement . SEMICOLON
 
-    SEMICOLON  shift, and go to state 78
+    SEMICOLON  shift, and go to state 77
 
 
 State 46
 
    21 statement: let_statement . SEMICOLON
 
-    SEMICOLON  shift, and go to state 79
+    SEMICOLON  shift, and go to state 78
 
 
 State 47
 
    22 statement: assign_statement . SEMICOLON
 
-    SEMICOLON  shift, and go to state 80
+    SEMICOLON  shift, and go to state 79
 
 
 State 48
@@ -725,12 +710,12 @@ State 48
    51                 | expression . SLASH expression
    68 block_expression: LBRACE statement_list expression . RBRACE
 
-    RBRACE     shift, and go to state 81
-    SEMICOLON  shift, and go to state 82
-    PLUS       shift, and go to state 83
-    MINUS      shift, and go to state 84
-    STAR       shift, and go to state 85
-    SLASH      shift, and go to state 86
+    RBRACE     shift, and go to state 80
+    SEMICOLON  shift, and go to state 81
+    PLUS       shift, and go to state 82
+    MINUS      shift, and go to state 83
+    STAR       shift, and go to state 84
+    SLASH      shift, and go to state 85
 
 
 State 49
@@ -804,9 +789,9 @@ State 57
 
     $default  reduce using rule 13 (argument_list)
 
-    argument_list       go to state 87
-    argument            go to state 88
-    expression          go to state 89
+    argument_list       go to state 86
+    argument            go to state 87
+    expression          go to state 88
     binary_operation    go to state 49
     grouped_expression  go to state 50
     function_call       go to state 51
@@ -849,7 +834,7 @@ State 61
     STAR         shift, and go to state 64
     IF           shift, and go to state 65
 
-    expression          go to state 90
+    expression          go to state 89
     binary_operation    go to state 49
     grouped_expression  go to state 50
     function_call       go to state 51
@@ -874,29 +859,14 @@ State 63
 
     $default  reduce using rule 19 (statement_list)
 
-    statement_list  go to state 91
+    statement_list  go to state 90
 
 
 State 64
 
-   44 expression: STAR . expression
+   44 expression: STAR . IDENTIFIER
 
-    IDENTIFIER   shift, and go to state 62
-    DEC_LITERAL  shift, and go to state 33
-    TRUE         shift, and go to state 34
-    FALSE        shift, and go to state 35
-    LPAREN       shift, and go to state 36
-    LBRACE       shift, and go to state 63
-    STAR         shift, and go to state 64
-    IF           shift, and go to state 65
-
-    expression          go to state 70
-    binary_operation    go to state 49
-    grouped_expression  go to state 50
-    function_call       go to state 51
-    if_expression       go to state 53
-    block_expression    go to state 55
-    value               go to state 56
+    IDENTIFIER  shift, and go to state 91
 
 
 State 65
@@ -906,15 +876,15 @@ State 65
 
     IDENTIFIER   shift, and go to state 62
     DEC_LITERAL  shift, and go to state 33
-    TRUE         shift, and go to state 71
-    FALSE        shift, and go to state 72
+    TRUE         shift, and go to state 70
+    FALSE        shift, and go to state 71
     LPAREN       shift, and go to state 36
     LBRACE       shift, and go to state 63
     STAR         shift, and go to state 64
-    NOT          shift, and go to state 73
+    NOT          shift, and go to state 72
     IF           shift, and go to state 65
 
-    expression          go to state 74
+    expression          go to state 73
     binary_operation    go to state 49
     grouped_expression  go to state 50
     function_call       go to state 51
@@ -931,10 +901,10 @@ State 66
    50                 | expression . STAR expression
    51                 | expression . SLASH expression
 
-    PLUS   shift, and go to state 83
-    MINUS  shift, and go to state 84
-    STAR   shift, and go to state 85
-    SLASH  shift, and go to state 86
+    PLUS   shift, and go to state 82
+    MINUS  shift, and go to state 83
+    STAR   shift, and go to state 84
+    SLASH  shift, and go to state 85
 
 
 State 67
@@ -959,31 +929,18 @@ State 68
 State 69
 
    36 assign_statement: STAR IDENTIFIER . assignment_operator expression
-   42 expression: IDENTIFIER .
-   53 function_call: IDENTIFIER . LPAREN argument_list RPAREN
+   44 expression: STAR IDENTIFIER .
 
-    LPAREN   shift, and go to state 57
     EQ       shift, and go to state 58
     PLUSEQ   shift, and go to state 59
     MINUSEQ  shift, and go to state 60
 
-    $default  reduce using rule 42 (expression)
+    $default  reduce using rule 44 (expression)
 
     assignment_operator  go to state 95
 
 
 State 70
-
-   44 expression: STAR expression .
-   48 binary_operation: expression . PLUS expression
-   49                 | expression . MINUS expression
-   50                 | expression . STAR expression
-   51                 | expression . SLASH expression
-
-    $default  reduce using rule 44 (expression)
-
-
-State 71
 
    65 conditional: TRUE .
    70 value: TRUE .
@@ -992,7 +949,7 @@ State 71
     $default  reduce using rule 70 (value)
 
 
-State 72
+State 71
 
    66 conditional: FALSE .
    71 value: FALSE .
@@ -1001,7 +958,7 @@ State 72
     $default  reduce using rule 71 (value)
 
 
-State 73
+State 72
 
    64 conditional: NOT . expression
 
@@ -1023,7 +980,7 @@ State 73
     value               go to state 56
 
 
-State 74
+State 73
 
    48 binary_operation: expression . PLUS expression
    49                 | expression . MINUS expression
@@ -1036,10 +993,10 @@ State 74
    62            | expression . NE expression
    63            | expression . EQEQ expression
 
-    PLUS   shift, and go to state 83
-    MINUS  shift, and go to state 84
-    STAR   shift, and go to state 85
-    SLASH  shift, and go to state 86
+    PLUS   shift, and go to state 82
+    MINUS  shift, and go to state 83
+    STAR   shift, and go to state 84
+    SLASH  shift, and go to state 85
     GT     shift, and go to state 97
     GE     shift, and go to state 98
     LT     shift, and go to state 99
@@ -1048,7 +1005,7 @@ State 74
     NE     shift, and go to state 102
 
 
-State 75
+State 74
 
    54 if_statement: IF conditional . block_statement
    55             | IF conditional . block_statement ELSE block_statement
@@ -1061,7 +1018,7 @@ State 75
     block_expression  go to state 104
 
 
-State 76
+State 75
 
    29 while_statement: WHILE conditional . block_statement
 
@@ -1070,49 +1027,49 @@ State 76
     block_statement  go to state 106
 
 
-State 77
+State 76
 
    26 statement: declaration_statement SEMICOLON .
 
     $default  reduce using rule 26 (statement)
 
 
-State 78
+State 77
 
    25 statement: print_statement SEMICOLON .
 
     $default  reduce using rule 25 (statement)
 
 
-State 79
+State 78
 
    21 statement: let_statement SEMICOLON .
 
     $default  reduce using rule 21 (statement)
 
 
-State 80
+State 79
 
    22 statement: assign_statement SEMICOLON .
 
     $default  reduce using rule 22 (statement)
 
 
-State 81
+State 80
 
    68 block_expression: LBRACE statement_list expression RBRACE .
 
     $default  reduce using rule 68 (block_expression)
 
 
-State 82
+State 81
 
    23 statement: expression SEMICOLON .
 
     $default  reduce using rule 23 (statement)
 
 
-State 83
+State 82
 
    48 binary_operation: expression PLUS . expression
 
@@ -1134,7 +1091,7 @@ State 83
     value               go to state 56
 
 
-State 84
+State 83
 
    49 binary_operation: expression MINUS . expression
 
@@ -1156,7 +1113,7 @@ State 84
     value               go to state 56
 
 
-State 85
+State 84
 
    50 binary_operation: expression STAR . expression
 
@@ -1178,7 +1135,7 @@ State 85
     value               go to state 56
 
 
-State 86
+State 85
 
    51 binary_operation: expression SLASH . expression
 
@@ -1200,7 +1157,7 @@ State 86
     value               go to state 56
 
 
-State 87
+State 86
 
    14 argument_list: argument_list . COMMA argument
    53 function_call: IDENTIFIER LPAREN argument_list . RPAREN
@@ -1209,14 +1166,14 @@ State 87
     COMMA   shift, and go to state 112
 
 
-State 88
+State 87
 
    15 argument_list: argument .
 
     $default  reduce using rule 15 (argument_list)
 
 
-State 89
+State 88
 
    16 argument: expression .
    48 binary_operation: expression . PLUS expression
@@ -1224,15 +1181,15 @@ State 89
    50                 | expression . STAR expression
    51                 | expression . SLASH expression
 
-    PLUS   shift, and go to state 83
-    MINUS  shift, and go to state 84
-    STAR   shift, and go to state 85
-    SLASH  shift, and go to state 86
+    PLUS   shift, and go to state 82
+    MINUS  shift, and go to state 83
+    STAR   shift, and go to state 84
+    SLASH  shift, and go to state 85
 
     $default  reduce using rule 16 (argument)
 
 
-State 90
+State 89
 
    35 assign_statement: IDENTIFIER assignment_operator expression .
    48 binary_operation: expression . PLUS expression
@@ -1240,15 +1197,15 @@ State 90
    50                 | expression . STAR expression
    51                 | expression . SLASH expression
 
-    PLUS   shift, and go to state 83
-    MINUS  shift, and go to state 84
-    STAR   shift, and go to state 85
-    SLASH  shift, and go to state 86
+    PLUS   shift, and go to state 82
+    MINUS  shift, and go to state 83
+    STAR   shift, and go to state 84
+    SLASH  shift, and go to state 85
 
     $default  reduce using rule 35 (assign_statement)
 
 
-State 91
+State 90
 
    20 statement_list: statement_list . statement
    68 block_expression: LBRACE statement_list . expression RBRACE
@@ -1281,6 +1238,13 @@ State 91
     block_statement        go to state 54
     block_expression       go to state 55
     value                  go to state 56
+
+
+State 91
+
+   44 expression: STAR IDENTIFIER .
+
+    $default  reduce using rule 44 (expression)
 
 
 State 92
@@ -1340,10 +1304,10 @@ State 96
    51                 | expression . SLASH expression
    64 conditional: NOT expression .
 
-    PLUS   shift, and go to state 83
-    MINUS  shift, and go to state 84
-    STAR   shift, and go to state 85
-    SLASH  shift, and go to state 86
+    PLUS   shift, and go to state 82
+    MINUS  shift, and go to state 83
+    STAR   shift, and go to state 84
+    SLASH  shift, and go to state 85
 
     $default  reduce using rule 64 (conditional)
 
@@ -1524,8 +1488,8 @@ State 107
    50                 | expression . STAR expression
    51                 | expression . SLASH expression
 
-    STAR   shift, and go to state 85
-    SLASH  shift, and go to state 86
+    STAR   shift, and go to state 84
+    SLASH  shift, and go to state 85
 
     $default  reduce using rule 48 (binary_operation)
 
@@ -1538,8 +1502,8 @@ State 108
    50                 | expression . STAR expression
    51                 | expression . SLASH expression
 
-    STAR   shift, and go to state 85
-    SLASH  shift, and go to state 86
+    STAR   shift, and go to state 84
+    SLASH  shift, and go to state 85
 
     $default  reduce using rule 49 (binary_operation)
 
@@ -1587,7 +1551,7 @@ State 112
     IF           shift, and go to state 65
 
     argument            go to state 125
-    expression          go to state 89
+    expression          go to state 88
     binary_operation    go to state 49
     grouped_expression  go to state 50
     function_call       go to state 51
@@ -1627,10 +1591,10 @@ State 115
    50                 | expression . STAR expression
    51                 | expression . SLASH expression
 
-    PLUS   shift, and go to state 83
-    MINUS  shift, and go to state 84
-    STAR   shift, and go to state 85
-    SLASH  shift, and go to state 86
+    PLUS   shift, and go to state 82
+    MINUS  shift, and go to state 83
+    STAR   shift, and go to state 84
+    SLASH  shift, and go to state 85
 
     $default  reduce using rule 36 (assign_statement)
 
@@ -1643,10 +1607,10 @@ State 116
    51                 | expression . SLASH expression
    60 conditional: expression GT expression .
 
-    PLUS   shift, and go to state 83
-    MINUS  shift, and go to state 84
-    STAR   shift, and go to state 85
-    SLASH  shift, and go to state 86
+    PLUS   shift, and go to state 82
+    MINUS  shift, and go to state 83
+    STAR   shift, and go to state 84
+    SLASH  shift, and go to state 85
 
     $default  reduce using rule 60 (conditional)
 
@@ -1659,10 +1623,10 @@ State 117
    51                 | expression . SLASH expression
    61 conditional: expression GE expression .
 
-    PLUS   shift, and go to state 83
-    MINUS  shift, and go to state 84
-    STAR   shift, and go to state 85
-    SLASH  shift, and go to state 86
+    PLUS   shift, and go to state 82
+    MINUS  shift, and go to state 83
+    STAR   shift, and go to state 84
+    SLASH  shift, and go to state 85
 
     $default  reduce using rule 61 (conditional)
 
@@ -1675,10 +1639,10 @@ State 118
    51                 | expression . SLASH expression
    58 conditional: expression LT expression .
 
-    PLUS   shift, and go to state 83
-    MINUS  shift, and go to state 84
-    STAR   shift, and go to state 85
-    SLASH  shift, and go to state 86
+    PLUS   shift, and go to state 82
+    MINUS  shift, and go to state 83
+    STAR   shift, and go to state 84
+    SLASH  shift, and go to state 85
 
     $default  reduce using rule 58 (conditional)
 
@@ -1691,10 +1655,10 @@ State 119
    51                 | expression . SLASH expression
    59 conditional: expression LE expression .
 
-    PLUS   shift, and go to state 83
-    MINUS  shift, and go to state 84
-    STAR   shift, and go to state 85
-    SLASH  shift, and go to state 86
+    PLUS   shift, and go to state 82
+    MINUS  shift, and go to state 83
+    STAR   shift, and go to state 84
+    SLASH  shift, and go to state 85
 
     $default  reduce using rule 59 (conditional)
 
@@ -1707,10 +1671,10 @@ State 120
    51                 | expression . SLASH expression
    63 conditional: expression EQEQ expression .
 
-    PLUS   shift, and go to state 83
-    MINUS  shift, and go to state 84
-    STAR   shift, and go to state 85
-    SLASH  shift, and go to state 86
+    PLUS   shift, and go to state 82
+    MINUS  shift, and go to state 83
+    STAR   shift, and go to state 84
+    SLASH  shift, and go to state 85
 
     $default  reduce using rule 63 (conditional)
 
@@ -1723,10 +1687,10 @@ State 121
    51                 | expression . SLASH expression
    62 conditional: expression NE expression .
 
-    PLUS   shift, and go to state 83
-    MINUS  shift, and go to state 84
-    STAR   shift, and go to state 85
-    SLASH  shift, and go to state 86
+    PLUS   shift, and go to state 82
+    MINUS  shift, and go to state 83
+    STAR   shift, and go to state 84
+    SLASH  shift, and go to state 85
 
     $default  reduce using rule 62 (conditional)
 
@@ -1846,11 +1810,11 @@ State 130
    50                 | expression . STAR expression
    51                 | expression . SLASH expression
 
-    SEMICOLON  shift, and go to state 82
-    PLUS       shift, and go to state 83
-    MINUS      shift, and go to state 84
-    STAR       shift, and go to state 85
-    SLASH      shift, and go to state 86
+    SEMICOLON  shift, and go to state 81
+    PLUS       shift, and go to state 82
+    MINUS      shift, and go to state 83
+    STAR       shift, and go to state 84
+    SLASH      shift, and go to state 85
 
 
 State 131
@@ -1883,10 +1847,10 @@ State 132
    50                 | expression . STAR expression
    51                 | expression . SLASH expression
 
-    PLUS   shift, and go to state 83
-    MINUS  shift, and go to state 84
-    STAR   shift, and go to state 85
-    SLASH  shift, and go to state 86
+    PLUS   shift, and go to state 82
+    MINUS  shift, and go to state 83
+    STAR   shift, and go to state 84
+    SLASH  shift, and go to state 85
 
     $default  reduce using rule 34 (let_statement)
 
@@ -1899,9 +1863,9 @@ State 133
    50                 | expression . STAR expression
    51                 | expression . SLASH expression
 
-    PLUS   shift, and go to state 83
-    MINUS  shift, and go to state 84
-    STAR   shift, and go to state 85
-    SLASH  shift, and go to state 86
+    PLUS   shift, and go to state 82
+    MINUS  shift, and go to state 83
+    STAR   shift, and go to state 84
+    SLASH  shift, and go to state 85
 
     $default  reduce using rule 33 (let_statement)

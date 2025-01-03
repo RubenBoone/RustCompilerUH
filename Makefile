@@ -12,7 +12,7 @@ flex-run:
 	lexer.exe < $(FILE)
 
 bison:
-	win_bison -o y.tab.cpp  yaccfile.yacc -v
+	win_bison -o y.tab.cpp -d yaccfile.yacc -v
 
 bison-compile:
 	g++ y.tab.cpp lex.yy.cpp main.cpp -o parser
