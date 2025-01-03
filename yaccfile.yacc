@@ -84,7 +84,7 @@ print_statement : PRINTSTRING
                 ;
 
 let_statement : LET mutability IDENTIFIER COLON type EQ expression
-              | LET mutability IDENTIFIER EQ mutability expression
+              | LET mutability IDENTIFIER EQ expression
               ;
 
 assign_statement : IDENTIFIER assignment_operator expression
