@@ -1,4 +1,5 @@
 %{
+#include "absyn.hpp"
 #include "y.tab.hpp"
 // #include "tokens.h"
 #include <stdio.h>
@@ -42,15 +43,22 @@ bool {col_nr += yyleng; return BOOL;}
     char string_content[256];
     sscanf(yytext, "println!(\"%255[^\"]\")", string_content);
     yytext = string_content;
+    char* s = (char*) malloc(yyleng+1);
+    strcpy(s, yytext);
+    yylval.id = s;
     col_nr += yyleng; 
     return PRINTSTRING;
 }
 {IDENTIFIER} {
   col_nr += yyleng;
+  char* s = (char*) malloc(yyleng+1);
+  strcpy(s, yytext);
+  yylval.id = s;
   return IDENTIFIER;}
 
 {DIGIT} {
   col_nr += yyleng;
+  yylval.num = atoi(yytext);
   return DEC_LITERAL;}
 
 \( {col_nr += yyleng; return LPAREN;}

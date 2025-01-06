@@ -133,11 +133,11 @@ struct ConditionalExp : public Exp_
     ConditionalExp(Exp l, ConditionalOp o, Exp r) : left(l), oper(o), right(r) {}
 };
 
-struct NotExp : public Exp_
+struct NotCondExp : public Exp_
 {
     Exp exp;
 
-    NotExp(Exp e) : exp(e) {}
+    NotCondExp(Exp e) : exp(e) {}
 };
 
 struct BlockExp : public Exp_

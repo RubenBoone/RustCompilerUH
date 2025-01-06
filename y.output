@@ -1,178 +1,1778 @@
 Terminals unused in grammar
 
-   PRINTVAR
-   PRINTSTRING
-   TRUE
-   FALSE
-   FN
-   LPAREN
-   RPAREN
-   ARROW
-   LBRACE
-   RBRACE
-   SEMICOLON
-   COLON
-   PLUS
-   MINUS
-   STAR
-   SLASH
-   PLUSEQ
-   MINUSEQ
-   ANDAND
-   OROR
-   NOT
-   GT
-   GE
-   LT
-   LE
-   EQEQ
-   NE
    AMPERSAND
-   IF
-   ELSE
-   WHILE
-   COMMA
-   INT
-   BOOL
 
 
 Grammar
 
-    0 $accept: let_statement $end
+    0 $accept: ProgramType $end
 
-    1 let_statement: LET IDENTIFIER EQ DEC_LITERAL
-    2              | LET MUT IDENTIFIER EQ DEC_LITERAL
+    1 ProgramType: function_list
+
+    2 CompoundStmType: /* empty */
+    3                | CompoundStmType StmType
+
+    4 StmType: LetStmType SEMICOLON
+    5        | AssignStmType SEMICOLON
+    6        | BlockStmType
+    7        | DecStmType SEMICOLON
+    8        | IfStmType
+    9        | PrintStmType SEMICOLON
+   10        | VarPrintStmType SEMICOLON
+   11        | ExpType SEMICOLON
+   12        | WhileStmStype
+
+   13 LetStmType: LET mutability IDENTIFIER COLON type EQ ExpType
+   14           | LET mutability IDENTIFIER EQ ExpType
+
+   15 AssignStmType: IDENTIFIER assignment_operator ExpType
+
+   16 BlockStmType: LBRACE CompoundStmType RBRACE
+
+   17 DecStmType: LET mutability IDENTIFIER COLON type
+
+   18 IfStmType: IF CondType BlockStmType
+   19          | IF CondType BlockStmType ELSE BlockStmType
+
+   20 PrintStmType: PRINTSTRING
+
+   21 VarPrintStmType: PRINTVAR
+
+   22 WhileStmStype: WHILE CondType BlockStmType
+
+   23 ExpType: NumExpType
+   24        | BoolExpType
+   25        | IdExpType
+   26        | BinopExpType
+   27        | BlockExpType
+   28        | GroupExpType
+   29        | FunctionExpType
+   30        | IfExpType
+   31        | NotCondType
+
+   32 IdExpType: IDENTIFIER
+
+   33 BoolExpType: TRUE
+   34            | FALSE
+
+   35 NumExpType: DEC_LITERAL
+
+   36 BinopExpType: ExpType PLUS ExpType
+   37             | ExpType MINUS ExpType
+   38             | ExpType STAR ExpType
+   39             | ExpType SLASH ExpType
+
+   40 BlockExpType: LBRACE CompoundStmType ExpType RBRACE
+
+   41 GroupExpType: LPAREN ExpType RPAREN
+
+   42 FunctionExpType: IDENTIFIER LPAREN argument_list RPAREN
+
+   43 IfExpType: IF CondType BlockExpType
+   44          | IF CondType BlockExpType ELSE BlockExpType
+
+   45 FunctionType: FN IDENTIFIER LPAREN parameter_list RPAREN BlockStmType
+   46             | FN IDENTIFIER LPAREN parameter_list RPAREN ARROW type BlockStmType
+   47             | FN IDENTIFIER LPAREN parameter_list RPAREN BlockExpType
+   48             | FN IDENTIFIER LPAREN parameter_list RPAREN ARROW type BlockExpType
+
+   49 function_list: function_list FunctionType
+   50              | FunctionType
+
+   51 CondType: ExpType
+   52         | ExpType conditional_operator ExpType
+   53         | CondType ANDAND CondType
+   54         | CondType OROR CondType
+
+   55 NotCondType: NOT ExpType
+
+   56 mutability: /* empty */
+   57           | MUT
+
+   58 type: INT
+   59     | BOOL
+
+   60 argument_list: /* empty */
+   61              | argument_list COMMA ExpType
+   62              | ExpType
+
+   63 parameter_list: /* empty */
+   64               | parameter_list COMMA IDENTIFIER COLON type
+   65               | IDENTIFIER COLON type
+
+   66 conditional_operator: LT
+   67                     | LE
+   68                     | GT
+   69                     | GE
+   70                     | NE
+   71                     | EQEQ
+
+   72 assignment_operator: EQ
+   73                    | PLUSEQ
+   74                    | MINUSEQ
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
 error (256)
-IDENTIFIER (258) 1 2
-PRINTVAR (259)
-PRINTSTRING (260)
-DEC_LITERAL (261) 1 2
-TRUE (262)
-FALSE (263)
-FN (264)
-LPAREN (265)
-RPAREN (266)
-ARROW (267)
-LBRACE (268)
-RBRACE (269)
-SEMICOLON (270)
-COLON (271)
-LET (272) 1 2
-EQ (273) 1 2
-PLUS (274)
-MINUS (275)
-STAR (276)
-SLASH (277)
-PLUSEQ (278)
-MINUSEQ (279)
-ANDAND (280)
-OROR (281)
-NOT (282)
-GT (283)
-GE (284)
-LT (285)
-LE (286)
-EQEQ (287)
-NE (288)
-AMPERSAND (289)
-IF (290)
-ELSE (291)
-WHILE (292)
-MUT (293) 2
-COMMA (294)
-INT (295)
-BOOL (296)
+FN (258) 45 46 47 48
+LPAREN (259) 41 42 45 46 47 48
+RPAREN (260) 41 42 45 46 47 48
+ARROW (261) 46 48
+LBRACE (262) 16 40
+RBRACE (263) 16 40
+SEMICOLON (264) 4 5 7 9 10 11
+COLON (265) 13 17 64 65
+LET (266) 13 14 17
+ANDAND (267) 53
+OROR (268) 54
+NOT (269) 55
+GT (270) 68
+GE (271) 69
+LT (272) 66
+LE (273) 67
+EQEQ (274) 71
+NE (275) 70
+AMPERSAND (276)
+IF (277) 18 19 43 44
+ELSE (278) 19 44
+WHILE (279) 22
+MUT (280) 57
+COMMA (281) 61 64
+INT (282) 58
+BOOL (283) 59
+MINUS (284) 37
+PLUS (285) 36
+SLASH (286) 39
+STAR (287) 38
+EQ (288) 13 14 72
+MINUSEQ (289) 74
+PLUSEQ (290) 73
+IDENTIFIER (291) 13 14 15 17 32 42 45 46 47 48 64 65
+PRINTSTRING (292) 20
+DEC_LITERAL (293) 35
+PRINTVAR (294) 21
+TRUE (295) 33
+FALSE (296) 34
 
 
 Nonterminals, with rules where they appear
 
 $accept (42)
     on left: 0
-let_statement (43)
-    on left: 1 2, on right: 0
+ProgramType (43)
+    on left: 1, on right: 0
+CompoundStmType (44)
+    on left: 2 3, on right: 3 16 40
+StmType (45)
+    on left: 4 5 6 7 8 9 10 11 12, on right: 3
+LetStmType (46)
+    on left: 13 14, on right: 4
+AssignStmType (47)
+    on left: 15, on right: 5
+BlockStmType (48)
+    on left: 16, on right: 6 18 19 22 45 46
+DecStmType (49)
+    on left: 17, on right: 7
+IfStmType (50)
+    on left: 18 19, on right: 8
+PrintStmType (51)
+    on left: 20, on right: 9
+VarPrintStmType (52)
+    on left: 21, on right: 10
+WhileStmStype (53)
+    on left: 22, on right: 12
+ExpType (54)
+    on left: 23 24 25 26 27 28 29 30 31, on right: 11 13 14 15 36 37
+    38 39 40 41 51 52 55 61 62
+IdExpType (55)
+    on left: 32, on right: 25
+BoolExpType (56)
+    on left: 33 34, on right: 24
+NumExpType (57)
+    on left: 35, on right: 23
+BinopExpType (58)
+    on left: 36 37 38 39, on right: 26
+BlockExpType (59)
+    on left: 40, on right: 27 43 44 47 48
+GroupExpType (60)
+    on left: 41, on right: 28
+FunctionExpType (61)
+    on left: 42, on right: 29
+IfExpType (62)
+    on left: 43 44, on right: 30
+FunctionType (63)
+    on left: 45 46 47 48, on right: 49 50
+function_list (64)
+    on left: 49 50, on right: 1 49
+CondType (65)
+    on left: 51 52 53 54, on right: 18 19 22 43 44 53 54
+NotCondType (66)
+    on left: 55, on right: 31
+mutability (67)
+    on left: 56 57, on right: 13 14 17
+type (68)
+    on left: 58 59, on right: 13 17 46 48 64 65
+argument_list (69)
+    on left: 60 61 62, on right: 42 61
+parameter_list (70)
+    on left: 63 64 65, on right: 45 46 47 48 64
+conditional_operator (71)
+    on left: 66 67 68 69 70 71, on right: 52
+assignment_operator (72)
+    on left: 72 73 74, on right: 15
 
 
 State 0
 
-    0 $accept: . let_statement $end
+    0 $accept: . ProgramType $end
 
-    LET  shift, and go to state 1
+    FN  shift, and go to state 1
 
-    let_statement  go to state 2
+    ProgramType    go to state 2
+    FunctionType   go to state 3
+    function_list  go to state 4
 
 
 State 1
 
-    1 let_statement: LET . IDENTIFIER EQ DEC_LITERAL
-    2              | LET . MUT IDENTIFIER EQ DEC_LITERAL
+   45 FunctionType: FN . IDENTIFIER LPAREN parameter_list RPAREN BlockStmType
+   46             | FN . IDENTIFIER LPAREN parameter_list RPAREN ARROW type BlockStmType
+   47             | FN . IDENTIFIER LPAREN parameter_list RPAREN BlockExpType
+   48             | FN . IDENTIFIER LPAREN parameter_list RPAREN ARROW type BlockExpType
 
-    IDENTIFIER  shift, and go to state 3
-    MUT         shift, and go to state 4
+    IDENTIFIER  shift, and go to state 5
 
 
 State 2
 
-    0 $accept: let_statement . $end
+    0 $accept: ProgramType . $end
 
-    $end  shift, and go to state 5
+    $end  shift, and go to state 6
 
 
 State 3
 
-    1 let_statement: LET IDENTIFIER . EQ DEC_LITERAL
+   50 function_list: FunctionType .
 
-    EQ  shift, and go to state 6
+    $default  reduce using rule 50 (function_list)
 
 
 State 4
 
-    2 let_statement: LET MUT . IDENTIFIER EQ DEC_LITERAL
+    1 ProgramType: function_list .
+   49 function_list: function_list . FunctionType
 
-    IDENTIFIER  shift, and go to state 7
+    FN  shift, and go to state 1
+
+    $default  reduce using rule 1 (ProgramType)
+
+    FunctionType  go to state 7
 
 
 State 5
 
-    0 $accept: let_statement $end .
+   45 FunctionType: FN IDENTIFIER . LPAREN parameter_list RPAREN BlockStmType
+   46             | FN IDENTIFIER . LPAREN parameter_list RPAREN ARROW type BlockStmType
+   47             | FN IDENTIFIER . LPAREN parameter_list RPAREN BlockExpType
+   48             | FN IDENTIFIER . LPAREN parameter_list RPAREN ARROW type BlockExpType
 
-    $default  accept
+    LPAREN  shift, and go to state 8
 
 
 State 6
 
-    1 let_statement: LET IDENTIFIER EQ . DEC_LITERAL
+    0 $accept: ProgramType $end .
 
-    DEC_LITERAL  shift, and go to state 8
+    $default  accept
 
 
 State 7
 
-    2 let_statement: LET MUT IDENTIFIER . EQ DEC_LITERAL
+   49 function_list: function_list FunctionType .
 
-    EQ  shift, and go to state 9
+    $default  reduce using rule 49 (function_list)
 
 
 State 8
 
-    1 let_statement: LET IDENTIFIER EQ DEC_LITERAL .
+   45 FunctionType: FN IDENTIFIER LPAREN . parameter_list RPAREN BlockStmType
+   46             | FN IDENTIFIER LPAREN . parameter_list RPAREN ARROW type BlockStmType
+   47             | FN IDENTIFIER LPAREN . parameter_list RPAREN BlockExpType
+   48             | FN IDENTIFIER LPAREN . parameter_list RPAREN ARROW type BlockExpType
 
-    $default  reduce using rule 1 (let_statement)
+    IDENTIFIER  shift, and go to state 9
+
+    $default  reduce using rule 63 (parameter_list)
+
+    parameter_list  go to state 10
 
 
 State 9
 
-    2 let_statement: LET MUT IDENTIFIER EQ . DEC_LITERAL
+   65 parameter_list: IDENTIFIER . COLON type
 
-    DEC_LITERAL  shift, and go to state 10
+    COLON  shift, and go to state 11
 
 
 State 10
 
-    2 let_statement: LET MUT IDENTIFIER EQ DEC_LITERAL .
+   45 FunctionType: FN IDENTIFIER LPAREN parameter_list . RPAREN BlockStmType
+   46             | FN IDENTIFIER LPAREN parameter_list . RPAREN ARROW type BlockStmType
+   47             | FN IDENTIFIER LPAREN parameter_list . RPAREN BlockExpType
+   48             | FN IDENTIFIER LPAREN parameter_list . RPAREN ARROW type BlockExpType
+   64 parameter_list: parameter_list . COMMA IDENTIFIER COLON type
 
-    $default  reduce using rule 2 (let_statement)
+    RPAREN  shift, and go to state 12
+    COMMA   shift, and go to state 13
+
+
+State 11
+
+   65 parameter_list: IDENTIFIER COLON . type
+
+    INT   shift, and go to state 14
+    BOOL  shift, and go to state 15
+
+    type  go to state 16
+
+
+State 12
+
+   45 FunctionType: FN IDENTIFIER LPAREN parameter_list RPAREN . BlockStmType
+   46             | FN IDENTIFIER LPAREN parameter_list RPAREN . ARROW type BlockStmType
+   47             | FN IDENTIFIER LPAREN parameter_list RPAREN . BlockExpType
+   48             | FN IDENTIFIER LPAREN parameter_list RPAREN . ARROW type BlockExpType
+
+    ARROW   shift, and go to state 17
+    LBRACE  shift, and go to state 18
+
+    BlockStmType  go to state 19
+    BlockExpType  go to state 20
+
+
+State 13
+
+   64 parameter_list: parameter_list COMMA . IDENTIFIER COLON type
+
+    IDENTIFIER  shift, and go to state 21
+
+
+State 14
+
+   58 type: INT .
+
+    $default  reduce using rule 58 (type)
+
+
+State 15
+
+   59 type: BOOL .
+
+    $default  reduce using rule 59 (type)
+
+
+State 16
+
+   65 parameter_list: IDENTIFIER COLON type .
+
+    $default  reduce using rule 65 (parameter_list)
+
+
+State 17
+
+   46 FunctionType: FN IDENTIFIER LPAREN parameter_list RPAREN ARROW . type BlockStmType
+   48             | FN IDENTIFIER LPAREN parameter_list RPAREN ARROW . type BlockExpType
+
+    INT   shift, and go to state 14
+    BOOL  shift, and go to state 15
+
+    type  go to state 22
+
+
+State 18
+
+   16 BlockStmType: LBRACE . CompoundStmType RBRACE
+   40 BlockExpType: LBRACE . CompoundStmType ExpType RBRACE
+
+    $default  reduce using rule 2 (CompoundStmType)
+
+    CompoundStmType  go to state 23
+
+
+State 19
+
+   45 FunctionType: FN IDENTIFIER LPAREN parameter_list RPAREN BlockStmType .
+
+    $default  reduce using rule 45 (FunctionType)
+
+
+State 20
+
+   47 FunctionType: FN IDENTIFIER LPAREN parameter_list RPAREN BlockExpType .
+
+    $default  reduce using rule 47 (FunctionType)
+
+
+State 21
+
+   64 parameter_list: parameter_list COMMA IDENTIFIER . COLON type
+
+    COLON  shift, and go to state 24
+
+
+State 22
+
+   46 FunctionType: FN IDENTIFIER LPAREN parameter_list RPAREN ARROW type . BlockStmType
+   48             | FN IDENTIFIER LPAREN parameter_list RPAREN ARROW type . BlockExpType
+
+    LBRACE  shift, and go to state 18
+
+    BlockStmType  go to state 25
+    BlockExpType  go to state 26
+
+
+State 23
+
+    3 CompoundStmType: CompoundStmType . StmType
+   16 BlockStmType: LBRACE CompoundStmType . RBRACE
+   40 BlockExpType: LBRACE CompoundStmType . ExpType RBRACE
+
+    LPAREN       shift, and go to state 27
+    LBRACE       shift, and go to state 18
+    RBRACE       shift, and go to state 28
+    LET          shift, and go to state 29
+    NOT          shift, and go to state 30
+    IF           shift, and go to state 31
+    WHILE        shift, and go to state 32
+    IDENTIFIER   shift, and go to state 33
+    PRINTSTRING  shift, and go to state 34
+    DEC_LITERAL  shift, and go to state 35
+    PRINTVAR     shift, and go to state 36
+    TRUE         shift, and go to state 37
+    FALSE        shift, and go to state 38
+
+    StmType          go to state 39
+    LetStmType       go to state 40
+    AssignStmType    go to state 41
+    BlockStmType     go to state 42
+    DecStmType       go to state 43
+    IfStmType        go to state 44
+    PrintStmType     go to state 45
+    VarPrintStmType  go to state 46
+    WhileStmStype    go to state 47
+    ExpType          go to state 48
+    IdExpType        go to state 49
+    BoolExpType      go to state 50
+    NumExpType       go to state 51
+    BinopExpType     go to state 52
+    BlockExpType     go to state 53
+    GroupExpType     go to state 54
+    FunctionExpType  go to state 55
+    IfExpType        go to state 56
+    NotCondType      go to state 57
+
+
+State 24
+
+   64 parameter_list: parameter_list COMMA IDENTIFIER COLON . type
+
+    INT   shift, and go to state 14
+    BOOL  shift, and go to state 15
+
+    type  go to state 58
+
+
+State 25
+
+   46 FunctionType: FN IDENTIFIER LPAREN parameter_list RPAREN ARROW type BlockStmType .
+
+    $default  reduce using rule 46 (FunctionType)
+
+
+State 26
+
+   48 FunctionType: FN IDENTIFIER LPAREN parameter_list RPAREN ARROW type BlockExpType .
+
+    $default  reduce using rule 48 (FunctionType)
+
+
+State 27
+
+   41 GroupExpType: LPAREN . ExpType RPAREN
+
+    LPAREN       shift, and go to state 27
+    LBRACE       shift, and go to state 59
+    NOT          shift, and go to state 30
+    IF           shift, and go to state 60
+    IDENTIFIER   shift, and go to state 61
+    DEC_LITERAL  shift, and go to state 35
+    TRUE         shift, and go to state 37
+    FALSE        shift, and go to state 38
+
+    ExpType          go to state 62
+    IdExpType        go to state 49
+    BoolExpType      go to state 50
+    NumExpType       go to state 51
+    BinopExpType     go to state 52
+    BlockExpType     go to state 53
+    GroupExpType     go to state 54
+    FunctionExpType  go to state 55
+    IfExpType        go to state 56
+    NotCondType      go to state 57
+
+
+State 28
+
+   16 BlockStmType: LBRACE CompoundStmType RBRACE .
+
+    $default  reduce using rule 16 (BlockStmType)
+
+
+State 29
+
+   13 LetStmType: LET . mutability IDENTIFIER COLON type EQ ExpType
+   14           | LET . mutability IDENTIFIER EQ ExpType
+   17 DecStmType: LET . mutability IDENTIFIER COLON type
+
+    MUT  shift, and go to state 63
+
+    $default  reduce using rule 56 (mutability)
+
+    mutability  go to state 64
+
+
+State 30
+
+   55 NotCondType: NOT . ExpType
+
+    LPAREN       shift, and go to state 27
+    LBRACE       shift, and go to state 59
+    NOT          shift, and go to state 30
+    IF           shift, and go to state 60
+    IDENTIFIER   shift, and go to state 61
+    DEC_LITERAL  shift, and go to state 35
+    TRUE         shift, and go to state 37
+    FALSE        shift, and go to state 38
+
+    ExpType          go to state 65
+    IdExpType        go to state 49
+    BoolExpType      go to state 50
+    NumExpType       go to state 51
+    BinopExpType     go to state 52
+    BlockExpType     go to state 53
+    GroupExpType     go to state 54
+    FunctionExpType  go to state 55
+    IfExpType        go to state 56
+    NotCondType      go to state 57
+
+
+State 31
+
+   18 IfStmType: IF . CondType BlockStmType
+   19          | IF . CondType BlockStmType ELSE BlockStmType
+   43 IfExpType: IF . CondType BlockExpType
+   44          | IF . CondType BlockExpType ELSE BlockExpType
+
+    LPAREN       shift, and go to state 27
+    LBRACE       shift, and go to state 59
+    NOT          shift, and go to state 30
+    IF           shift, and go to state 60
+    IDENTIFIER   shift, and go to state 61
+    DEC_LITERAL  shift, and go to state 35
+    TRUE         shift, and go to state 37
+    FALSE        shift, and go to state 38
+
+    ExpType          go to state 66
+    IdExpType        go to state 49
+    BoolExpType      go to state 50
+    NumExpType       go to state 51
+    BinopExpType     go to state 52
+    BlockExpType     go to state 53
+    GroupExpType     go to state 54
+    FunctionExpType  go to state 55
+    IfExpType        go to state 56
+    CondType         go to state 67
+    NotCondType      go to state 57
+
+
+State 32
+
+   22 WhileStmStype: WHILE . CondType BlockStmType
+
+    LPAREN       shift, and go to state 27
+    LBRACE       shift, and go to state 59
+    NOT          shift, and go to state 30
+    IF           shift, and go to state 60
+    IDENTIFIER   shift, and go to state 61
+    DEC_LITERAL  shift, and go to state 35
+    TRUE         shift, and go to state 37
+    FALSE        shift, and go to state 38
+
+    ExpType          go to state 66
+    IdExpType        go to state 49
+    BoolExpType      go to state 50
+    NumExpType       go to state 51
+    BinopExpType     go to state 52
+    BlockExpType     go to state 53
+    GroupExpType     go to state 54
+    FunctionExpType  go to state 55
+    IfExpType        go to state 56
+    CondType         go to state 68
+    NotCondType      go to state 57
+
+
+State 33
+
+   15 AssignStmType: IDENTIFIER . assignment_operator ExpType
+   32 IdExpType: IDENTIFIER .
+   42 FunctionExpType: IDENTIFIER . LPAREN argument_list RPAREN
+
+    LPAREN   shift, and go to state 69
+    EQ       shift, and go to state 70
+    MINUSEQ  shift, and go to state 71
+    PLUSEQ   shift, and go to state 72
+
+    $default  reduce using rule 32 (IdExpType)
+
+    assignment_operator  go to state 73
+
+
+State 34
+
+   20 PrintStmType: PRINTSTRING .
+
+    $default  reduce using rule 20 (PrintStmType)
+
+
+State 35
+
+   35 NumExpType: DEC_LITERAL .
+
+    $default  reduce using rule 35 (NumExpType)
+
+
+State 36
+
+   21 VarPrintStmType: PRINTVAR .
+
+    $default  reduce using rule 21 (VarPrintStmType)
+
+
+State 37
+
+   33 BoolExpType: TRUE .
+
+    $default  reduce using rule 33 (BoolExpType)
+
+
+State 38
+
+   34 BoolExpType: FALSE .
+
+    $default  reduce using rule 34 (BoolExpType)
+
+
+State 39
+
+    3 CompoundStmType: CompoundStmType StmType .
+
+    $default  reduce using rule 3 (CompoundStmType)
+
+
+State 40
+
+    4 StmType: LetStmType . SEMICOLON
+
+    SEMICOLON  shift, and go to state 74
+
+
+State 41
+
+    5 StmType: AssignStmType . SEMICOLON
+
+    SEMICOLON  shift, and go to state 75
+
+
+State 42
+
+    6 StmType: BlockStmType .
+
+    $default  reduce using rule 6 (StmType)
+
+
+State 43
+
+    7 StmType: DecStmType . SEMICOLON
+
+    SEMICOLON  shift, and go to state 76
+
+
+State 44
+
+    8 StmType: IfStmType .
+
+    $default  reduce using rule 8 (StmType)
+
+
+State 45
+
+    9 StmType: PrintStmType . SEMICOLON
+
+    SEMICOLON  shift, and go to state 77
+
+
+State 46
+
+   10 StmType: VarPrintStmType . SEMICOLON
+
+    SEMICOLON  shift, and go to state 78
+
+
+State 47
+
+   12 StmType: WhileStmStype .
+
+    $default  reduce using rule 12 (StmType)
+
+
+State 48
+
+   11 StmType: ExpType . SEMICOLON
+   36 BinopExpType: ExpType . PLUS ExpType
+   37             | ExpType . MINUS ExpType
+   38             | ExpType . STAR ExpType
+   39             | ExpType . SLASH ExpType
+   40 BlockExpType: LBRACE CompoundStmType ExpType . RBRACE
+
+    RBRACE     shift, and go to state 79
+    SEMICOLON  shift, and go to state 80
+    MINUS      shift, and go to state 81
+    PLUS       shift, and go to state 82
+    SLASH      shift, and go to state 83
+    STAR       shift, and go to state 84
+
+
+State 49
+
+   25 ExpType: IdExpType .
+
+    $default  reduce using rule 25 (ExpType)
+
+
+State 50
+
+   24 ExpType: BoolExpType .
+
+    $default  reduce using rule 24 (ExpType)
+
+
+State 51
+
+   23 ExpType: NumExpType .
+
+    $default  reduce using rule 23 (ExpType)
+
+
+State 52
+
+   26 ExpType: BinopExpType .
+
+    $default  reduce using rule 26 (ExpType)
+
+
+State 53
+
+   27 ExpType: BlockExpType .
+
+    $default  reduce using rule 27 (ExpType)
+
+
+State 54
+
+   28 ExpType: GroupExpType .
+
+    $default  reduce using rule 28 (ExpType)
+
+
+State 55
+
+   29 ExpType: FunctionExpType .
+
+    $default  reduce using rule 29 (ExpType)
+
+
+State 56
+
+   30 ExpType: IfExpType .
+
+    $default  reduce using rule 30 (ExpType)
+
+
+State 57
+
+   31 ExpType: NotCondType .
+
+    $default  reduce using rule 31 (ExpType)
+
+
+State 58
+
+   64 parameter_list: parameter_list COMMA IDENTIFIER COLON type .
+
+    $default  reduce using rule 64 (parameter_list)
+
+
+State 59
+
+   40 BlockExpType: LBRACE . CompoundStmType ExpType RBRACE
+
+    $default  reduce using rule 2 (CompoundStmType)
+
+    CompoundStmType  go to state 85
+
+
+State 60
+
+   43 IfExpType: IF . CondType BlockExpType
+   44          | IF . CondType BlockExpType ELSE BlockExpType
+
+    LPAREN       shift, and go to state 27
+    LBRACE       shift, and go to state 59
+    NOT          shift, and go to state 30
+    IF           shift, and go to state 60
+    IDENTIFIER   shift, and go to state 61
+    DEC_LITERAL  shift, and go to state 35
+    TRUE         shift, and go to state 37
+    FALSE        shift, and go to state 38
+
+    ExpType          go to state 66
+    IdExpType        go to state 49
+    BoolExpType      go to state 50
+    NumExpType       go to state 51
+    BinopExpType     go to state 52
+    BlockExpType     go to state 53
+    GroupExpType     go to state 54
+    FunctionExpType  go to state 55
+    IfExpType        go to state 56
+    CondType         go to state 86
+    NotCondType      go to state 57
+
+
+State 61
+
+   32 IdExpType: IDENTIFIER .
+   42 FunctionExpType: IDENTIFIER . LPAREN argument_list RPAREN
+
+    LPAREN  shift, and go to state 69
+
+    $default  reduce using rule 32 (IdExpType)
+
+
+State 62
+
+   36 BinopExpType: ExpType . PLUS ExpType
+   37             | ExpType . MINUS ExpType
+   38             | ExpType . STAR ExpType
+   39             | ExpType . SLASH ExpType
+   41 GroupExpType: LPAREN ExpType . RPAREN
+
+    RPAREN  shift, and go to state 87
+    MINUS   shift, and go to state 81
+    PLUS    shift, and go to state 82
+    SLASH   shift, and go to state 83
+    STAR    shift, and go to state 84
+
+
+State 63
+
+   57 mutability: MUT .
+
+    $default  reduce using rule 57 (mutability)
+
+
+State 64
+
+   13 LetStmType: LET mutability . IDENTIFIER COLON type EQ ExpType
+   14           | LET mutability . IDENTIFIER EQ ExpType
+   17 DecStmType: LET mutability . IDENTIFIER COLON type
+
+    IDENTIFIER  shift, and go to state 88
+
+
+State 65
+
+   36 BinopExpType: ExpType . PLUS ExpType
+   37             | ExpType . MINUS ExpType
+   38             | ExpType . STAR ExpType
+   39             | ExpType . SLASH ExpType
+   55 NotCondType: NOT ExpType .
+
+    $default  reduce using rule 55 (NotCondType)
+
+
+State 66
+
+   36 BinopExpType: ExpType . PLUS ExpType
+   37             | ExpType . MINUS ExpType
+   38             | ExpType . STAR ExpType
+   39             | ExpType . SLASH ExpType
+   51 CondType: ExpType .
+   52         | ExpType . conditional_operator ExpType
+
+    GT     shift, and go to state 89
+    GE     shift, and go to state 90
+    LT     shift, and go to state 91
+    LE     shift, and go to state 92
+    EQEQ   shift, and go to state 93
+    NE     shift, and go to state 94
+    MINUS  shift, and go to state 81
+    PLUS   shift, and go to state 82
+    SLASH  shift, and go to state 83
+    STAR   shift, and go to state 84
+
+    $default  reduce using rule 51 (CondType)
+
+    conditional_operator  go to state 95
+
+
+State 67
+
+   18 IfStmType: IF CondType . BlockStmType
+   19          | IF CondType . BlockStmType ELSE BlockStmType
+   43 IfExpType: IF CondType . BlockExpType
+   44          | IF CondType . BlockExpType ELSE BlockExpType
+   53 CondType: CondType . ANDAND CondType
+   54         | CondType . OROR CondType
+
+    LBRACE  shift, and go to state 18
+    ANDAND  shift, and go to state 96
+    OROR    shift, and go to state 97
+
+    BlockStmType  go to state 98
+    BlockExpType  go to state 99
+
+
+State 68
+
+   22 WhileStmStype: WHILE CondType . BlockStmType
+   53 CondType: CondType . ANDAND CondType
+   54         | CondType . OROR CondType
+
+    LBRACE  shift, and go to state 100
+    ANDAND  shift, and go to state 96
+    OROR    shift, and go to state 97
+
+    BlockStmType  go to state 101
+
+
+State 69
+
+   42 FunctionExpType: IDENTIFIER LPAREN . argument_list RPAREN
+
+    LPAREN       shift, and go to state 27
+    LBRACE       shift, and go to state 59
+    NOT          shift, and go to state 30
+    IF           shift, and go to state 60
+    IDENTIFIER   shift, and go to state 61
+    DEC_LITERAL  shift, and go to state 35
+    TRUE         shift, and go to state 37
+    FALSE        shift, and go to state 38
+
+    $default  reduce using rule 60 (argument_list)
+
+    ExpType          go to state 102
+    IdExpType        go to state 49
+    BoolExpType      go to state 50
+    NumExpType       go to state 51
+    BinopExpType     go to state 52
+    BlockExpType     go to state 53
+    GroupExpType     go to state 54
+    FunctionExpType  go to state 55
+    IfExpType        go to state 56
+    NotCondType      go to state 57
+    argument_list    go to state 103
+
+
+State 70
+
+   72 assignment_operator: EQ .
+
+    $default  reduce using rule 72 (assignment_operator)
+
+
+State 71
+
+   74 assignment_operator: MINUSEQ .
+
+    $default  reduce using rule 74 (assignment_operator)
+
+
+State 72
+
+   73 assignment_operator: PLUSEQ .
+
+    $default  reduce using rule 73 (assignment_operator)
+
+
+State 73
+
+   15 AssignStmType: IDENTIFIER assignment_operator . ExpType
+
+    LPAREN       shift, and go to state 27
+    LBRACE       shift, and go to state 59
+    NOT          shift, and go to state 30
+    IF           shift, and go to state 60
+    IDENTIFIER   shift, and go to state 61
+    DEC_LITERAL  shift, and go to state 35
+    TRUE         shift, and go to state 37
+    FALSE        shift, and go to state 38
+
+    ExpType          go to state 104
+    IdExpType        go to state 49
+    BoolExpType      go to state 50
+    NumExpType       go to state 51
+    BinopExpType     go to state 52
+    BlockExpType     go to state 53
+    GroupExpType     go to state 54
+    FunctionExpType  go to state 55
+    IfExpType        go to state 56
+    NotCondType      go to state 57
+
+
+State 74
+
+    4 StmType: LetStmType SEMICOLON .
+
+    $default  reduce using rule 4 (StmType)
+
+
+State 75
+
+    5 StmType: AssignStmType SEMICOLON .
+
+    $default  reduce using rule 5 (StmType)
+
+
+State 76
+
+    7 StmType: DecStmType SEMICOLON .
+
+    $default  reduce using rule 7 (StmType)
+
+
+State 77
+
+    9 StmType: PrintStmType SEMICOLON .
+
+    $default  reduce using rule 9 (StmType)
+
+
+State 78
+
+   10 StmType: VarPrintStmType SEMICOLON .
+
+    $default  reduce using rule 10 (StmType)
+
+
+State 79
+
+   40 BlockExpType: LBRACE CompoundStmType ExpType RBRACE .
+
+    $default  reduce using rule 40 (BlockExpType)
+
+
+State 80
+
+   11 StmType: ExpType SEMICOLON .
+
+    $default  reduce using rule 11 (StmType)
+
+
+State 81
+
+   37 BinopExpType: ExpType MINUS . ExpType
+
+    LPAREN       shift, and go to state 27
+    LBRACE       shift, and go to state 59
+    NOT          shift, and go to state 30
+    IF           shift, and go to state 60
+    IDENTIFIER   shift, and go to state 61
+    DEC_LITERAL  shift, and go to state 35
+    TRUE         shift, and go to state 37
+    FALSE        shift, and go to state 38
+
+    ExpType          go to state 105
+    IdExpType        go to state 49
+    BoolExpType      go to state 50
+    NumExpType       go to state 51
+    BinopExpType     go to state 52
+    BlockExpType     go to state 53
+    GroupExpType     go to state 54
+    FunctionExpType  go to state 55
+    IfExpType        go to state 56
+    NotCondType      go to state 57
+
+
+State 82
+
+   36 BinopExpType: ExpType PLUS . ExpType
+
+    LPAREN       shift, and go to state 27
+    LBRACE       shift, and go to state 59
+    NOT          shift, and go to state 30
+    IF           shift, and go to state 60
+    IDENTIFIER   shift, and go to state 61
+    DEC_LITERAL  shift, and go to state 35
+    TRUE         shift, and go to state 37
+    FALSE        shift, and go to state 38
+
+    ExpType          go to state 106
+    IdExpType        go to state 49
+    BoolExpType      go to state 50
+    NumExpType       go to state 51
+    BinopExpType     go to state 52
+    BlockExpType     go to state 53
+    GroupExpType     go to state 54
+    FunctionExpType  go to state 55
+    IfExpType        go to state 56
+    NotCondType      go to state 57
+
+
+State 83
+
+   39 BinopExpType: ExpType SLASH . ExpType
+
+    LPAREN       shift, and go to state 27
+    LBRACE       shift, and go to state 59
+    NOT          shift, and go to state 30
+    IF           shift, and go to state 60
+    IDENTIFIER   shift, and go to state 61
+    DEC_LITERAL  shift, and go to state 35
+    TRUE         shift, and go to state 37
+    FALSE        shift, and go to state 38
+
+    ExpType          go to state 107
+    IdExpType        go to state 49
+    BoolExpType      go to state 50
+    NumExpType       go to state 51
+    BinopExpType     go to state 52
+    BlockExpType     go to state 53
+    GroupExpType     go to state 54
+    FunctionExpType  go to state 55
+    IfExpType        go to state 56
+    NotCondType      go to state 57
+
+
+State 84
+
+   38 BinopExpType: ExpType STAR . ExpType
+
+    LPAREN       shift, and go to state 27
+    LBRACE       shift, and go to state 59
+    NOT          shift, and go to state 30
+    IF           shift, and go to state 60
+    IDENTIFIER   shift, and go to state 61
+    DEC_LITERAL  shift, and go to state 35
+    TRUE         shift, and go to state 37
+    FALSE        shift, and go to state 38
+
+    ExpType          go to state 108
+    IdExpType        go to state 49
+    BoolExpType      go to state 50
+    NumExpType       go to state 51
+    BinopExpType     go to state 52
+    BlockExpType     go to state 53
+    GroupExpType     go to state 54
+    FunctionExpType  go to state 55
+    IfExpType        go to state 56
+    NotCondType      go to state 57
+
+
+State 85
+
+    3 CompoundStmType: CompoundStmType . StmType
+   40 BlockExpType: LBRACE CompoundStmType . ExpType RBRACE
+
+    LPAREN       shift, and go to state 27
+    LBRACE       shift, and go to state 18
+    LET          shift, and go to state 29
+    NOT          shift, and go to state 30
+    IF           shift, and go to state 31
+    WHILE        shift, and go to state 32
+    IDENTIFIER   shift, and go to state 33
+    PRINTSTRING  shift, and go to state 34
+    DEC_LITERAL  shift, and go to state 35
+    PRINTVAR     shift, and go to state 36
+    TRUE         shift, and go to state 37
+    FALSE        shift, and go to state 38
+
+    StmType          go to state 39
+    LetStmType       go to state 40
+    AssignStmType    go to state 41
+    BlockStmType     go to state 42
+    DecStmType       go to state 43
+    IfStmType        go to state 44
+    PrintStmType     go to state 45
+    VarPrintStmType  go to state 46
+    WhileStmStype    go to state 47
+    ExpType          go to state 48
+    IdExpType        go to state 49
+    BoolExpType      go to state 50
+    NumExpType       go to state 51
+    BinopExpType     go to state 52
+    BlockExpType     go to state 53
+    GroupExpType     go to state 54
+    FunctionExpType  go to state 55
+    IfExpType        go to state 56
+    NotCondType      go to state 57
+
+
+State 86
+
+   43 IfExpType: IF CondType . BlockExpType
+   44          | IF CondType . BlockExpType ELSE BlockExpType
+   53 CondType: CondType . ANDAND CondType
+   54         | CondType . OROR CondType
+
+    LBRACE  shift, and go to state 59
+    ANDAND  shift, and go to state 96
+    OROR    shift, and go to state 97
+
+    BlockExpType  go to state 99
+
+
+State 87
+
+   41 GroupExpType: LPAREN ExpType RPAREN .
+
+    $default  reduce using rule 41 (GroupExpType)
+
+
+State 88
+
+   13 LetStmType: LET mutability IDENTIFIER . COLON type EQ ExpType
+   14           | LET mutability IDENTIFIER . EQ ExpType
+   17 DecStmType: LET mutability IDENTIFIER . COLON type
+
+    COLON  shift, and go to state 109
+    EQ     shift, and go to state 110
+
+
+State 89
+
+   68 conditional_operator: GT .
+
+    $default  reduce using rule 68 (conditional_operator)
+
+
+State 90
+
+   69 conditional_operator: GE .
+
+    $default  reduce using rule 69 (conditional_operator)
+
+
+State 91
+
+   66 conditional_operator: LT .
+
+    $default  reduce using rule 66 (conditional_operator)
+
+
+State 92
+
+   67 conditional_operator: LE .
+
+    $default  reduce using rule 67 (conditional_operator)
+
+
+State 93
+
+   71 conditional_operator: EQEQ .
+
+    $default  reduce using rule 71 (conditional_operator)
+
+
+State 94
+
+   70 conditional_operator: NE .
+
+    $default  reduce using rule 70 (conditional_operator)
+
+
+State 95
+
+   52 CondType: ExpType conditional_operator . ExpType
+
+    LPAREN       shift, and go to state 27
+    LBRACE       shift, and go to state 59
+    NOT          shift, and go to state 30
+    IF           shift, and go to state 60
+    IDENTIFIER   shift, and go to state 61
+    DEC_LITERAL  shift, and go to state 35
+    TRUE         shift, and go to state 37
+    FALSE        shift, and go to state 38
+
+    ExpType          go to state 111
+    IdExpType        go to state 49
+    BoolExpType      go to state 50
+    NumExpType       go to state 51
+    BinopExpType     go to state 52
+    BlockExpType     go to state 53
+    GroupExpType     go to state 54
+    FunctionExpType  go to state 55
+    IfExpType        go to state 56
+    NotCondType      go to state 57
+
+
+State 96
+
+   53 CondType: CondType ANDAND . CondType
+
+    LPAREN       shift, and go to state 27
+    LBRACE       shift, and go to state 59
+    NOT          shift, and go to state 30
+    IF           shift, and go to state 60
+    IDENTIFIER   shift, and go to state 61
+    DEC_LITERAL  shift, and go to state 35
+    TRUE         shift, and go to state 37
+    FALSE        shift, and go to state 38
+
+    ExpType          go to state 66
+    IdExpType        go to state 49
+    BoolExpType      go to state 50
+    NumExpType       go to state 51
+    BinopExpType     go to state 52
+    BlockExpType     go to state 53
+    GroupExpType     go to state 54
+    FunctionExpType  go to state 55
+    IfExpType        go to state 56
+    CondType         go to state 112
+    NotCondType      go to state 57
+
+
+State 97
+
+   54 CondType: CondType OROR . CondType
+
+    LPAREN       shift, and go to state 27
+    LBRACE       shift, and go to state 59
+    NOT          shift, and go to state 30
+    IF           shift, and go to state 60
+    IDENTIFIER   shift, and go to state 61
+    DEC_LITERAL  shift, and go to state 35
+    TRUE         shift, and go to state 37
+    FALSE        shift, and go to state 38
+
+    ExpType          go to state 66
+    IdExpType        go to state 49
+    BoolExpType      go to state 50
+    NumExpType       go to state 51
+    BinopExpType     go to state 52
+    BlockExpType     go to state 53
+    GroupExpType     go to state 54
+    FunctionExpType  go to state 55
+    IfExpType        go to state 56
+    CondType         go to state 113
+    NotCondType      go to state 57
+
+
+State 98
+
+   18 IfStmType: IF CondType BlockStmType .
+   19          | IF CondType BlockStmType . ELSE BlockStmType
+
+    ELSE  shift, and go to state 114
+
+    $default  reduce using rule 18 (IfStmType)
+
+
+State 99
+
+   43 IfExpType: IF CondType BlockExpType .
+   44          | IF CondType BlockExpType . ELSE BlockExpType
+
+    ELSE  shift, and go to state 115
+
+    $default  reduce using rule 43 (IfExpType)
+
+
+State 100
+
+   16 BlockStmType: LBRACE . CompoundStmType RBRACE
+
+    $default  reduce using rule 2 (CompoundStmType)
+
+    CompoundStmType  go to state 116
+
+
+State 101
+
+   22 WhileStmStype: WHILE CondType BlockStmType .
+
+    $default  reduce using rule 22 (WhileStmStype)
+
+
+State 102
+
+   36 BinopExpType: ExpType . PLUS ExpType
+   37             | ExpType . MINUS ExpType
+   38             | ExpType . STAR ExpType
+   39             | ExpType . SLASH ExpType
+   62 argument_list: ExpType .
+
+    MINUS  shift, and go to state 81
+    PLUS   shift, and go to state 82
+    SLASH  shift, and go to state 83
+    STAR   shift, and go to state 84
+
+    $default  reduce using rule 62 (argument_list)
+
+
+State 103
+
+   42 FunctionExpType: IDENTIFIER LPAREN argument_list . RPAREN
+   61 argument_list: argument_list . COMMA ExpType
+
+    RPAREN  shift, and go to state 117
+    COMMA   shift, and go to state 118
+
+
+State 104
+
+   15 AssignStmType: IDENTIFIER assignment_operator ExpType .
+   36 BinopExpType: ExpType . PLUS ExpType
+   37             | ExpType . MINUS ExpType
+   38             | ExpType . STAR ExpType
+   39             | ExpType . SLASH ExpType
+
+    MINUS  shift, and go to state 81
+    PLUS   shift, and go to state 82
+    SLASH  shift, and go to state 83
+    STAR   shift, and go to state 84
+
+    $default  reduce using rule 15 (AssignStmType)
+
+
+State 105
+
+   36 BinopExpType: ExpType . PLUS ExpType
+   37             | ExpType . MINUS ExpType
+   37             | ExpType MINUS ExpType .
+   38             | ExpType . STAR ExpType
+   39             | ExpType . SLASH ExpType
+
+    SLASH  shift, and go to state 83
+    STAR   shift, and go to state 84
+
+    $default  reduce using rule 37 (BinopExpType)
+
+
+State 106
+
+   36 BinopExpType: ExpType . PLUS ExpType
+   36             | ExpType PLUS ExpType .
+   37             | ExpType . MINUS ExpType
+   38             | ExpType . STAR ExpType
+   39             | ExpType . SLASH ExpType
+
+    SLASH  shift, and go to state 83
+    STAR   shift, and go to state 84
+
+    $default  reduce using rule 36 (BinopExpType)
+
+
+State 107
+
+   36 BinopExpType: ExpType . PLUS ExpType
+   37             | ExpType . MINUS ExpType
+   38             | ExpType . STAR ExpType
+   39             | ExpType . SLASH ExpType
+   39             | ExpType SLASH ExpType .
+
+    $default  reduce using rule 39 (BinopExpType)
+
+
+State 108
+
+   36 BinopExpType: ExpType . PLUS ExpType
+   37             | ExpType . MINUS ExpType
+   38             | ExpType . STAR ExpType
+   38             | ExpType STAR ExpType .
+   39             | ExpType . SLASH ExpType
+
+    $default  reduce using rule 38 (BinopExpType)
+
+
+State 109
+
+   13 LetStmType: LET mutability IDENTIFIER COLON . type EQ ExpType
+   17 DecStmType: LET mutability IDENTIFIER COLON . type
+
+    INT   shift, and go to state 14
+    BOOL  shift, and go to state 15
+
+    type  go to state 119
+
+
+State 110
+
+   14 LetStmType: LET mutability IDENTIFIER EQ . ExpType
+
+    LPAREN       shift, and go to state 27
+    LBRACE       shift, and go to state 59
+    NOT          shift, and go to state 30
+    IF           shift, and go to state 60
+    IDENTIFIER   shift, and go to state 61
+    DEC_LITERAL  shift, and go to state 35
+    TRUE         shift, and go to state 37
+    FALSE        shift, and go to state 38
+
+    ExpType          go to state 120
+    IdExpType        go to state 49
+    BoolExpType      go to state 50
+    NumExpType       go to state 51
+    BinopExpType     go to state 52
+    BlockExpType     go to state 53
+    GroupExpType     go to state 54
+    FunctionExpType  go to state 55
+    IfExpType        go to state 56
+    NotCondType      go to state 57
+
+
+State 111
+
+   36 BinopExpType: ExpType . PLUS ExpType
+   37             | ExpType . MINUS ExpType
+   38             | ExpType . STAR ExpType
+   39             | ExpType . SLASH ExpType
+   52 CondType: ExpType conditional_operator ExpType .
+
+    MINUS  shift, and go to state 81
+    PLUS   shift, and go to state 82
+    SLASH  shift, and go to state 83
+    STAR   shift, and go to state 84
+
+    $default  reduce using rule 52 (CondType)
+
+
+State 112
+
+   53 CondType: CondType . ANDAND CondType
+   53         | CondType ANDAND CondType .
+   54         | CondType . OROR CondType
+
+    $default  reduce using rule 53 (CondType)
+
+
+State 113
+
+   53 CondType: CondType . ANDAND CondType
+   54         | CondType . OROR CondType
+   54         | CondType OROR CondType .
+
+    $default  reduce using rule 54 (CondType)
+
+
+State 114
+
+   19 IfStmType: IF CondType BlockStmType ELSE . BlockStmType
+
+    LBRACE  shift, and go to state 100
+
+    BlockStmType  go to state 121
+
+
+State 115
+
+   44 IfExpType: IF CondType BlockExpType ELSE . BlockExpType
+
+    LBRACE  shift, and go to state 59
+
+    BlockExpType  go to state 122
+
+
+State 116
+
+    3 CompoundStmType: CompoundStmType . StmType
+   16 BlockStmType: LBRACE CompoundStmType . RBRACE
+
+    LPAREN       shift, and go to state 27
+    LBRACE       shift, and go to state 18
+    RBRACE       shift, and go to state 28
+    LET          shift, and go to state 29
+    NOT          shift, and go to state 30
+    IF           shift, and go to state 31
+    WHILE        shift, and go to state 32
+    IDENTIFIER   shift, and go to state 33
+    PRINTSTRING  shift, and go to state 34
+    DEC_LITERAL  shift, and go to state 35
+    PRINTVAR     shift, and go to state 36
+    TRUE         shift, and go to state 37
+    FALSE        shift, and go to state 38
+
+    StmType          go to state 39
+    LetStmType       go to state 40
+    AssignStmType    go to state 41
+    BlockStmType     go to state 42
+    DecStmType       go to state 43
+    IfStmType        go to state 44
+    PrintStmType     go to state 45
+    VarPrintStmType  go to state 46
+    WhileStmStype    go to state 47
+    ExpType          go to state 123
+    IdExpType        go to state 49
+    BoolExpType      go to state 50
+    NumExpType       go to state 51
+    BinopExpType     go to state 52
+    BlockExpType     go to state 53
+    GroupExpType     go to state 54
+    FunctionExpType  go to state 55
+    IfExpType        go to state 56
+    NotCondType      go to state 57
+
+
+State 117
+
+   42 FunctionExpType: IDENTIFIER LPAREN argument_list RPAREN .
+
+    $default  reduce using rule 42 (FunctionExpType)
+
+
+State 118
+
+   61 argument_list: argument_list COMMA . ExpType
+
+    LPAREN       shift, and go to state 27
+    LBRACE       shift, and go to state 59
+    NOT          shift, and go to state 30
+    IF           shift, and go to state 60
+    IDENTIFIER   shift, and go to state 61
+    DEC_LITERAL  shift, and go to state 35
+    TRUE         shift, and go to state 37
+    FALSE        shift, and go to state 38
+
+    ExpType          go to state 124
+    IdExpType        go to state 49
+    BoolExpType      go to state 50
+    NumExpType       go to state 51
+    BinopExpType     go to state 52
+    BlockExpType     go to state 53
+    GroupExpType     go to state 54
+    FunctionExpType  go to state 55
+    IfExpType        go to state 56
+    NotCondType      go to state 57
+
+
+State 119
+
+   13 LetStmType: LET mutability IDENTIFIER COLON type . EQ ExpType
+   17 DecStmType: LET mutability IDENTIFIER COLON type .
+
+    EQ  shift, and go to state 125
+
+    $default  reduce using rule 17 (DecStmType)
+
+
+State 120
+
+   14 LetStmType: LET mutability IDENTIFIER EQ ExpType .
+   36 BinopExpType: ExpType . PLUS ExpType
+   37             | ExpType . MINUS ExpType
+   38             | ExpType . STAR ExpType
+   39             | ExpType . SLASH ExpType
+
+    MINUS  shift, and go to state 81
+    PLUS   shift, and go to state 82
+    SLASH  shift, and go to state 83
+    STAR   shift, and go to state 84
+
+    $default  reduce using rule 14 (LetStmType)
+
+
+State 121
+
+   19 IfStmType: IF CondType BlockStmType ELSE BlockStmType .
+
+    $default  reduce using rule 19 (IfStmType)
+
+
+State 122
+
+   44 IfExpType: IF CondType BlockExpType ELSE BlockExpType .
+
+    $default  reduce using rule 44 (IfExpType)
+
+
+State 123
+
+   11 StmType: ExpType . SEMICOLON
+   36 BinopExpType: ExpType . PLUS ExpType
+   37             | ExpType . MINUS ExpType
+   38             | ExpType . STAR ExpType
+   39             | ExpType . SLASH ExpType
+
+    SEMICOLON  shift, and go to state 80
+    MINUS      shift, and go to state 81
+    PLUS       shift, and go to state 82
+    SLASH      shift, and go to state 83
+    STAR       shift, and go to state 84
+
+
+State 124
+
+   36 BinopExpType: ExpType . PLUS ExpType
+   37             | ExpType . MINUS ExpType
+   38             | ExpType . STAR ExpType
+   39             | ExpType . SLASH ExpType
+   61 argument_list: argument_list COMMA ExpType .
+
+    MINUS  shift, and go to state 81
+    PLUS   shift, and go to state 82
+    SLASH  shift, and go to state 83
+    STAR   shift, and go to state 84
+
+    $default  reduce using rule 61 (argument_list)
+
+
+State 125
+
+   13 LetStmType: LET mutability IDENTIFIER COLON type EQ . ExpType
+
+    LPAREN       shift, and go to state 27
+    LBRACE       shift, and go to state 59
+    NOT          shift, and go to state 30
+    IF           shift, and go to state 60
+    IDENTIFIER   shift, and go to state 61
+    DEC_LITERAL  shift, and go to state 35
+    TRUE         shift, and go to state 37
+    FALSE        shift, and go to state 38
+
+    ExpType          go to state 126
+    IdExpType        go to state 49
+    BoolExpType      go to state 50
+    NumExpType       go to state 51
+    BinopExpType     go to state 52
+    BlockExpType     go to state 53
+    GroupExpType     go to state 54
+    FunctionExpType  go to state 55
+    IfExpType        go to state 56
+    NotCondType      go to state 57
+
+
+State 126
+
+   13 LetStmType: LET mutability IDENTIFIER COLON type EQ ExpType .
+   36 BinopExpType: ExpType . PLUS ExpType
+   37             | ExpType . MINUS ExpType
+   38             | ExpType . STAR ExpType
+   39             | ExpType . SLASH ExpType
+
+    MINUS  shift, and go to state 81
+    PLUS   shift, and go to state 82
+    SLASH  shift, and go to state 83
+    STAR   shift, and go to state 84
+
+    $default  reduce using rule 13 (LetStmType)

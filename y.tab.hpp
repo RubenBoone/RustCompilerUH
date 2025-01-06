@@ -46,51 +46,113 @@ extern int yydebug;
    /* Put the tokens into the symbol table, so that GDB and other debuggers
       know about them.  */
    enum yytokentype {
-     IDENTIFIER = 258,
-     PRINTVAR = 259,
-     PRINTSTRING = 260,
-     DEC_LITERAL = 261,
-     TRUE = 262,
-     FALSE = 263,
-     FN = 264,
-     LPAREN = 265,
-     RPAREN = 266,
-     ARROW = 267,
-     LBRACE = 268,
-     RBRACE = 269,
-     SEMICOLON = 270,
-     COLON = 271,
-     LET = 272,
-     EQ = 273,
-     PLUS = 274,
-     MINUS = 275,
-     STAR = 276,
-     SLASH = 277,
-     PLUSEQ = 278,
-     MINUSEQ = 279,
-     ANDAND = 280,
-     OROR = 281,
-     NOT = 282,
-     GT = 283,
-     GE = 284,
-     LT = 285,
-     LE = 286,
-     EQEQ = 287,
-     NE = 288,
-     AMPERSAND = 289,
-     IF = 290,
-     ELSE = 291,
-     WHILE = 292,
-     MUT = 293,
-     COMMA = 294,
-     INT = 295,
-     BOOL = 296
+     FN = 258,
+     LPAREN = 259,
+     RPAREN = 260,
+     ARROW = 261,
+     LBRACE = 262,
+     RBRACE = 263,
+     SEMICOLON = 264,
+     COLON = 265,
+     LET = 266,
+     ANDAND = 267,
+     OROR = 268,
+     NOT = 269,
+     GT = 270,
+     GE = 271,
+     LT = 272,
+     LE = 273,
+     EQEQ = 274,
+     NE = 275,
+     AMPERSAND = 276,
+     IF = 277,
+     ELSE = 278,
+     WHILE = 279,
+     MUT = 280,
+     COMMA = 281,
+     INT = 282,
+     BOOL = 283,
+     MINUS = 284,
+     PLUS = 285,
+     SLASH = 286,
+     STAR = 287,
+     EQ = 288,
+     MINUSEQ = 289,
+     PLUSEQ = 290,
+     IDENTIFIER = 291,
+     PRINTSTRING = 292,
+     DEC_LITERAL = 293,
+     PRINTVAR = 294,
+     TRUE = 295,
+     FALSE = 296
    };
 #endif
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+typedef union YYSTYPE
+{
+/* Line 2058 of yacc.c  */
+#line 24 "yaccfile.yacc"
+
+    char* id;
+    int num;
+    bool boolean;
+
+    Exp exp;
+    Stm stm;
+    ExpList explist;
+    Func func;
+    FuncList funclist;
+
+    Program *program;
+
+    DataType dtype;
+    Binop binop;
+    AssignOp assignop;
+    ConditionalOp condop;
+
+    LetStm *letstm;
+    AssignStm *assignstm;
+    BlockStm *blockstm;
+    DeclarationStm *decstm;
+    IfStm *ifstm;
+    PrintStm *printstm;
+    VarPrintStm *varprintstm;
+    ExprStm *exprstm;
+    WhileStm *whilestm;
+
+    IdExp *idexp;
+    BoolExp *boolexp;
+    NumExp *numexp;
+    BinopExp *binopexp;
+    BlockExp *blockexp;
+    GroupedExp *groupexp;
+    FunctionExp *funcexp;
+    IfExp *ifexp;
+
+    PairArgsExpList *arglist;
+    LastArgsExpList *lastarglist;
+    PairParamExpList *parmlist;
+    LastParamExpList *lastparmlist;
+    LastFuncList *lastfunclist;
+    PairFuncList *pairfunclist;
+
+    ConditionalExp *condexp;
+    NotCondExp *notcondexp;
+    CompareCondExp *compcondexp;
+    AndCond *andcond;
+    OrCond *orcond;
+    EqualCond *eqcond;
+
+    CompoundStm *compoundstm;
+    FuncDefStm *funcdefstm;
+    FuncDefExp *funcdefexp;
+
+
+/* Line 2058 of yacc.c  */
+#line 155 "y.tab.hpp"
+} YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

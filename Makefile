@@ -15,7 +15,7 @@ bison:
 	win_bison -o y.tab.cpp -d yaccfile.yacc -v
 
 bison-compile:
-	g++ y.tab.cpp lex.yy.cpp main.cpp -o parser
+	g++ y.tab.cpp lex.yy.cpp main.cpp absyn.cpp -o parser
 
 bison-run:
 	parser.exe < $(FILE)
