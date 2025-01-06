@@ -4,13 +4,13 @@
 
 int main()
 {
-  if (yyparse())
+  if (!yyparse())
   {
-    printf("Syntax error\n");
+    printf("Parsing done.\n");
   }
   else
   {
-    printf("Syntax OK\n");
+    printf("Parsing ended with error...\n");
   }
   return 0;
 }

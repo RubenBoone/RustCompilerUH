@@ -142,6 +142,7 @@ StmType : LetStmType SEMICOLON {$$ = $1;}
         | VarPrintStmType SEMICOLON {$$ = $1;}
         | ExpType SEMICOLON {$$ = new ExprStm($1);}
         | WhileStmStype { $$ = $1;}
+        | error SEMICOLON { yyerror("Error in statement"); yyclearin; $$ = nullptr; }
         ;
 
 LetStmType : LET mutability IDENTIFIER COLON type EQ ExpType  {$$ = new LetStm($3, $7, $5, $2);}
@@ -198,6 +199,7 @@ Term : NumExpType {$$ = $1;}
      | BinopExpType { $$ = $1;}
      | GroupExpType { $$ = $1;}
      | IfExpType { $$ = $1;}
+     | error SEMICOLON { yyerror("Error in expression"); yyclearin; $$ = nullptr; }
      ;
 
 
@@ -222,6 +224,7 @@ BlockExpType : LBRACE CompoundStmType ExpType RBRACE {$$ = new BlockExp($2, $3);
              ;
 
 GroupExpType : LPAREN ExpType RPAREN { $$ = new GroupedExp($2);}
+             | LPAREN error RPAREN { yyerror("Error in grouped expression"); yyclearin; $$ = nullptr; }
              ;
 
 FunctionExpType : IDENTIFIER LPAREN argument_list RPAREN { $$ = new FunctionExp($1, $3);}
@@ -237,6 +240,7 @@ FunctionType : FN IDENTIFIER LPAREN parameter_list RPAREN BlockStmType {$$ = new
              | FN IDENTIFIER LPAREN parameter_list RPAREN ARROW type BlockStmType {$$ = new FuncDefStm($2, $4, $7, $8);}
              | FN IDENTIFIER LPAREN parameter_list RPAREN BlockExpType {$$ = new FuncDefExp($2, $4, $6);}
              | FN IDENTIFIER LPAREN parameter_list RPAREN ARROW type BlockExpType {$$ = new FuncDefExp($2, $4, $7, $8);}
+             | error RPAREN { yyerror("Error in function definition"); yyclearin; $$ = nullptr; }
              ;
 
 function_list : function_list FunctionType { $$ = new PairFuncList($2, $1);}
@@ -283,11 +287,10 @@ assignment_operator : EQ {$$ = Equals;}
 %%
 
 void yyerror(const char *s) {
-    fprintf(stderr, "Syntax error: %s on at %i:%i\n", s, line_nr, col_nr);
-
-    if (yytext) {
-        fprintf(stderr, "Offending token: '%s'\n", yytext);
-    } else {
+    if (!yytext) {
         fprintf(stderr, "Unknown error at token.\n");
+    } else {
+        fprintf(stderr, "%s:\n", s);
+        fprintf(stderr, "Offending token at %i:%i: '%s'\n", line_nr, col_nr, yytext);
     }
 }
