@@ -14,12 +14,11 @@ Stm tree;
 %token  FN LPAREN RPAREN ARROW LBRACE RBRACE SEMICOLON COLON LET ANDAND OROR NOT GT GE LT LE EQEQ NE AMPERSAND IF ELSE WHILE MUT COMMA INT BOOL
   
 // voorrangdeclaraties
+%left ANDAND OROR
+%left EQEQ NE GT GE LT LE
 %left PLUS MINUS
 %left STAR SLASH
-%left PLUSEQ MINUSEQ EQ
-%left GT GE LT LE EQEQ
-%left ANDAND OROR 
-%left SEMICOLON NOT
+%nonassoc NOT
 
 %union {
     char* id;
@@ -90,7 +89,7 @@ Stm tree;
 %type <assignop> assignment_operator
 %type <condop> conditional_operator
 
-%type <exp> ExpType CondType
+%type <exp> ExpType Term
 %type <idexp> IdExpType
 %type <boolexp> BoolExpType
 %type <numexp> NumExpType
@@ -101,6 +100,7 @@ Stm tree;
 %type <ifexp> IfExpType
 
 %type <notcondexp> NotCondType
+%type <compcondexp> CompareCondExpType
 
 %type <stm> StmType
 %type <letstm> LetStmType
@@ -157,8 +157,8 @@ BlockStmType : LBRACE CompoundStmType RBRACE {$$ = new BlockStm($2);}
 DecStmType : LET mutability IDENTIFIER COLON type {$$ = new DeclarationStm($3, $5, $2);}
            ;
 
-IfStmType : IF CondType BlockStmType {$$ = new IfStm($2, $3);}
-          | IF CondType BlockStmType ELSE BlockStmType {$$ = new IfStm($2, $3, $5);}
+IfStmType : IF ExpType BlockStmType {$$ = new IfStm($2, $3);}
+          | IF ExpType BlockStmType ELSE BlockStmType {$$ = new IfStm($2, $3, $5);}
           ;
 
 PrintStmType : PRINTSTRING { $$ = new PrintStm($1);}
@@ -167,22 +167,40 @@ PrintStmType : PRINTSTRING { $$ = new PrintStm($1);}
 VarPrintStmType : PRINTVAR { $$ = new VarPrintStm($1);}
                 ;
 
-WhileStmStype : WHILE CondType BlockStmType { $$ = new WhileStm($2, $3);}
+WhileStmStype : WHILE ExpType BlockStmType { $$ = new WhileStm($2, $3);}
               ;
 
 
 
+CompareCondExpType : ExpType conditional_operator Term {$$ = new CompareCondExp($1, $2, $3);}
+                   ;
 
-ExpType : NumExpType {$$ = $1;}
-        | BoolExpType {$$ = $1;}
+
+ExpType : ExpType ANDAND ExpType {$$ = new AndCond($1, $3);}
+        | ExpType OROR ExpType {$$ = new OrCond($1, $3);}
+        | CompareCondExpType {$$ = $1;}
+        | NumExpType {$$ = $1;}
         | IdExpType {$$ = $1;}
         | BinopExpType { $$ = $1;}
         | BlockExpType { $$ = $1;}
         | GroupExpType { $$ = $1;}
+        | BoolExpType {$$ = $1;}
         | FunctionExpType { $$ = $1;}
         | IfExpType { $$ = $1;}
         | NotCondType {$$ = $1;}
         ;
+
+Term : NumExpType {$$ = $1;}
+     | IdExpType {$$ = $1;}
+     | BoolExpType {$$ = $1;}
+     | BlockExpType { $$ = $1;}
+     | FunctionExpType { $$ = $1;}
+     | BinopExpType { $$ = $1;}
+     | GroupExpType { $$ = $1;}
+     | IfExpType { $$ = $1;}
+     ;
+
+
 
 IdExpType : IDENTIFIER {$$ = new IdExp($1);}
           ;
@@ -194,10 +212,10 @@ BoolExpType : TRUE { $$ = new BoolExp(true);}
 NumExpType : DEC_LITERAL {$$ = new NumExp($1);}
            ;
 
-BinopExpType : ExpType PLUS ExpType {$$ = new BinopExp($1, Plus, $3);}
-             | ExpType MINUS ExpType {$$ = new BinopExp($1, Minus, $3);}
-             | ExpType STAR ExpType {$$ = new BinopExp($1, Times, $3);}
-             | ExpType SLASH ExpType {$$ = new BinopExp($1, Divide, $3);}
+BinopExpType : Term PLUS Term {$$ = new BinopExp($1, Plus, $3);}
+             | Term MINUS Term {$$ = new BinopExp($1, Minus, $3);}
+             | Term STAR Term {$$ = new BinopExp($1, Times, $3);}
+             | Term SLASH Term {$$ = new BinopExp($1, Divide, $3);}
              ;
 
 BlockExpType : LBRACE CompoundStmType ExpType RBRACE {$$ = new BlockExp($2, $3);}
@@ -209,8 +227,8 @@ GroupExpType : LPAREN ExpType RPAREN { $$ = new GroupedExp($2);}
 FunctionExpType : IDENTIFIER LPAREN argument_list RPAREN { $$ = new FunctionExp($1, $3);}
                 ;
 
-IfExpType : IF CondType BlockExpType {$$ = new IfExp($2, $3);}
-          | IF CondType BlockExpType ELSE BlockExpType {$$ = new IfExp($2, $3, $5);}
+IfExpType : IF ExpType BlockExpType {$$ = new IfExp($2, $3);}
+          | IF ExpType BlockExpType ELSE BlockExpType {$$ = new IfExp($2, $3, $5);}
           ;
 
 
@@ -224,15 +242,6 @@ FunctionType : FN IDENTIFIER LPAREN parameter_list RPAREN BlockStmType {$$ = new
 function_list : function_list FunctionType { $$ = new PairFuncList($2, $1);}
               | FunctionType  { $$ = new LastFuncList($1);}
               ;
-
-
-
-
-CondType : ExpType {$$=$1;}
-         | ExpType conditional_operator ExpType {$$ = new CompareCondExp($1, $2, $3);}
-         | CondType ANDAND CondType {$$ = new AndCond($1, $3);}
-         | CondType OROR CondType {$$ = new OrCond($1, $3);}
-         ;
 
 NotCondType : NOT ExpType {$$ = new NotCondExp($2);}
             ;
@@ -262,8 +271,8 @@ conditional_operator : LT {$$ = Less;}
                      | LE {$$ = LessEqual;}
                      | GT {$$ = Greater;}
                      | GE {$$ = GreaterEqual;}
-                     | NE {$$ = NotEqual;}
                      | EQEQ {$$ = EqualEqual;}
+                     | NE {$$ = NotEqual;}
                      ;
 
 assignment_operator : EQ {$$ = Equals;}

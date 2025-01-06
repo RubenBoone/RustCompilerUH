@@ -76,12 +76,12 @@ extern int yydebug;
      PLUS = 285,
      SLASH = 286,
      STAR = 287,
-     EQ = 288,
-     MINUSEQ = 289,
-     PLUSEQ = 290,
-     IDENTIFIER = 291,
-     PRINTSTRING = 292,
-     DEC_LITERAL = 293,
+     IDENTIFIER = 288,
+     PRINTSTRING = 289,
+     DEC_LITERAL = 290,
+     PLUSEQ = 291,
+     MINUSEQ = 292,
+     EQ = 293,
      PRINTVAR = 294,
      TRUE = 295,
      FALSE = 296
@@ -93,7 +93,7 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 2058 of yacc.c  */
-#line 24 "yaccfile.yacc"
+#line 23 "yaccfile.yacc"
 
     char* id;
     int num;
