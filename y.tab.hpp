@@ -78,11 +78,11 @@ extern int yydebug;
      STAR = 287,
      IDENTIFIER = 288,
      PRINTSTRING = 289,
-     DEC_LITERAL = 290,
-     PLUSEQ = 291,
-     MINUSEQ = 292,
-     EQ = 293,
-     PRINTVAR = 294,
+     PRINTVAR = 290,
+     DEC_LITERAL = 291,
+     PLUSEQ = 292,
+     MINUSEQ = 293,
+     EQ = 294,
      TRUE = 295,
      FALSE = 296
    };
@@ -117,6 +117,7 @@ typedef union YYSTYPE
     BlockStm *blockstm;
     DeclarationStm *decstm;
     IfStm *ifstm;
+    IfElseStm *ifelsestm;
     PrintStm *printstm;
     VarPrintStm *varprintstm;
     ExprStm *exprstm;
@@ -130,6 +131,7 @@ typedef union YYSTYPE
     GroupedExp *groupexp;
     FunctionExp *funcexp;
     IfExp *ifexp;
+    IfElseExp *ifelseexp;
 
     PairArgsExpList *arglist;
     LastArgsExpList *lastarglist;
@@ -138,7 +140,6 @@ typedef union YYSTYPE
     LastFuncList *lastfunclist;
     PairFuncList *pairfunclist;
 
-    ConditionalExp *condexp;
     NotCondExp *notcondexp;
     CompareCondExp *compcondexp;
     AndCond *andcond;
@@ -151,7 +152,7 @@ typedef union YYSTYPE
 
 
 /* Line 2058 of yacc.c  */
-#line 155 "y.tab.hpp"
+#line 156 "y.tab.hpp"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

@@ -23,3 +23,6 @@ bison-run:
 bison-routine: bison bison-compile bison-run
 
 flex-routine: flex flex-compile flex-run
+
+build: flex bison
+	g++ y.tab.cpp lex.yy.cpp main.cpp absyn.cpp -o typechecker

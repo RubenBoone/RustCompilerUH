@@ -43,6 +43,7 @@ Stm tree;
     BlockStm *blockstm;
     DeclarationStm *decstm;
     IfStm *ifstm;
+    IfElseStm *ifelsestm;
     PrintStm *printstm;
     VarPrintStm *varprintstm;
     ExprStm *exprstm;
@@ -56,6 +57,7 @@ Stm tree;
     GroupedExp *groupexp;
     FunctionExp *funcexp;
     IfExp *ifexp;
+    IfElseExp *ifelseexp;
 
     PairArgsExpList *arglist;
     LastArgsExpList *lastarglist;
@@ -64,7 +66,6 @@ Stm tree;
     LastFuncList *lastfunclist;
     PairFuncList *pairfunclist;
 
-    ConditionalExp *condexp;
     NotCondExp *notcondexp;
     CompareCondExp *compcondexp;
     AndCond *andcond;
@@ -76,11 +77,10 @@ Stm tree;
     FuncDefExp *funcdefexp;
 }
 
-%token <id> IDENTIFIER PRINTSTRING
+%token <id> IDENTIFIER PRINTSTRING PRINTVAR
 %token <num> DEC_LITERAL
 %token <binop> PLUS MINUS STAR SLASH
 %token <assignop> PLUSEQ MINUSEQ EQ
-%token <exp> PRINTVAR
 %token <bool> TRUE FALSE
 
 %type <boolean> mutability
@@ -89,7 +89,7 @@ Stm tree;
 %type <assignop> assignment_operator
 %type <condop> conditional_operator
 
-%type <exp> ExpType Term
+%type <exp> ExpType Term IfExpType
 %type <idexp> IdExpType
 %type <boolexp> BoolExpType
 %type <numexp> NumExpType
@@ -97,17 +97,15 @@ Stm tree;
 %type <blockexp> BlockExpType
 %type <groupexp> GroupExpType
 %type <funcexp> FunctionExpType
-%type <ifexp> IfExpType
 
 %type <notcondexp> NotCondType
 %type <compcondexp> CompareCondExpType
 
-%type <stm> StmType
+%type <stm> StmType IfStmType
 %type <letstm> LetStmType
 %type <assignstm> AssignStmType
 %type <blockstm> BlockStmType
 %type <decstm> DecStmType
-%type <ifstm> IfStmType
 %type <printstm> PrintStmType
 %type <varprintstm> VarPrintStmType
 %type <whilestm> WhileStmStype
@@ -159,7 +157,7 @@ DecStmType : LET mutability IDENTIFIER COLON type {$$ = new DeclarationStm($3, $
            ;
 
 IfStmType : IF ExpType BlockStmType {$$ = new IfStm($2, $3);}
-          | IF ExpType BlockStmType ELSE BlockStmType {$$ = new IfStm($2, $3, $5);}
+          | IF ExpType BlockStmType ELSE BlockStmType {$$ = new IfElseStm($2, $3, $5);}
           ;
 
 PrintStmType : PRINTSTRING { $$ = new PrintStm($1);}
@@ -231,19 +229,17 @@ FunctionExpType : IDENTIFIER LPAREN argument_list RPAREN { $$ = new FunctionExp(
                 ;
 
 IfExpType : IF ExpType BlockExpType {$$ = new IfExp($2, $3);}
-          | IF ExpType BlockExpType ELSE BlockExpType {$$ = new IfExp($2, $3, $5);}
+          | IF ExpType BlockExpType ELSE BlockExpType {$$ = new IfElseExp($2, $3, $5);}
           ;
 
 
 
 FunctionType : FN IDENTIFIER LPAREN parameter_list RPAREN BlockStmType {$$ = new FuncDefStm($2, $4, $6);}
-             | FN IDENTIFIER LPAREN parameter_list RPAREN ARROW type BlockStmType {$$ = new FuncDefStm($2, $4, $7, $8);}
-             | FN IDENTIFIER LPAREN parameter_list RPAREN BlockExpType {$$ = new FuncDefExp($2, $4, $6);}
              | FN IDENTIFIER LPAREN parameter_list RPAREN ARROW type BlockExpType {$$ = new FuncDefExp($2, $4, $7, $8);}
              | error RPAREN { yyerror("Error in function definition"); yyclearin; $$ = nullptr; }
              ;
 
-function_list : function_list FunctionType { $$ = new PairFuncList($2, $1);}
+function_list : FunctionType function_list  { $$ = new PairFuncList($1, $2);}
               | FunctionType  { $$ = new LastFuncList($1);}
               ;
 
@@ -262,13 +258,13 @@ type : INT { $$ = Int;}
      ;
 
 argument_list : /* Empty */ { $$ = nullptr;}
-              | argument_list COMMA ExpType { $$ = new PairArgsExpList($3, $1);}
+              | ExpType COMMA  argument_list { $$ = new PairArgsExpList($1, $3);}
               | ExpType {$$ = new LastArgsExpList($1);}
               ;
 
 parameter_list : /* Empty */ { $$ = nullptr;}
-               | parameter_list COMMA IDENTIFIER COLON type { $$ = new PairParamExpList($3, $5, $1);}
-               | IDENTIFIER COLON type { $$ = new LastParamExpList($1, $3);}
+               | mutability IDENTIFIER COLON type COMMA parameter_list { $$ = new PairParamExpList($2, $4, $6, $1);}
+               | mutability IDENTIFIER COLON type { $$ = new LastParamExpList($2, $4, $1);}
                ; 
 
 conditional_operator : LT {$$ = Less;}

@@ -6,8 +6,8 @@
 
 /* Keep track of current position of lex for error messages, i.e. 
    the position just *after* the last token read */
-int line_nr = 1;
-int col_nr = 1; 
+int line_nr = 0;
+int col_nr = 0; 
 %}
 
 PRINTVAR println!\(\"\{[a-zA-Z_][a-zA-Z0-9_]*\}\"\)
@@ -36,6 +36,9 @@ bool {col_nr += yyleng; return BOOL;}
     char var_name[256];
     sscanf(yytext, "println!(\"{%255[^}]}\")", var_name);
     yytext = var_name;
+    char* s = (char*) malloc(yyleng+1);
+    strcpy(s, yytext);
+    yylval.id = s;
     col_nr += yyleng;
     return PRINTVAR;
 }
