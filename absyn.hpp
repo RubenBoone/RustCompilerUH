@@ -1,4 +1,5 @@
 #include <string>
+#include <vector>
 #include <unordered_map>
 
 #ifndef ABSYN_HPP
@@ -115,12 +116,15 @@ struct FuncInfo
 
 struct Table
 {
-    std::unordered_map<std::string, VarInfo> variables;
+    std::vector<std::unordered_map<std::string, VarInfo>> variableScopes;
     std::unordered_map<std::string, FuncInfo> functions;
 
     DataType lookupVariable(const std::string &id);
     DataType lookupFunction(const std::string &id);
     DataType lookupFunctionParam(const std::string &fid, int index);
+
+    void enterScope();
+    void exitScope();
 
     void addVariable(const std::string &id, DataType type);
     void addFunction(const std::string &id, DataType type);

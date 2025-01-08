@@ -3,10 +3,14 @@
 
 DataType Table::lookupVariable(const std::string &id)
 {
-    if (variables.find(id) != variables.end())
+    for (auto scope = variableScopes.rbegin(); scope != variableScopes.rend(); ++scope)
     {
-        return variables[id].type;
+        if (scope->find(id) != scope->end())
+        {
+            return (*scope)[id].type;
+        }
     }
+    std::cerr << "Variable '" << id << "' not found in scope" << std::endl;
     return Error;
 }
 
@@ -32,10 +36,30 @@ DataType Table::lookupFunctionParam(const std::string &fid, int index)
     return Error;
 }
 
+void Table::enterScope()
+{
+    variableScopes.push_back({});
+}
+
+void Table::exitScope()
+{
+    if (!variableScopes.empty())
+    {
+        variableScopes.pop_back();
+    }
+    else
+    {
+        std::cerr << "No scope to exit!" << std::endl;
+    }
+}
+
 void Table::addVariable(const std::string &id, DataType type)
 {
     // std::cout << "Adding variable '" << id << "' with type " << type << std::endl;
-    variables[id] = {id, type, false};
+    if (!variableScopes.empty())
+    {
+        variableScopes.back()[id] = {id, type, false};
+    }
 }
 
 void Table::addFunction(const std::string &id, DataType type)
@@ -78,7 +102,7 @@ DataType BinopExp::check(Table *t)
 
     if (leftType != Int || rightType != Int)
     {
-        std::cerr << "Operands must be of type integer" << std::endl;
+        std::cerr << "Operands must be of type: integer" << std::endl;
         return Error;
     }
 
@@ -122,13 +146,16 @@ DataType IfElseExp::check(Table *t)
 
 DataType BlockExp::check(Table *t)
 {
+    t->enterScope();
     if (stm != nullptr)
     {
         stm->check(t);
     }
     if (exp != nullptr)
     {
-        return exp->check(t);
+        DataType expType = exp->check(t);
+        t->exitScope();
+        return expType;
     }
     std::cerr << "Block expression must have a return value" << std::endl;
     return Error;
@@ -234,12 +261,6 @@ DataType LetStm::check(Table *t)
 DataType AssignStm::check(Table *t)
 {
     DataType varType = t->lookupVariable(id);
-
-    if (varType == Error)
-    {
-        std::cerr << "ASSIGN: Variable '" << id << "' has no type" << std::endl;
-        return Error;
-    }
     DataType expType = exp->check(t);
 
     if (varType != expType)
@@ -268,10 +289,16 @@ DataType CompoundStm::check(Table *t)
 
 DataType BlockStm::check(Table *t)
 {
+    t->enterScope();
+
     if (stmnt != nullptr)
     {
-        return stmnt->check(t);
+        DataType stmntType = stmnt->check(t);
+        t->exitScope();
+        return stmntType;
     }
+
+    t->exitScope();
     return None;
 }
 
