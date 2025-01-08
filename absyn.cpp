@@ -10,7 +10,6 @@ DataType Table::lookupVariable(const std::string &id)
             return (*scope)[id].type;
         }
     }
-    std::cerr << "Variable '" << id << "' not found in scope" << std::endl;
     return Error;
 }
 
@@ -45,7 +44,6 @@ bool Table::isVarMutable(const std::string &id)
             return (*scope)[id].isMutable;
         }
     }
-    std::cerr << "Variable '" << id << "' not found in scope" << std::endl;
     return false;
 }
 
@@ -58,7 +56,6 @@ bool Table::isAssigned(const std::string &id)
             return (*scope)[id].isAssigned;
         }
     }
-    std::cerr << "Variable '" << id << "' not found in scope" << std::endl;
     return false;
 }
 
@@ -301,6 +298,12 @@ DataType AssignStm::check(Table *t)
             std::cerr << "Variable '" << id << "' is not mutable" << std::endl;
             return Error;
         }
+    }
+
+    if (varType == Error)
+    {
+        std::cerr << "Variable '" << id << "' has not been defined" << std::endl;
+        return Error;
     }
 
     if (varType != expType)
