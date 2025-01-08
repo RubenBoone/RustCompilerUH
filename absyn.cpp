@@ -36,6 +36,32 @@ DataType Table::lookupFunctionParam(const std::string &fid, int index)
     return Error;
 }
 
+bool Table::isVarMutable(const std::string &id)
+{
+    for (auto scope = variableScopes.rbegin(); scope != variableScopes.rend(); ++scope)
+    {
+        if (scope->find(id) != scope->end())
+        {
+            return (*scope)[id].isMutable;
+        }
+    }
+    std::cerr << "Variable '" << id << "' not found in scope" << std::endl;
+    return false;
+}
+
+bool Table::isAssigned(const std::string &id)
+{
+    for (auto scope = variableScopes.rbegin(); scope != variableScopes.rend(); ++scope)
+    {
+        if (scope->find(id) != scope->end())
+        {
+            return (*scope)[id].isAssigned;
+        }
+    }
+    std::cerr << "Variable '" << id << "' not found in scope" << std::endl;
+    return false;
+}
+
 void Table::enterScope()
 {
     variableScopes.push_back({});
@@ -53,25 +79,30 @@ void Table::exitScope()
     }
 }
 
-void Table::addVariable(const std::string &id, DataType type)
+void Table::addVariable(const std::string &id, DataType type, bool isMutable, bool isAssigned)
 {
-    // std::cout << "Adding variable '" << id << "' with type " << type << std::endl;
     if (!variableScopes.empty())
     {
-        variableScopes.back()[id] = {id, type, false};
+        variableScopes.back()[id] = {id, type, isMutable, isAssigned};
     }
 }
 
 void Table::addFunction(const std::string &id, DataType type)
 {
-    // std::cout << "Adding function '" << id << "' with type " << type << std::endl;
     functions[id] = {id, type, {}};
 }
 
-void Table::addFunctionParam(const std::string &fid, const std::string &pid, DataType type, int index)
+void Table::addFunctionParam(const std::string &fid, const std::string &pid, DataType type, int index, bool isMutable)
 {
-    // std::cout << "Adding parameter '" << pid << "' to function '" << fid << "' with type " << type << " and index " << index << std::endl;
-    functions[fid].params[index] = {pid, type, false};
+    functions[fid].params[index] = {pid, type, isMutable, true};
+}
+
+void Table::addParamsToScope(const std::string &fid)
+{
+    for (auto &param : functions[fid].params)
+    {
+        variableScopes.back()[param.second.id] = {param.second.id, param.second.type, param.second.isMutable, true};
+    }
 }
 
 DataType IdExp::check(Table *t)
@@ -254,7 +285,7 @@ DataType LetStm::check(Table *t)
         type = expType;
     }
 
-    t->addVariable(id, type);
+    t->addVariable(id, type, isMutable, true);
     return type;
 }
 
@@ -263,13 +294,22 @@ DataType AssignStm::check(Table *t)
     DataType varType = t->lookupVariable(id);
     DataType expType = exp->check(t);
 
+    if (!t->isVarMutable(id))
+    {
+        if (t->isAssigned(id))
+        {
+            std::cerr << "Variable '" << id << "' is not mutable" << std::endl;
+            return Error;
+        }
+    }
+
     if (varType != expType)
     {
         std::cerr << "ASSIGN: Variable and expression must have the same type" << std::endl;
         return Error;
     }
 
-    t->addVariable(id, expType);
+    t->addVariable(id, expType, t->isVarMutable(id), true);
     return None;
 }
 
@@ -304,7 +344,7 @@ DataType BlockStm::check(Table *t)
 
 DataType DeclarationStm::check(Table *t)
 {
-    t->addVariable(id, type);
+    t->addVariable(id, type, isMutable, false);
 
     return type;
 }
@@ -344,6 +384,11 @@ DataType IfElseStm::check(Table *t)
 
 DataType VarPrintStm::check(Table *t)
 {
+    if (!t->isAssigned(id))
+    {
+        std::cerr << "Variable '" << id << "' is not assigned" << std::endl;
+    }
+
     return t->lookupVariable(id);
 }
 
@@ -371,31 +416,43 @@ DataType WhileStm::check(Table *t)
 
 DataType FuncDefStm::check(Table *t)
 {
+    t->enterScope();
+
     if (params != nullptr)
     {
         params->check(t, id, 0);
+        t->addParamsToScope(id);
     }
     body->check(t);
 
+    t->exitScope();
     return returnType;
 }
 
 DataType FuncDefExp::check(Table *t)
 {
-    DataType blockType = body->check(t);
+    t->enterScope();
 
+    if (params != nullptr)
+    {
+        params->check(t, id, 0);
+        t->addParamsToScope(id);
+    }
+
+    DataType blockType = body->check(t);
     if (blockType != returnType)
     {
         std::cerr << "Return expression does not match function type" << std::endl;
         return Error;
     }
 
+    t->exitScope();
     return returnType;
 }
 
 DataType PairParamExpList::check(Table *t, std::string &fid, int index)
 {
-    t->addFunctionParam(fid, id, type, index);
+    t->addFunctionParam(fid, id, type, index, isMutable);
 
     if (tail != nullptr)
     {
@@ -407,7 +464,7 @@ DataType PairParamExpList::check(Table *t, std::string &fid, int index)
 
 DataType LastParamExpList::check(Table *t, std::string &fid, int index)
 {
-    t->addFunctionParam(fid, id, type, index);
+    t->addFunctionParam(fid, id, type, index, isMutable);
     return None;
 }
 

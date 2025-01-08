@@ -105,6 +105,7 @@ struct VarInfo
     std::string id;
     DataType type;
     bool isMutable;
+    bool isAssigned = false;
 };
 
 struct FuncInfo
@@ -122,13 +123,16 @@ struct Table
     DataType lookupVariable(const std::string &id);
     DataType lookupFunction(const std::string &id);
     DataType lookupFunctionParam(const std::string &fid, int index);
+    bool isVarMutable(const std::string &id);
+    bool isAssigned(const std::string &id);
 
     void enterScope();
     void exitScope();
 
-    void addVariable(const std::string &id, DataType type);
+    void addVariable(const std::string &id, DataType type, bool isMutable, bool isAssigned);
     void addFunction(const std::string &id, DataType type);
-    void addFunctionParam(const std::string &fid, const std::string &pid, DataType type, int index);
+    void addFunctionParam(const std::string &fid, const std::string &pid, DataType type, int index, bool isMutable);
+    void addParamsToScope(const std::string &fid);
 };
 struct Stm_
 {
