@@ -31,7 +31,8 @@ DataType Table::lookupFunctionParam(const std::string &fid, int index)
             return functions[fid].params[index].type;
         }
     }
-    std::cerr << "To many arguments for function '" << fid << "'" << std::endl;
+    std::cerr << "Too many arguments for function '" << fid << "'" << std::endl;
+    typeCheckCorrect = false;
     return Error;
 }
 
@@ -108,6 +109,7 @@ DataType IdExp::check(Table *t)
     if (type == None)
     {
         std::cerr << "ID '" << id << "' has no type" << std::endl;
+        t->typeCheckCorrect = false;
         return Error;
     }
     return type;
@@ -131,6 +133,7 @@ DataType BinopExp::check(Table *t)
     if (leftType != Int || rightType != Int)
     {
         std::cerr << "Operands must be of type: integer" << std::endl;
+        t->typeCheckCorrect = false;
         return Error;
     }
 
@@ -143,6 +146,7 @@ DataType IfExp::check(Table *t)
     if (condType != Bool)
     {
         std::cerr << "Condition must be a boolean" << std::endl;
+        t->typeCheckCorrect = false;
         return Error;
     }
 
@@ -157,6 +161,7 @@ DataType IfElseExp::check(Table *t)
     if (condType != Bool)
     {
         std::cerr << "Condition must be a boolean" << std::endl;
+        t->typeCheckCorrect = false;
         return Error;
     }
 
@@ -166,6 +171,7 @@ DataType IfElseExp::check(Table *t)
     if (thenType != elseType)
     {
         std::cerr << "If and else branches must have the same type" << std::endl;
+        t->typeCheckCorrect = false;
         return Error;
     }
 
@@ -186,6 +192,7 @@ DataType BlockExp::check(Table *t)
         return expType;
     }
     std::cerr << "Block expression must have a return value" << std::endl;
+    t->typeCheckCorrect = false;
     return Error;
 }
 
@@ -211,6 +218,7 @@ DataType NotCondExp::check(Table *t)
     if (expType != Bool)
     {
         std::cerr << "Condition must be a boolean" << std::endl;
+        t->typeCheckCorrect = false;
         return Error;
     }
 
@@ -225,6 +233,7 @@ DataType CompareCondExp::check(Table *t)
     if (leftType != rightType)
     {
         std::cerr << "Operands must be of the same type" << std::endl;
+        t->typeCheckCorrect = false;
         return Error;
     }
 
@@ -239,6 +248,7 @@ DataType AndCond::check(Table *t)
     if (leftType != rightType)
     {
         std::cerr << "And operands must be of type bool" << std::endl;
+        t->typeCheckCorrect = false;
         return Error;
     }
 
@@ -253,6 +263,7 @@ DataType OrCond::check(Table *t)
     if (leftType != rightType)
     {
         std::cerr << "Or operands must be of type bool" << std::endl;
+        t->typeCheckCorrect = false;
         return Error;
     }
 
@@ -267,6 +278,7 @@ DataType EqualCond::check(Table *t)
     if (leftType != rightType)
     {
         std::cerr << "ERROR: Operands must be of the same type" << std::endl;
+        t->typeCheckCorrect = false;
         return Error;
     }
 
@@ -296,6 +308,7 @@ DataType AssignStm::check(Table *t)
         if (t->isAssigned(id))
         {
             std::cerr << "Variable '" << id << "' is not mutable" << std::endl;
+            t->typeCheckCorrect = false;
             return Error;
         }
     }
@@ -303,12 +316,14 @@ DataType AssignStm::check(Table *t)
     if (varType == Error)
     {
         std::cerr << "Variable '" << id << "' has not been defined" << std::endl;
+        t->typeCheckCorrect = false;
         return Error;
     }
 
     if (varType != expType)
     {
         std::cerr << "ASSIGN: Variable and expression must have the same type" << std::endl;
+        t->typeCheckCorrect = false;
         return Error;
     }
 
@@ -358,6 +373,7 @@ DataType IfStm::check(Table *t)
     if (condType != Bool)
     {
         std::cerr << "Condition must be a boolean" << std::endl;
+        t->typeCheckCorrect = false;
         return Error;
     }
 
@@ -370,6 +386,7 @@ DataType IfElseStm::check(Table *t)
     if (condType != Bool)
     {
         std::cerr << "Condition must be a boolean" << std::endl;
+        t->typeCheckCorrect = false;
         return Error;
     }
 
@@ -379,6 +396,7 @@ DataType IfElseStm::check(Table *t)
     if (thenType != elseType)
     {
         std::cerr << "If and else branches must have the same type" << std::endl;
+        t->typeCheckCorrect = false;
         return Error;
     }
 
@@ -390,6 +408,7 @@ DataType VarPrintStm::check(Table *t)
     if (!t->isAssigned(id))
     {
         std::cerr << "Variable '" << id << "' is not assigned" << std::endl;
+        t->typeCheckCorrect = false;
     }
 
     return t->lookupVariable(id);
@@ -411,6 +430,7 @@ DataType WhileStm::check(Table *t)
     if (condType != Bool)
     {
         std::cerr << "Condition must be a boolean" << std::endl;
+        t->typeCheckCorrect = false;
         return Error;
     }
 
@@ -446,6 +466,7 @@ DataType FuncDefExp::check(Table *t)
     if (blockType != returnType)
     {
         std::cerr << "Return expression does not match function type" << std::endl;
+        t->typeCheckCorrect = false;
         return Error;
     }
 
@@ -480,6 +501,7 @@ DataType PairArgsExpList::check(Table *t, std::string &fid, int index)
     if (argType != paramType)
     {
         std::cerr << fid << "(): Types of argument at index: " << index << " does not match" << std::endl;
+        t->typeCheckCorrect = false;
         finalType = Error;
     }
 
@@ -499,6 +521,7 @@ DataType LastArgsExpList::check(Table *t, std::string &fid, int index)
     if (argType != paramType)
     {
         std::cerr << fid << "(): Types of argument at index: " << index << " does not match" << std::endl;
+        t->typeCheckCorrect = false;
         return Error;
     }
 
@@ -528,14 +551,11 @@ DataType LastFuncList::check(Table *t)
 DataType Program::check(Table *t)
 {
     funcs->declare(t);
-    std::cout << "----- Declaring functions done -----" << std::endl;
     return funcs->check(t);
 }
 
 void FuncDefStm::declare(Table *t)
 {
-    std::cout << "Declaring function '" << id << "'" << std::endl;
-
     if (params != nullptr)
     {
         params->check(t, id, 0);
@@ -546,7 +566,6 @@ void FuncDefStm::declare(Table *t)
 
 void FuncDefExp::declare(Table *t)
 {
-    std::cout << "Declaring function '" << id << "' with type " << returnType << std::endl;
     t->addFunction(id, returnType);
     if (params != nullptr)
     {

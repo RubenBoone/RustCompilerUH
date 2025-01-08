@@ -63,7 +63,6 @@
 9. Program
 
 */
-
 // Enums
 typedef enum
 {
@@ -117,6 +116,8 @@ struct FuncInfo
 
 struct Table
 {
+    bool typeCheckCorrect = true;
+
     std::vector<std::unordered_map<std::string, VarInfo>> variableScopes;
     std::unordered_map<std::string, FuncInfo> functions;
 
