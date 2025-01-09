@@ -1,41 +1,4 @@
 #include "absyn.hpp"
-
-void Table::saveVariable(const std::string &id, Value *value)
-{
-    for (auto scope = variableScopes.rbegin(); scope != variableScopes.rend(); ++scope)
-    {
-        if (scope->find(id) != scope->end())
-        {
-            (*scope)[id].value = value;
-            return;
-        }
-    }
-    std::cerr << "Variable '" << id << "' not found" << std::endl;
-}
-
-Value *Table::getVariable(const std::string &id)
-{
-    for (auto scope = variableScopes.rbegin(); scope != variableScopes.rend(); ++scope)
-    {
-        if (scope->find(id) != scope->end())
-        {
-            return (*scope)[id].value;
-        }
-    }
-    std::cerr << "Variable '" << id << "' not found" << std::endl;
-    return nullptr;
-}
-
-void Table::print(){
-    for (auto scope = variableScopes.rbegin(); scope != variableScopes.rend(); ++scope)
-    {
-        for (auto &var : *scope)
-        {
-            std::cout << var.first << " : " << var.second.value->getInt() << std::endl;
-        }
-    }
-}
-
 void Program::interp(Table *t)
 {
     funcs->interp(t);
@@ -80,14 +43,14 @@ void BlockStm::interp(Table *t)
     t->exitScope();
 }
 
-Value *BlockExp::interp(Table *t)
+Value BlockExp::interp(Table *t)
 {
     t->enterScope();
     if (stm != nullptr)
     {
         stm->interp(t);
     }
-    Value *v = exp->interp(t);
+    Value v = exp->interp(t);
     t->exitScope();
     return new Value();
 }
@@ -106,36 +69,69 @@ void CompoundStm::interp(Table *t)
 
 void LetStm::interp(Table *t)
 {
-    Value *v = exp->interp(t);
+    Value v = exp->interp(t);
+    t->setValue(id, v);
 }
 
 void AssignStm::interp(Table *t)
 {
     // Use case to detemine += or -= or =
-    Value *v = exp->interp(t);
+    Value v = exp->interp(t);
+
+    switch (op)
+    {
+    case Equals:
+        t->setValue(id, v);
+        break;
+    case PlusEquals:
+        t->setValue(id, Value(t->getValue(id).intValue + v.intValue));
+        break;
+    case MinusEquals:
+        t->setValue(id, Value(t->getValue(id).intValue - v.intValue));
+        break;
+    }
 }
 
 void DeclarationStm::interp(Table *t)
 {
-    // Add variable to table with null
+    t->setValue(id, Value());
 }
 
 void IfStm::interp(Table *t)
 {
-    condition->interp(t);
-    then->interp(t);
+    if (condition->interp(t).boolValue)
+    {
+        then->interp(t);
+    }
 }
 
 void IfElseStm::interp(Table *t)
 {
-    condition->interp(t);
-    then->interp(t);
-    elsee->interp(t);
+    if (condition->interp(t).boolValue)
+    {
+        then->interp(t);
+    }
+    else
+    {
+        elsee->interp(t);
+    }
 }
 
 void VarPrintStm::interp(Table *t)
 {
-    DataType type = t->lookupVariable(id);
+    Value v = t->getValue(id);
+
+    switch (v.type)
+    {
+    case Int:
+        printf("%d\n", v.intValue);
+        break;
+    case Bool:
+        printf("%s\n", v.boolValue ? "true" : "false");
+        break;
+    default:
+        break;
+    }
 }
 
 void PrintStm::interp(Table *t)
@@ -145,124 +141,149 @@ void PrintStm::interp(Table *t)
 
 void ExprStm::interp(Table *t)
 {
-    // Can skip this because this does nothing
-    return;
+    return; // Useless, skip
 }
 
 void WhileStm::interp(Table *t)
 {
-    Value *v = condition->interp(t);
-    body->interp(t);
+    Value v = condition->interp(t);
+    while (v.boolValue)
+    {
+        body->interp(t);
+        v = condition->interp(t);
+    }
 }
 
 // Expressions
-Value *IdExp::interp(Table *t)
+Value IdExp::interp(Table *t)
 {
     // Get value from table
-
-    return new Value();
+    return t->getValue(id);
 }
 
-Value *BoolExp::interp(Table *t)
+Value BoolExp::interp(Table *t)
 {
-    return new BoolValue(value);
+    return Value(value);
 }
 
-Value *NumExp::interp(Table *t)
+Value NumExp::interp(Table *t)
 {
-    return new IntValue(num);
+    return Value(num);
 }
 
-Value *BinopExp::interp(Table *t)
+Value BinopExp::interp(Table *t)
 {
-    Value *leftResult = left->interp(t);
-    Value *rightResult = right->interp(t);
+    Value leftResult = left->interp(t);
+    Value rightResult = right->interp(t);
 
     int result;
 
-    // switch (op)
-    // {
-    // case Plus:
-    //     result = leftResult->getInt() + rightResult->getInt();
-    //     break;
-    // case Minus:
-    //     result = leftResult->getInt() - rightResult->getInt();
-    //     break;
-    // case Times:
-    //     result = leftResult->getInt() * rightResult->getInt();
-    //     break;
-    // case Divide:
-    //     if (rightResult->getInt() == 0)
-    //     {
-    //         throw std::runtime_error("Division by zero");
-    //     }
-    //     result = leftResult->getInt() / rightResult->getInt();
-    //     break;
-    // default:
-    //     std::cerr << "Invalid operator" << std::endl;
-    //     exit(1);
-    // }
-    return new Value();
+    switch (op)
+    {
+    case Plus:
+        result = leftResult.intValue + rightResult.intValue;
+        break;
+    case Minus:
+        result = leftResult.intValue - rightResult.intValue;
+        break;
+    case Times:
+        result = leftResult.intValue * rightResult.intValue;
+        break;
+    case Divide:
+        if (rightResult.intValue == 0)
+        {
+            throw std::runtime_error("Division by zero");
+        }
+        result = leftResult.intValue / rightResult.intValue;
+        break;
+    default:
+        std::cerr << "Invalid operator" << std::endl;
+        exit(1);
+    }
+    return Value(result);
 }
 
-Value *IfElseExp::interp(Table *t)
+Value IfElseExp::interp(Table *t)
 {
-    // Return value
-    condition->interp(t);
-    then->interp(t);
-    elsee->interp(t);
-    return new Value();
+
+    if (condition->interp(t).boolValue)
+    {
+        return then->interp(t);
+    }
+    else
+    {
+        return elsee->interp(t);
+    }
 }
 
-Value *GroupedExp::interp(Table *t)
+Value GroupedExp::interp(Table *t)
 {
-    // Don't forget this has priority
-    exp->interp(t);
-    return new Value();
+    Value result = exp->interp(t);
+
+    switch (result.type)
+    {
+    case Int:
+        return Value(result.intValue);
+    case Bool:
+        return Value(result.boolValue);
+    }
+    std::cerr << "Invalid type" << std::endl;
+    exit(1);
 }
 
-Value *FunctionExp::interp(Table *t)
+Value FunctionExp::interp(Table *t)
 {
     // Call function
     return new Value();
 }
 
-Value *NotCondExp::interp(Table *t)
+Value NotCondExp::interp(Table *t)
 {
-    exp->interp(t);
-    return new Value();
+    return Value(!exp->interp(t).boolValue);
 }
 
-Value *CompareCondExp::interp(Table *t)
+Value CompareCondExp::interp(Table *t)
 {
+    Value leftResult = left->interp(t);
+    Value rightResult = right->interp(t);
+    bool result;
+
     switch (op)
     {
     case Greater:
+        result = leftResult.intValue > rightResult.intValue;
         break;
     case GreaterEqual:
+        result = leftResult.intValue >= rightResult.intValue;
         break;
     case Less:
+        result = leftResult.intValue < rightResult.intValue;
         break;
     case LessEqual:
+        result = leftResult.intValue <= rightResult.intValue;
         break;
     case EqualEqual:
+        result = leftResult.intValue == rightResult.intValue;
         break;
     case NotEqual:
+        result = leftResult.intValue != rightResult.intValue;
         break;
     }
-    return new Value();
+    return Value(result);
 }
 
-Value *AndCond::interp(Table *t)
+Value AndCond::interp(Table *t)
 {
-    left->interp(t);
-    right->interp(t);
-    return new Value();
+    Value leftResult = left->interp(t);
+    Value rightResult = right->interp(t);
+
+    return Value(leftResult.boolValue && rightResult.boolValue);
 }
 
-Value *OrCond::interp(Table *t)
+Value OrCond::interp(Table *t)
 {
-    left->interp(t);
-    right->interp(t);
-    return new Value();
+    Value leftResult = left->interp(t);
+    Value rightResult = right->interp(t);
+
+    return Value(leftResult.boolValue || rightResult.boolValue);
 }

@@ -105,29 +105,20 @@ enum DataType
 // Typecheck and interpretation
 struct Value
 {
-    virtual int getInt() { throw std::runtime_error("Invalid type asked"); };
-    virtual bool getBool() { throw std::runtime_error("Invalid type asked"); };
-};
+    DataType type;
+    int intValue;
+    bool boolValue;
 
-struct IntValue : public Value
-{
-    int value;
-    IntValue(int v) : value(v) {}
-    int getInt() override { return value; }
-};
-
-struct BoolValue : public Value
-{
-    bool value;
-    BoolValue(bool v) : value(v) {}
-    bool getBool() override { return value; }
+    Value() : type(None), intValue(0), boolValue(false) {}
+    Value(int i) : type(Int), intValue(i), boolValue(false) {}
+    Value(bool b) : type(Bool), intValue(0), boolValue(b) {}
 };
 
 struct VarInfo
 {
     std::string id;
     DataType type;
-    Value *value;
+    Value value;
     bool isMutable;
     bool isAssigned = false;
 };
@@ -157,13 +148,19 @@ struct Table
 
     void addVariable(const std::string &id, DataType type, bool isMutable, bool isAssigned);
     void addFunction(const std::string &id, DataType type);
-    void addFunctionParam(const std::string &fid, const std::string &pid, DataType type, int index, bool isMutable);
+    void addFunctionParam(const std::string &fid, const std::string &pid, Value value, int index, bool isMutable);
     void addParamsToScope(const std::string &fid);
 
-    void saveVariable(const std::string &id, Value *value);
-    Value *getVariable(const std::string &id);
+    std::unordered_map<std::string, Value> variableValues;
+    void setValue(const std::string &id, Value val)
+    {
+        variableValues[id] = val;
+    }
 
-    void print();
+    Value getValue(const std::string &id)
+    {
+        return variableValues.at(id);
+    }
 };
 
 // Base classes
@@ -175,7 +172,7 @@ struct Stm_
 struct Exp_
 {
     virtual DataType check(Table *t) = 0;
-    virtual Value *interp(Table *t) = 0;
+    virtual Value interp(Table *t) = 0;
 };
 struct Func_
 {
@@ -211,7 +208,7 @@ struct IdExp : public Exp_
     IdExp(std::string id) : id(id) {}
 
     DataType check(Table *t);
-    Value *interp(Table *t);
+    Value interp(Table *t);
 };
 
 // Bool expression
@@ -222,7 +219,7 @@ struct BoolExp : public Exp_
     BoolExp(bool value) : value(value) {}
 
     DataType check(Table *t);
-    Value *interp(Table *t);
+    Value interp(Table *t);
 };
 
 // Num expression
@@ -233,7 +230,7 @@ struct NumExp : public Exp_
     NumExp(int num) : num(num) {}
 
     DataType check(Table *t);
-    Value *interp(Table *t);
+    Value interp(Table *t);
 };
 
 // Binary operation expression
@@ -245,7 +242,7 @@ struct BinopExp : public Exp_
     BinopExp(Exp l, Binop o, Exp r) : left(l), op(o), right(r) {}
 
     DataType check(Table *t);
-    Value *interp(Table *t);
+    Value interp(Table *t);
 };
 
 // If else expression
@@ -258,7 +255,7 @@ struct IfElseExp : public Exp_
     IfElseExp(Exp c, Exp t, Exp e) : condition(c), then(t), elsee(e) {}
 
     DataType check(Table *t);
-    Value *interp(Table *t);
+    Value interp(Table *t);
 };
 
 // Block expression
@@ -270,7 +267,7 @@ struct BlockExp : public Exp_
     BlockExp(Stm s, Exp e) : stm(s), exp(e) {}
 
     DataType check(Table *t);
-    Value *interp(Table *t);
+    Value interp(Table *t);
 };
 
 // Grouped expression
@@ -281,7 +278,7 @@ struct GroupedExp : public Exp_
     GroupedExp(Exp e) : exp(e) {}
 
     DataType check(Table *t);
-    Value *interp(Table *t);
+    Value interp(Table *t);
 };
 
 // Function expression
@@ -293,7 +290,7 @@ struct FunctionExp : public Exp_
     FunctionExp(std::string id, ExpList a) : id(id), args(a) {}
 
     DataType check(Table *t);
-    Value *interp(Table *t);
+    Value interp(Table *t);
 };
 
 // Conditionals
@@ -305,7 +302,7 @@ struct NotCondExp : public Exp_
     NotCondExp(Exp e) : exp(e) {}
 
     DataType check(Table *t);
-    Value *interp(Table *t);
+    Value interp(Table *t);
 };
 
 // Compare conditional
@@ -317,7 +314,7 @@ struct CompareCondExp : public Exp_
     CompareCondExp(Exp l, ConditionalOp o, Exp r) : left(l), op(o), right(r) {}
 
     DataType check(Table *t);
-    Value *interp(Table *t);
+    Value interp(Table *t);
 };
 
 // And conditional
@@ -328,7 +325,7 @@ struct AndCond : public Exp_
     AndCond(Exp l, Exp r) : left(l), right(r) {}
 
     DataType check(Table *t);
-    Value *interp(Table *t);
+    Value interp(Table *t);
 };
 
 // Or conditional
@@ -339,7 +336,7 @@ struct OrCond : public Exp_
     OrCond(Exp l, Exp r) : left(l), right(r) {}
 
     DataType check(Table *t);
-    Value *interp(Table *t);
+    Value interp(Table *t);
 };
 
 // Statements

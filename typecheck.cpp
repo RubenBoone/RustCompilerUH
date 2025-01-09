@@ -81,7 +81,7 @@ void Table::addVariable(const std::string &id, DataType type, bool isMutable, bo
 {
     if (!variableScopes.empty())
     {
-        variableScopes.back()[id] = {id, type, nullptr, isMutable, isAssigned};
+        variableScopes.back()[id] = {id, type, Value(), isMutable, isAssigned};
     }
 }
 
@@ -90,16 +90,16 @@ void Table::addFunction(const std::string &id, DataType type)
     functions[id] = {id, type, {}};
 }
 
-void Table::addFunctionParam(const std::string &fid, const std::string &pid, DataType type, int index, bool isMutable)
+void Table::addFunctionParam(const std::string &fid, const std::string &pid, Value value, int index, bool isMutable)
 {
-    functions[fid].params[index] = {pid, type, nullptr, isMutable, true};
+    functions[fid].params[index] = {pid, value.type, Value(), isMutable, true};
 }
 
 void Table::addParamsToScope(const std::string &fid)
 {
     for (auto &param : functions[fid].params)
     {
-        variableScopes.back()[param.second.id] = {param.second.id, param.second.type, nullptr, param.second.isMutable, true};
+        variableScopes.back()[param.second.id] = {param.second.id, param.second.type, Value(), param.second.isMutable, true};
     }
 }
 

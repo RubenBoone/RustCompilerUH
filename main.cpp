@@ -23,7 +23,6 @@ int main()
   if (t->typeCheckCorrect)
   {
     printf("Type checking done.\n");
-    t->print();
   }
   else
   {
