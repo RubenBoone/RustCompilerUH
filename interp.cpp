@@ -17,39 +17,37 @@ void LastFuncList::interp(Table *t)
 
 void FuncDefStm::interp(Table *t)
 {
-    t->enterScope();
     body->interp(t);
-
-    t->exitScope();
+    Value v;
+    v.stmBody = body;
+    v.type = returnType;
+    t->setFunctionValue(id, v);
 }
 
 void FuncDefExp::interp(Table *t)
 {
-    t->enterScope();
     body->interp(t);
-
-    t->exitScope();
+    Value v;
+    v.expBody = body;
+    v.type = returnType;
+    t->setFunctionValue(id, v);
 }
 
 void BlockStm::interp(Table *t)
 {
-    t->enterScope();
     if (stmnt != nullptr)
     {
         stmnt->interp(t);
     }
-    t->exitScope();
 }
 
 Value BlockExp::interp(Table *t)
 {
-    t->enterScope();
     if (stm != nullptr)
     {
         stm->interp(t);
     }
     Value v = exp->interp(t);
-    t->exitScope();
     return v;
 }
 
@@ -231,8 +229,25 @@ Value GroupedExp::interp(Table *t)
 Value FunctionExp::interp(Table *t)
 {
     // Call function
-    DataType type = t->lookupFunction(id);
-    return new Value();
+    Value v = t->getFunctionValue(id);
+    t->addParamsToScope(id);
+    if (v.type == None)
+    {
+        v.stmBody->interp(t);
+    }
+    else
+    {
+        Value nv = v.expBody->interp(t);
+
+        switch (nv.type)
+        {
+        case Int:
+            return Value(nv.intValue);
+        case Bool:
+            return Value(nv.boolValue);
+        }
+    }
+    return Value();
 }
 
 Value NotCondExp::interp(Table *t)

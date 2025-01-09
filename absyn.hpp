@@ -103,11 +103,20 @@ enum DataType
 };
 
 // Typecheck and interpretation
+
+struct Stm_;
+struct Exp_;
+
+typedef Stm_ *Stm;
+typedef Exp_ *Exp;
+
 struct Value
 {
     DataType type;
     int intValue;
     bool boolValue;
+    Stm stmBody;
+    Exp expBody;
 
     Value() : type(None), intValue(0), boolValue(false) {}
     Value(int i) : type(Int), intValue(i), boolValue(false) {}
@@ -152,6 +161,7 @@ struct Table
     void addParamsToScope(const std::string &fid);
 
     std::unordered_map<std::string, Value> variableValues;
+    std::unordered_map<std::string, Value> functionValues;
     void setValue(const std::string &id, Value val)
     {
         variableValues[id] = val;
@@ -160,6 +170,15 @@ struct Table
     Value getValue(const std::string &id)
     {
         return variableValues.at(id);
+    }
+
+    void setFunctionValue(const std::string &id, Value val)
+    {
+        functionValues[id] = val;
+    }
+    Value getFunctionValue(const std::string &id)
+    {
+        return functionValues.at(id);
     }
 };
 
@@ -193,8 +212,6 @@ struct FuncList_
 };
 
 // Typedefs
-typedef Stm_ *Stm;
-typedef Exp_ *Exp;
 typedef Func_ *Func;
 typedef ExpList_ *ExpList;
 typedef FuncList_ *FuncList;
