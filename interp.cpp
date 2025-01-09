@@ -18,7 +18,6 @@ void LastFuncList::interp(Table *t)
 void FuncDefStm::interp(Table *t)
 {
     t->enterScope();
-
     body->interp(t);
 
     t->exitScope();
@@ -27,7 +26,6 @@ void FuncDefStm::interp(Table *t)
 void FuncDefExp::interp(Table *t)
 {
     t->enterScope();
-
     body->interp(t);
 
     t->exitScope();
@@ -52,7 +50,7 @@ Value BlockExp::interp(Table *t)
     }
     Value v = exp->interp(t);
     t->exitScope();
-    return new Value();
+    return v;
 }
 
 void CompoundStm::interp(Table *t)
@@ -75,7 +73,6 @@ void LetStm::interp(Table *t)
 
 void AssignStm::interp(Table *t)
 {
-    // Use case to detemine += or -= or =
     Value v = exp->interp(t);
 
     switch (op)
@@ -234,6 +231,7 @@ Value GroupedExp::interp(Table *t)
 Value FunctionExp::interp(Table *t)
 {
     // Call function
+    DataType type = t->lookupFunction(id);
     return new Value();
 }
 

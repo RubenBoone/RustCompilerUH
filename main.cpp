@@ -23,15 +23,15 @@ int main()
   if (t->typeCheckCorrect)
   {
     printf("Type checking done.\n");
+    printf("\n--== Interpreting ==--\n");
+    tree->interp(t);
+    printf("Interpreting done.\n\n");
   }
   else
   {
     printf("Type checking ended with error...\n");
     return 1;
   }
-  printf("\n--== Interpreting ==--\n");
-  tree->interp(t);
-  printf("Interpreting done.\n\n");
 
   delete t;
   return 0;
