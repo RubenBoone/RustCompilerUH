@@ -130,7 +130,6 @@ typedef union YYSTYPE
     BlockExp *blockexp;
     GroupedExp *groupexp;
     FunctionExp *funcexp;
-    IfExp *ifexp;
     IfElseExp *ifelseexp;
 
     PairArgsExpList *arglist;
@@ -144,7 +143,6 @@ typedef union YYSTYPE
     CompareCondExp *compcondexp;
     AndCond *andcond;
     OrCond *orcond;
-    EqualCond *eqcond;
 
     CompoundStm *compoundstm;
     FuncDefStm *funcdefstm;
@@ -152,7 +150,7 @@ typedef union YYSTYPE
 
 
 /* Line 2058 of yacc.c  */
-#line 156 "y.tab.hpp"
+#line 154 "y.tab.hpp"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

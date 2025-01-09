@@ -196,7 +196,6 @@ typedef union YYSTYPE
     BlockExp *blockexp;
     GroupedExp *groupexp;
     FunctionExp *funcexp;
-    IfExp *ifexp;
     IfElseExp *ifelseexp;
 
     PairArgsExpList *arglist;
@@ -210,7 +209,6 @@ typedef union YYSTYPE
     CompareCondExp *compcondexp;
     AndCond *andcond;
     OrCond *orcond;
-    EqualCond *eqcond;
 
     CompoundStm *compoundstm;
     FuncDefStm *funcdefstm;
@@ -218,7 +216,7 @@ typedef union YYSTYPE
 
 
 /* Line 387 of yacc.c  */
-#line 222 "y.tab.cpp"
+#line 220 "y.tab.cpp"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -246,7 +244,7 @@ int yyparse ();
 /* Copy the second part of user declarations.  */
 
 /* Line 390 of yacc.c  */
-#line 250 "y.tab.cpp"
+#line 248 "y.tab.cpp"
 
 #ifdef short
 # undef short
@@ -473,7 +471,7 @@ union yyalloc
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  32
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  85
+#define YYNRULES  84
 /* YYNRULES -- Number of states.  */
 #define YYNSTATES  141
 
@@ -530,9 +528,9 @@ static const yytype_uint8 yyprhs[] =
       98,   100,   102,   104,   106,   108,   110,   112,   114,   116,
      118,   120,   122,   124,   126,   128,   130,   133,   135,   137,
      139,   141,   145,   149,   153,   157,   162,   166,   170,   175,
-     179,   185,   192,   201,   204,   207,   209,   212,   213,   215,
-     217,   219,   220,   224,   226,   227,   234,   239,   241,   243,
-     245,   247,   249,   251,   253,   255
+     181,   188,   197,   200,   203,   205,   208,   209,   211,   213,
+     215,   216,   220,   222,   223,   230,   235,   237,   239,   241,
+     243,   245,   247,   249,   251
 };
 
 /* YYRHS -- A `-1'-separated list of the rules' RHS.  */
@@ -555,29 +553,29 @@ static const yytype_int8 yyrhs[] =
       -1,    56,    30,    56,    -1,    56,    29,    56,    -1,    56,
       32,    56,    -1,    56,    31,    56,    -1,     7,    44,    55,
        8,    -1,     4,    55,     5,    -1,     4,     1,     5,    -1,
-      33,     4,    70,     5,    -1,    22,    55,    61,    -1,    22,
-      55,    61,    23,    61,    -1,     3,    33,     4,    71,     5,
-      48,    -1,     3,    33,     4,    71,     5,     6,    69,    61,
-      -1,     1,     5,    -1,    65,    66,    -1,    65,    -1,    14,
-      55,    -1,    -1,    25,    -1,    27,    -1,    28,    -1,    -1,
-      55,    26,    70,    -1,    55,    -1,    -1,    68,    33,    10,
-      69,    26,    71,    -1,    68,    33,    10,    69,    -1,    17,
-      -1,    18,    -1,    15,    -1,    16,    -1,    19,    -1,    20,
-      -1,    39,    -1,    37,    -1,    38,    -1
+      33,     4,    70,     5,    -1,    22,    55,    61,    23,    61,
+      -1,     3,    33,     4,    71,     5,    48,    -1,     3,    33,
+       4,    71,     5,     6,    69,    61,    -1,     1,     5,    -1,
+      65,    66,    -1,    65,    -1,    14,    55,    -1,    -1,    25,
+      -1,    27,    -1,    28,    -1,    -1,    55,    26,    70,    -1,
+      55,    -1,    -1,    68,    33,    10,    69,    26,    71,    -1,
+      68,    33,    10,    69,    -1,    17,    -1,    18,    -1,    15,
+      -1,    16,    -1,    19,    -1,    20,    -1,    39,    -1,    37,
+      -1,    38,    -1
 };
 
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   125,   125,   130,   131,   134,   135,   136,   137,   138,
-     139,   140,   141,   142,   143,   146,   147,   150,   153,   156,
-     159,   160,   163,   166,   169,   174,   178,   179,   180,   181,
-     182,   183,   184,   185,   186,   187,   188,   189,   192,   193,
-     194,   195,   196,   197,   198,   199,   200,   205,   208,   209,
-     212,   215,   216,   217,   218,   221,   224,   225,   228,   231,
-     232,   237,   238,   239,   242,   243,   246,   252,   253,   256,
-     257,   260,   261,   262,   265,   266,   267,   270,   271,   272,
-     273,   274,   275,   278,   279,   280
+       0,   123,   123,   128,   129,   132,   133,   134,   135,   136,
+     137,   138,   139,   140,   141,   144,   145,   148,   151,   154,
+     157,   158,   161,   164,   167,   172,   176,   177,   178,   179,
+     180,   181,   182,   183,   184,   185,   186,   187,   190,   191,
+     192,   193,   194,   195,   196,   197,   198,   203,   206,   207,
+     210,   213,   214,   215,   216,   219,   222,   223,   226,   229,
+     234,   235,   236,   239,   240,   243,   249,   250,   253,   254,
+     257,   258,   259,   262,   263,   264,   267,   268,   269,   270,
+     271,   272,   275,   276,   277
 };
 #endif
 
@@ -625,9 +623,9 @@ static const yytype_uint8 yyr1[] =
       55,    55,    55,    55,    55,    55,    55,    55,    56,    56,
       56,    56,    56,    56,    56,    56,    56,    57,    58,    58,
       59,    60,    60,    60,    60,    61,    62,    62,    63,    64,
-      64,    65,    65,    65,    66,    66,    67,    68,    68,    69,
-      69,    70,    70,    70,    71,    71,    71,    72,    72,    72,
-      72,    72,    72,    73,    73,    73
+      65,    65,    65,    66,    66,    67,    68,    68,    69,    69,
+      70,    70,    70,    71,    71,    71,    72,    72,    72,    72,
+      72,    72,    73,    73,    73
 };
 
 /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
@@ -638,10 +636,10 @@ static const yytype_uint8 yyr2[] =
        3,     5,     1,     1,     3,     3,     3,     3,     1,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
        1,     1,     1,     1,     1,     1,     2,     1,     1,     1,
-       1,     3,     3,     3,     3,     4,     3,     3,     4,     3,
-       5,     6,     8,     2,     2,     1,     2,     0,     1,     1,
-       1,     0,     3,     1,     0,     6,     4,     1,     1,     1,
-       1,     1,     1,     1,     1,     1
+       1,     3,     3,     3,     3,     4,     3,     3,     4,     5,
+       6,     8,     2,     2,     1,     2,     0,     1,     1,     1,
+       0,     3,     1,     0,     6,     4,     1,     1,     1,     1,
+       1,     1,     1,     1,     1
 };
 
 /* YYDEFACT[STATE-NAME] -- Default reduction number in state STATE-NUM.
@@ -649,20 +647,20 @@ static const yytype_uint8 yyr2[] =
    means the default is an error.  */
 static const yytype_uint8 yydefact[] =
 {
-       0,     0,     0,     0,     0,     2,    63,     0,     1,    64,
-      67,    68,     0,     0,     0,     0,     0,     0,     3,    61,
-      69,    70,    76,     0,     0,    67,     3,    62,     0,     0,
-       3,    18,    67,     0,     0,     0,    47,    22,    23,    50,
+       0,     0,     0,     0,     0,     2,    62,     0,     1,    63,
+      66,    67,     0,     0,     0,     0,     0,     0,     3,    60,
+      68,    69,    75,     0,     0,    66,     3,    61,     0,     0,
+       3,    18,    66,     0,     0,     0,    47,    22,    23,    50,
       48,    49,     4,     0,     0,     7,     0,     9,     0,     0,
       13,    28,     0,     0,    30,    34,    29,    31,    32,    33,
-      35,    36,    37,    75,     0,    14,     0,     0,    47,     0,
-       0,     0,     0,    66,     0,     0,     0,    84,    85,    83,
-       0,     5,     6,     8,    10,    11,    12,     0,     0,    79,
-      80,    77,    78,    81,    82,     0,     0,     0,     0,     0,
-       0,    57,    46,     0,    56,     0,    20,    59,    24,    73,
+      35,    36,    37,    74,     0,    14,     0,     0,    47,     0,
+       0,     0,     0,    65,     0,     0,     0,    83,    84,    82,
+       0,     5,     6,     8,    10,    11,    12,     0,     0,    78,
+      79,    76,    77,    80,    81,     0,     0,     0,     0,     0,
+       0,    57,    46,     0,    56,     0,    20,     0,    24,    72,
        0,    17,    26,    27,    25,    39,    40,    38,    43,    41,
       44,    42,    45,    52,    51,    54,    53,    55,     0,     0,
-       0,     0,     0,    58,    19,    16,    21,    60,    72,     0,
+       0,     0,     0,    58,    19,    16,    21,    59,    71,     0,
       15
 };
 
@@ -709,10 +707,10 @@ static const yytype_int16 yypgoto[] =
 /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
    positive, shift that token.  If negative, reduce the rule which
    number is the opposite.  If YYTABLE_NINF, syntax error.  */
-#define YYTABLE_NINF -75
+#define YYTABLE_NINF -74
 static const yytype_int16 yytable[] =
 {
-      52,    19,    23,    27,   128,    69,   -74,     6,     7,    73,
+      52,    19,    23,    27,   128,    69,   -73,     6,     7,    73,
       74,    75,   101,    98,    99,    76,   102,   104,    89,    90,
       91,    92,    93,    94,    87,    88,    11,    89,    90,    91,
       92,    93,    94,   129,    28,    64,     1,    29,     2,    70,
@@ -720,11 +718,11 @@ static const yytype_int16 yytable[] =
       79,    10,   109,    14,   107,    34,   111,    35,    20,    21,
      106,   108,    15,   112,   113,    16,    36,    37,    38,    39,
       25,    26,    65,    40,    41,   119,   119,   119,   119,   119,
-      81,   -65,     1,   107,     2,    11,    28,    82,    83,    29,
+      81,   -64,     1,   107,     2,    11,    28,    82,    83,    29,
       76,    84,    30,    85,   105,   130,    32,   102,   131,    33,
      114,   123,   124,   125,   126,   135,   133,    34,   109,    35,
       18,   137,   139,   134,     9,   140,   136,    63,    36,    37,
-      38,    39,    71,   138,    72,    40,    41,    29,   -71,     0,
+      38,    39,    71,   138,    72,    40,    41,    29,   -70,     0,
       26,     0,     0,    66,     0,     0,    29,    33,     0,    26,
      115,   115,   115,   115,   115,    67,    33,     0,     0,    72,
        0,     0,    29,     0,    67,    26,    68,     0,     0,    39,
@@ -1614,511 +1612,505 @@ yyreduce:
     {
         case 2:
 /* Line 1792 of yacc.c  */
-#line 125 "yaccfile.yacc"
+#line 123 "yaccfile.yacc"
     {(yyval.program) = new Program((yyvsp[(1) - (1)].funclist)); tree = (yyval.program);}
     break;
 
   case 3:
 /* Line 1792 of yacc.c  */
-#line 130 "yaccfile.yacc"
+#line 128 "yaccfile.yacc"
     { (yyval.compoundstm) = nullptr;}
     break;
 
   case 4:
 /* Line 1792 of yacc.c  */
-#line 131 "yaccfile.yacc"
+#line 129 "yaccfile.yacc"
     {(yyval.compoundstm) = new CompoundStm((yyvsp[(1) - (2)].compoundstm), (yyvsp[(2) - (2)].stm));}
     break;
 
   case 5:
 /* Line 1792 of yacc.c  */
-#line 134 "yaccfile.yacc"
+#line 132 "yaccfile.yacc"
     {(yyval.stm) = (yyvsp[(1) - (2)].letstm);}
     break;
 
   case 6:
 /* Line 1792 of yacc.c  */
-#line 135 "yaccfile.yacc"
+#line 133 "yaccfile.yacc"
     {(yyval.stm) = (yyvsp[(1) - (2)].assignstm);}
     break;
 
   case 7:
 /* Line 1792 of yacc.c  */
-#line 136 "yaccfile.yacc"
+#line 134 "yaccfile.yacc"
     {(yyval.stm) = (yyvsp[(1) - (1)].blockstm);}
     break;
 
   case 8:
 /* Line 1792 of yacc.c  */
-#line 137 "yaccfile.yacc"
+#line 135 "yaccfile.yacc"
     {(yyval.stm) = (yyvsp[(1) - (2)].decstm);}
     break;
 
   case 9:
 /* Line 1792 of yacc.c  */
-#line 138 "yaccfile.yacc"
+#line 136 "yaccfile.yacc"
     {(yyval.stm) = (yyvsp[(1) - (1)].stm);}
     break;
 
   case 10:
 /* Line 1792 of yacc.c  */
-#line 139 "yaccfile.yacc"
+#line 137 "yaccfile.yacc"
     {(yyval.stm) = (yyvsp[(1) - (2)].printstm);}
     break;
 
   case 11:
 /* Line 1792 of yacc.c  */
-#line 140 "yaccfile.yacc"
+#line 138 "yaccfile.yacc"
     {(yyval.stm) = (yyvsp[(1) - (2)].varprintstm);}
     break;
 
   case 12:
 /* Line 1792 of yacc.c  */
-#line 141 "yaccfile.yacc"
+#line 139 "yaccfile.yacc"
     {(yyval.stm) = new ExprStm((yyvsp[(1) - (2)].exp));}
     break;
 
   case 13:
 /* Line 1792 of yacc.c  */
-#line 142 "yaccfile.yacc"
+#line 140 "yaccfile.yacc"
     { (yyval.stm) = (yyvsp[(1) - (1)].whilestm);}
     break;
 
   case 14:
 /* Line 1792 of yacc.c  */
-#line 143 "yaccfile.yacc"
+#line 141 "yaccfile.yacc"
     { yyerror("Error in statement"); yyclearin; (yyval.stm) = nullptr; }
     break;
 
   case 15:
 /* Line 1792 of yacc.c  */
-#line 146 "yaccfile.yacc"
+#line 144 "yaccfile.yacc"
     {(yyval.letstm) = new LetStm((yyvsp[(3) - (7)].id), (yyvsp[(7) - (7)].exp), (yyvsp[(5) - (7)].dtype), (yyvsp[(2) - (7)].boolean));}
     break;
 
   case 16:
 /* Line 1792 of yacc.c  */
-#line 147 "yaccfile.yacc"
+#line 145 "yaccfile.yacc"
     {(yyval.letstm) = new LetStm((yyvsp[(3) - (5)].id), (yyvsp[(5) - (5)].exp), (yyvsp[(2) - (5)].boolean));}
     break;
 
   case 17:
 /* Line 1792 of yacc.c  */
-#line 150 "yaccfile.yacc"
+#line 148 "yaccfile.yacc"
     {(yyval.assignstm) = new AssignStm((yyvsp[(1) - (3)].id), (yyvsp[(2) - (3)].assignop), (yyvsp[(3) - (3)].exp));}
     break;
 
   case 18:
 /* Line 1792 of yacc.c  */
-#line 153 "yaccfile.yacc"
+#line 151 "yaccfile.yacc"
     {(yyval.blockstm) = new BlockStm((yyvsp[(2) - (3)].compoundstm));}
     break;
 
   case 19:
 /* Line 1792 of yacc.c  */
-#line 156 "yaccfile.yacc"
+#line 154 "yaccfile.yacc"
     {(yyval.decstm) = new DeclarationStm((yyvsp[(3) - (5)].id), (yyvsp[(5) - (5)].dtype), (yyvsp[(2) - (5)].boolean));}
     break;
 
   case 20:
 /* Line 1792 of yacc.c  */
-#line 159 "yaccfile.yacc"
+#line 157 "yaccfile.yacc"
     {(yyval.stm) = new IfStm((yyvsp[(2) - (3)].exp), (yyvsp[(3) - (3)].blockstm));}
     break;
 
   case 21:
 /* Line 1792 of yacc.c  */
-#line 160 "yaccfile.yacc"
+#line 158 "yaccfile.yacc"
     {(yyval.stm) = new IfElseStm((yyvsp[(2) - (5)].exp), (yyvsp[(3) - (5)].blockstm), (yyvsp[(5) - (5)].blockstm));}
     break;
 
   case 22:
 /* Line 1792 of yacc.c  */
-#line 163 "yaccfile.yacc"
+#line 161 "yaccfile.yacc"
     { (yyval.printstm) = new PrintStm((yyvsp[(1) - (1)].id));}
     break;
 
   case 23:
 /* Line 1792 of yacc.c  */
-#line 166 "yaccfile.yacc"
+#line 164 "yaccfile.yacc"
     { (yyval.varprintstm) = new VarPrintStm((yyvsp[(1) - (1)].id));}
     break;
 
   case 24:
 /* Line 1792 of yacc.c  */
-#line 169 "yaccfile.yacc"
+#line 167 "yaccfile.yacc"
     { (yyval.whilestm) = new WhileStm((yyvsp[(2) - (3)].exp), (yyvsp[(3) - (3)].blockstm));}
     break;
 
   case 25:
 /* Line 1792 of yacc.c  */
-#line 174 "yaccfile.yacc"
+#line 172 "yaccfile.yacc"
     {(yyval.compcondexp) = new CompareCondExp((yyvsp[(1) - (3)].exp), (yyvsp[(2) - (3)].condop), (yyvsp[(3) - (3)].exp));}
     break;
 
   case 26:
 /* Line 1792 of yacc.c  */
-#line 178 "yaccfile.yacc"
+#line 176 "yaccfile.yacc"
     {(yyval.exp) = new AndCond((yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].exp));}
     break;
 
   case 27:
 /* Line 1792 of yacc.c  */
-#line 179 "yaccfile.yacc"
+#line 177 "yaccfile.yacc"
     {(yyval.exp) = new OrCond((yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].exp));}
     break;
 
   case 28:
 /* Line 1792 of yacc.c  */
-#line 180 "yaccfile.yacc"
+#line 178 "yaccfile.yacc"
     {(yyval.exp) = (yyvsp[(1) - (1)].compcondexp);}
     break;
 
   case 29:
 /* Line 1792 of yacc.c  */
-#line 181 "yaccfile.yacc"
+#line 179 "yaccfile.yacc"
     {(yyval.exp) = (yyvsp[(1) - (1)].numexp);}
     break;
 
   case 30:
 /* Line 1792 of yacc.c  */
-#line 182 "yaccfile.yacc"
+#line 180 "yaccfile.yacc"
     {(yyval.exp) = (yyvsp[(1) - (1)].idexp);}
     break;
 
   case 31:
 /* Line 1792 of yacc.c  */
-#line 183 "yaccfile.yacc"
+#line 181 "yaccfile.yacc"
     { (yyval.exp) = (yyvsp[(1) - (1)].binopexp);}
     break;
 
   case 32:
 /* Line 1792 of yacc.c  */
-#line 184 "yaccfile.yacc"
+#line 182 "yaccfile.yacc"
     { (yyval.exp) = (yyvsp[(1) - (1)].blockexp);}
     break;
 
   case 33:
 /* Line 1792 of yacc.c  */
-#line 185 "yaccfile.yacc"
+#line 183 "yaccfile.yacc"
     { (yyval.exp) = (yyvsp[(1) - (1)].groupexp);}
     break;
 
   case 34:
 /* Line 1792 of yacc.c  */
-#line 186 "yaccfile.yacc"
+#line 184 "yaccfile.yacc"
     {(yyval.exp) = (yyvsp[(1) - (1)].boolexp);}
     break;
 
   case 35:
 /* Line 1792 of yacc.c  */
-#line 187 "yaccfile.yacc"
+#line 185 "yaccfile.yacc"
     { (yyval.exp) = (yyvsp[(1) - (1)].funcexp);}
     break;
 
   case 36:
 /* Line 1792 of yacc.c  */
-#line 188 "yaccfile.yacc"
+#line 186 "yaccfile.yacc"
     { (yyval.exp) = (yyvsp[(1) - (1)].exp);}
     break;
 
   case 37:
 /* Line 1792 of yacc.c  */
-#line 189 "yaccfile.yacc"
+#line 187 "yaccfile.yacc"
     {(yyval.exp) = (yyvsp[(1) - (1)].notcondexp);}
     break;
 
   case 38:
 /* Line 1792 of yacc.c  */
-#line 192 "yaccfile.yacc"
+#line 190 "yaccfile.yacc"
     {(yyval.exp) = (yyvsp[(1) - (1)].numexp);}
     break;
 
   case 39:
 /* Line 1792 of yacc.c  */
-#line 193 "yaccfile.yacc"
+#line 191 "yaccfile.yacc"
     {(yyval.exp) = (yyvsp[(1) - (1)].idexp);}
     break;
 
   case 40:
 /* Line 1792 of yacc.c  */
-#line 194 "yaccfile.yacc"
+#line 192 "yaccfile.yacc"
     {(yyval.exp) = (yyvsp[(1) - (1)].boolexp);}
     break;
 
   case 41:
 /* Line 1792 of yacc.c  */
-#line 195 "yaccfile.yacc"
+#line 193 "yaccfile.yacc"
     { (yyval.exp) = (yyvsp[(1) - (1)].blockexp);}
     break;
 
   case 42:
 /* Line 1792 of yacc.c  */
-#line 196 "yaccfile.yacc"
+#line 194 "yaccfile.yacc"
     { (yyval.exp) = (yyvsp[(1) - (1)].funcexp);}
     break;
 
   case 43:
 /* Line 1792 of yacc.c  */
-#line 197 "yaccfile.yacc"
+#line 195 "yaccfile.yacc"
     { (yyval.exp) = (yyvsp[(1) - (1)].binopexp);}
     break;
 
   case 44:
 /* Line 1792 of yacc.c  */
-#line 198 "yaccfile.yacc"
+#line 196 "yaccfile.yacc"
     { (yyval.exp) = (yyvsp[(1) - (1)].groupexp);}
     break;
 
   case 45:
 /* Line 1792 of yacc.c  */
-#line 199 "yaccfile.yacc"
+#line 197 "yaccfile.yacc"
     { (yyval.exp) = (yyvsp[(1) - (1)].exp);}
     break;
 
   case 46:
 /* Line 1792 of yacc.c  */
-#line 200 "yaccfile.yacc"
+#line 198 "yaccfile.yacc"
     { yyerror("Error in expression"); yyclearin; (yyval.exp) = nullptr; }
     break;
 
   case 47:
 /* Line 1792 of yacc.c  */
-#line 205 "yaccfile.yacc"
+#line 203 "yaccfile.yacc"
     {(yyval.idexp) = new IdExp((yyvsp[(1) - (1)].id));}
     break;
 
   case 48:
 /* Line 1792 of yacc.c  */
-#line 208 "yaccfile.yacc"
+#line 206 "yaccfile.yacc"
     { (yyval.boolexp) = new BoolExp(true);}
     break;
 
   case 49:
 /* Line 1792 of yacc.c  */
-#line 209 "yaccfile.yacc"
+#line 207 "yaccfile.yacc"
     { (yyval.boolexp) = new BoolExp(false);}
     break;
 
   case 50:
 /* Line 1792 of yacc.c  */
-#line 212 "yaccfile.yacc"
+#line 210 "yaccfile.yacc"
     {(yyval.numexp) = new NumExp((yyvsp[(1) - (1)].num));}
     break;
 
   case 51:
 /* Line 1792 of yacc.c  */
-#line 215 "yaccfile.yacc"
+#line 213 "yaccfile.yacc"
     {(yyval.binopexp) = new BinopExp((yyvsp[(1) - (3)].exp), Plus, (yyvsp[(3) - (3)].exp));}
     break;
 
   case 52:
 /* Line 1792 of yacc.c  */
-#line 216 "yaccfile.yacc"
+#line 214 "yaccfile.yacc"
     {(yyval.binopexp) = new BinopExp((yyvsp[(1) - (3)].exp), Minus, (yyvsp[(3) - (3)].exp));}
     break;
 
   case 53:
 /* Line 1792 of yacc.c  */
-#line 217 "yaccfile.yacc"
+#line 215 "yaccfile.yacc"
     {(yyval.binopexp) = new BinopExp((yyvsp[(1) - (3)].exp), Times, (yyvsp[(3) - (3)].exp));}
     break;
 
   case 54:
 /* Line 1792 of yacc.c  */
-#line 218 "yaccfile.yacc"
+#line 216 "yaccfile.yacc"
     {(yyval.binopexp) = new BinopExp((yyvsp[(1) - (3)].exp), Divide, (yyvsp[(3) - (3)].exp));}
     break;
 
   case 55:
 /* Line 1792 of yacc.c  */
-#line 221 "yaccfile.yacc"
+#line 219 "yaccfile.yacc"
     {(yyval.blockexp) = new BlockExp((yyvsp[(2) - (4)].compoundstm), (yyvsp[(3) - (4)].exp));}
     break;
 
   case 56:
 /* Line 1792 of yacc.c  */
-#line 224 "yaccfile.yacc"
+#line 222 "yaccfile.yacc"
     { (yyval.groupexp) = new GroupedExp((yyvsp[(2) - (3)].exp));}
     break;
 
   case 57:
 /* Line 1792 of yacc.c  */
-#line 225 "yaccfile.yacc"
+#line 223 "yaccfile.yacc"
     { yyerror("Error in grouped expression"); yyclearin; (yyval.groupexp) = nullptr; }
     break;
 
   case 58:
 /* Line 1792 of yacc.c  */
-#line 228 "yaccfile.yacc"
+#line 226 "yaccfile.yacc"
     { (yyval.funcexp) = new FunctionExp((yyvsp[(1) - (4)].id), (yyvsp[(3) - (4)].explist));}
     break;
 
   case 59:
 /* Line 1792 of yacc.c  */
-#line 231 "yaccfile.yacc"
-    {(yyval.exp) = new IfExp((yyvsp[(2) - (3)].exp), (yyvsp[(3) - (3)].blockexp));}
+#line 229 "yaccfile.yacc"
+    {(yyval.exp) = new IfElseExp((yyvsp[(2) - (5)].exp), (yyvsp[(3) - (5)].blockexp), (yyvsp[(5) - (5)].blockexp));}
     break;
 
   case 60:
 /* Line 1792 of yacc.c  */
-#line 232 "yaccfile.yacc"
-    {(yyval.exp) = new IfElseExp((yyvsp[(2) - (5)].exp), (yyvsp[(3) - (5)].blockexp), (yyvsp[(5) - (5)].blockexp));}
+#line 234 "yaccfile.yacc"
+    {(yyval.func) = new FuncDefStm((yyvsp[(2) - (6)].id), (yyvsp[(4) - (6)].explist), (yyvsp[(6) - (6)].blockstm));}
     break;
 
   case 61:
 /* Line 1792 of yacc.c  */
-#line 237 "yaccfile.yacc"
-    {(yyval.func) = new FuncDefStm((yyvsp[(2) - (6)].id), (yyvsp[(4) - (6)].explist), (yyvsp[(6) - (6)].blockstm));}
+#line 235 "yaccfile.yacc"
+    {(yyval.func) = new FuncDefExp((yyvsp[(2) - (8)].id), (yyvsp[(4) - (8)].explist), (yyvsp[(7) - (8)].dtype), (yyvsp[(8) - (8)].blockexp));}
     break;
 
   case 62:
 /* Line 1792 of yacc.c  */
-#line 238 "yaccfile.yacc"
-    {(yyval.func) = new FuncDefExp((yyvsp[(2) - (8)].id), (yyvsp[(4) - (8)].explist), (yyvsp[(7) - (8)].dtype), (yyvsp[(8) - (8)].blockexp));}
+#line 236 "yaccfile.yacc"
+    { yyerror("Error in function definition"); yyclearin; (yyval.func) = nullptr; }
     break;
 
   case 63:
 /* Line 1792 of yacc.c  */
 #line 239 "yaccfile.yacc"
-    { yyerror("Error in function definition"); yyclearin; (yyval.func) = nullptr; }
+    { (yyval.funclist) = new PairFuncList((yyvsp[(1) - (2)].func), (yyvsp[(2) - (2)].funclist));}
     break;
 
   case 64:
 /* Line 1792 of yacc.c  */
-#line 242 "yaccfile.yacc"
-    { (yyval.funclist) = new PairFuncList((yyvsp[(1) - (2)].func), (yyvsp[(2) - (2)].funclist));}
+#line 240 "yaccfile.yacc"
+    { (yyval.funclist) = new LastFuncList((yyvsp[(1) - (1)].func));}
     break;
 
   case 65:
 /* Line 1792 of yacc.c  */
 #line 243 "yaccfile.yacc"
-    { (yyval.funclist) = new LastFuncList((yyvsp[(1) - (1)].func));}
+    {(yyval.notcondexp) = new NotCondExp((yyvsp[(2) - (2)].exp));}
     break;
 
   case 66:
 /* Line 1792 of yacc.c  */
-#line 246 "yaccfile.yacc"
-    {(yyval.notcondexp) = new NotCondExp((yyvsp[(2) - (2)].exp));}
+#line 249 "yaccfile.yacc"
+    {(yyval.boolean) = false;}
     break;
 
   case 67:
 /* Line 1792 of yacc.c  */
-#line 252 "yaccfile.yacc"
-    {(yyval.boolean) = false;}
+#line 250 "yaccfile.yacc"
+    {(yyval.boolean) = true;}
     break;
 
   case 68:
 /* Line 1792 of yacc.c  */
 #line 253 "yaccfile.yacc"
-    {(yyval.boolean) = true;}
+    { (yyval.dtype) = Int;}
     break;
 
   case 69:
 /* Line 1792 of yacc.c  */
-#line 256 "yaccfile.yacc"
-    { (yyval.dtype) = Int;}
+#line 254 "yaccfile.yacc"
+    {(yyval.dtype) = Bool;}
     break;
 
   case 70:
 /* Line 1792 of yacc.c  */
 #line 257 "yaccfile.yacc"
-    {(yyval.dtype) = Bool;}
+    { (yyval.explist) = nullptr;}
     break;
 
   case 71:
 /* Line 1792 of yacc.c  */
-#line 260 "yaccfile.yacc"
-    { (yyval.explist) = nullptr;}
+#line 258 "yaccfile.yacc"
+    { (yyval.explist) = new PairArgsExpList((yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].explist));}
     break;
 
   case 72:
 /* Line 1792 of yacc.c  */
-#line 261 "yaccfile.yacc"
-    { (yyval.explist) = new PairArgsExpList((yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].explist));}
+#line 259 "yaccfile.yacc"
+    {(yyval.explist) = new LastArgsExpList((yyvsp[(1) - (1)].exp));}
     break;
 
   case 73:
 /* Line 1792 of yacc.c  */
 #line 262 "yaccfile.yacc"
-    {(yyval.explist) = new LastArgsExpList((yyvsp[(1) - (1)].exp));}
+    { (yyval.explist) = nullptr;}
     break;
 
   case 74:
 /* Line 1792 of yacc.c  */
-#line 265 "yaccfile.yacc"
-    { (yyval.explist) = nullptr;}
+#line 263 "yaccfile.yacc"
+    { (yyval.explist) = new PairParamExpList((yyvsp[(2) - (6)].id), (yyvsp[(4) - (6)].dtype), (yyvsp[(6) - (6)].explist), (yyvsp[(1) - (6)].boolean));}
     break;
 
   case 75:
 /* Line 1792 of yacc.c  */
-#line 266 "yaccfile.yacc"
-    { (yyval.explist) = new PairParamExpList((yyvsp[(2) - (6)].id), (yyvsp[(4) - (6)].dtype), (yyvsp[(6) - (6)].explist), (yyvsp[(1) - (6)].boolean));}
+#line 264 "yaccfile.yacc"
+    { (yyval.explist) = new LastParamExpList((yyvsp[(2) - (4)].id), (yyvsp[(4) - (4)].dtype), (yyvsp[(1) - (4)].boolean));}
     break;
 
   case 76:
 /* Line 1792 of yacc.c  */
 #line 267 "yaccfile.yacc"
-    { (yyval.explist) = new LastParamExpList((yyvsp[(2) - (4)].id), (yyvsp[(4) - (4)].dtype), (yyvsp[(1) - (4)].boolean));}
+    {(yyval.condop) = Less;}
     break;
 
   case 77:
 /* Line 1792 of yacc.c  */
-#line 270 "yaccfile.yacc"
-    {(yyval.condop) = Less;}
+#line 268 "yaccfile.yacc"
+    {(yyval.condop) = LessEqual;}
     break;
 
   case 78:
 /* Line 1792 of yacc.c  */
-#line 271 "yaccfile.yacc"
-    {(yyval.condop) = LessEqual;}
+#line 269 "yaccfile.yacc"
+    {(yyval.condop) = Greater;}
     break;
 
   case 79:
 /* Line 1792 of yacc.c  */
-#line 272 "yaccfile.yacc"
-    {(yyval.condop) = Greater;}
+#line 270 "yaccfile.yacc"
+    {(yyval.condop) = GreaterEqual;}
     break;
 
   case 80:
 /* Line 1792 of yacc.c  */
-#line 273 "yaccfile.yacc"
-    {(yyval.condop) = GreaterEqual;}
+#line 271 "yaccfile.yacc"
+    {(yyval.condop) = EqualEqual;}
     break;
 
   case 81:
 /* Line 1792 of yacc.c  */
-#line 274 "yaccfile.yacc"
-    {(yyval.condop) = EqualEqual;}
+#line 272 "yaccfile.yacc"
+    {(yyval.condop) = NotEqual;}
     break;
 
   case 82:
 /* Line 1792 of yacc.c  */
 #line 275 "yaccfile.yacc"
-    {(yyval.condop) = NotEqual;}
+    {(yyval.assignop) = Equals;}
     break;
 
   case 83:
 /* Line 1792 of yacc.c  */
-#line 278 "yaccfile.yacc"
-    {(yyval.assignop) = Equals;}
+#line 276 "yaccfile.yacc"
+    {(yyval.assignop) = PlusEquals;}
     break;
 
   case 84:
 /* Line 1792 of yacc.c  */
-#line 279 "yaccfile.yacc"
-    {(yyval.assignop) = PlusEquals;}
-    break;
-
-  case 85:
-/* Line 1792 of yacc.c  */
-#line 280 "yaccfile.yacc"
+#line 277 "yaccfile.yacc"
     {(yyval.assignop) = MinusEquals;}
     break;
 
 
 /* Line 1792 of yacc.c  */
-#line 2122 "y.tab.cpp"
+#line 2114 "y.tab.cpp"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2350,7 +2342,7 @@ yyreturn:
 
 
 /* Line 2055 of yacc.c  */
-#line 283 "yaccfile.yacc"
+#line 280 "yaccfile.yacc"
 
 
 void yyerror(const char *s) {

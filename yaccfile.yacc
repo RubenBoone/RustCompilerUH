@@ -56,7 +56,6 @@ Stm tree;
     BlockExp *blockexp;
     GroupedExp *groupexp;
     FunctionExp *funcexp;
-    IfExp *ifexp;
     IfElseExp *ifelseexp;
 
     PairArgsExpList *arglist;
@@ -70,7 +69,6 @@ Stm tree;
     CompareCondExp *compcondexp;
     AndCond *andcond;
     OrCond *orcond;
-    EqualCond *eqcond;
 
     CompoundStm *compoundstm;
     FuncDefStm *funcdefstm;
@@ -228,8 +226,7 @@ GroupExpType : LPAREN ExpType RPAREN { $$ = new GroupedExp($2);}
 FunctionExpType : IDENTIFIER LPAREN argument_list RPAREN { $$ = new FunctionExp($1, $3);}
                 ;
 
-IfExpType : IF ExpType BlockExpType {$$ = new IfExp($2, $3);}
-          | IF ExpType BlockExpType ELSE BlockExpType {$$ = new IfElseExp($2, $3, $5);}
+IfExpType : IF ExpType BlockExpType ELSE BlockExpType {$$ = new IfElseExp($2, $3, $5);}
           ;
 
 

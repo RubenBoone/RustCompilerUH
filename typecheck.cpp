@@ -81,7 +81,7 @@ void Table::addVariable(const std::string &id, DataType type, bool isMutable, bo
 {
     if (!variableScopes.empty())
     {
-        variableScopes.back()[id] = {id, type, isMutable, isAssigned};
+        variableScopes.back()[id] = {id, type, nullptr, isMutable, isAssigned};
     }
 }
 
@@ -92,14 +92,14 @@ void Table::addFunction(const std::string &id, DataType type)
 
 void Table::addFunctionParam(const std::string &fid, const std::string &pid, DataType type, int index, bool isMutable)
 {
-    functions[fid].params[index] = {pid, type, isMutable, true};
+    functions[fid].params[index] = {pid, type, nullptr, isMutable, true};
 }
 
 void Table::addParamsToScope(const std::string &fid)
 {
     for (auto &param : functions[fid].params)
     {
-        variableScopes.back()[param.second.id] = {param.second.id, param.second.type, param.second.isMutable, true};
+        variableScopes.back()[param.second.id] = {param.second.id, param.second.type, nullptr, param.second.isMutable, true};
     }
 }
 
@@ -138,21 +138,6 @@ DataType BinopExp::check(Table *t)
     }
 
     return Int;
-}
-
-DataType IfExp::check(Table *t)
-{
-    DataType condType = condition->check(t);
-    if (condType != Bool)
-    {
-        std::cerr << "Condition must be a boolean" << std::endl;
-        t->typeCheckCorrect = false;
-        return Error;
-    }
-
-    DataType thenType = then->check(t);
-
-    return thenType;
 }
 
 DataType IfElseExp::check(Table *t)
@@ -263,21 +248,6 @@ DataType OrCond::check(Table *t)
     if (leftType != rightType)
     {
         std::cerr << "Or operands must be of type bool" << std::endl;
-        t->typeCheckCorrect = false;
-        return Error;
-    }
-
-    return Bool;
-}
-
-DataType EqualCond::check(Table *t)
-{
-    DataType leftType = left->check(t);
-    DataType rightType = right->check(t);
-
-    if (leftType != rightType)
-    {
-        std::cerr << "ERROR: Operands must be of the same type" << std::endl;
         t->typeCheckCorrect = false;
         return Error;
     }

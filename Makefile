@@ -15,7 +15,7 @@ bison:
 	win_bison -o y.tab.cpp -d yaccfile.yacc -v
 
 bison-compile:
-	g++ y.tab.cpp lex.yy.cpp main.cpp absyn.cpp -o parser
+	g++ y.tab.cpp lex.yy.cpp main.cpp typecheck.cpp interp.cpp -o parser
 
 bison-run:
 	parser.exe < $(FILE)
@@ -25,4 +25,7 @@ bison-routine: bison bison-compile bison-run
 flex-routine: flex flex-compile flex-run
 
 build: flex bison
-	g++ y.tab.cpp lex.yy.cpp main.cpp absyn.cpp -o typechecker
+	g++ y.tab.cpp lex.yy.cpp main.cpp typecheck.cpp interp.cpp -o compiler
+
+run: build
+	compiler.exe < $(FILE)
